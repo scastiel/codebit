@@ -36,32 +36,15 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         currentStep: Math.min(state.stepsCount - 1, state.currentStep + 1),
-        // animate: false,
       }
     case 'previous':
-      return {
-        ...state,
-        currentStep: Math.max(0, state.currentStep - 1),
-        // animate: false,
-      }
+      return { ...state, currentStep: Math.max(0, state.currentStep - 1) }
     case 'goTo':
-      return {
-        ...state,
-        currentStep: action.step,
-        // animate: false
-      }
+      return { ...state, currentStep: action.step }
     case 'reset':
-      return {
-        ...state,
-        currentStep: 0,
-        // , animate: false
-      }
+      return { ...state, currentStep: 0 }
     case 'play':
-      return {
-        ...state,
-        // currentStep: Math.max(0, state.currentStep + 1),
-        animate: true,
-      }
+      return { ...state, animate: true }
     case 'pause':
       return { ...state, animate: false }
   }
