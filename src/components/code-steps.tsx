@@ -10,6 +10,8 @@ import {
   StepForwardIcon,
 } from 'lucide-react'
 import { useEffect, useReducer, useRef, useState } from 'react'
+import { diffLines } from 'diff'
+import { CodeDiff } from '@/components/code-diff'
 
 export type Props = {
   steps: { lang: string; code: string }[]
@@ -141,12 +143,15 @@ export function CodeSteps({ steps }: Props) {
   } = useControls(steps.length)
 
   return (
-    <Card>
+    <Card className="m-4">
       <CardHeader />
       <CardContent>
-        <pre>
-          <code>{steps[currentStep].code}</code>
-        </pre>
+        <CodeDiff
+          key={currentStep}
+          fromCode={currentStep === 0 ? null : steps[currentStep - 1].code}
+          toCode={steps[currentStep].code}
+          done={() => console.log('Done!')}
+        />
       </CardContent>
       <CardFooter className="justify-end gap-2">
         <Slider
