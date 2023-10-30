@@ -17,27 +17,48 @@ export type Props = {
   steps: { lang: string; code: string }[]
 }
 
-type State = { stepsCount: number; currentStep: number }
+type State = {
+  stepsCount: number
+  currentStep: number
+  auto: boolean
+  animate: boolean
+}
 
 type Action =
   | { type: 'next' }
   | { type: 'previous' }
   | { type: 'reset' }
   | { type: 'goTo'; step: number }
+  | { type: 'play' }
+  | { type: 'pause' }
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
-      return { ...state, currentStep: Math.max(0, state.currentStep + 1) }
+      return {
+        ...state,
+        currentStep: Math.max(0, state.currentStep + 1),
+        auto: false,
+      }
     case 'previous':
       return {
         ...state,
         currentStep: Math.min(state.currentStep - 1, state.stepsCount - 1),
+        auto: false,
       }
     case 'goTo':
-      return { ...state, currentStep: action.step }
+      return { ...state, currentStep: action.step, animate: false, auto: false }
     case 'reset':
-      return { ...state, currentStep: 0 }
+      return { ...state, currentStep: 0, animate: false, auto: false }
+    case 'play':
+      return {
+        ...state,
+        currentStep: Math.max(0, state.currentStep + 1),
+        auto: true,
+        animate: true,
+      }
+    case 'pause':
+      return { ...state, auto: false, animate: false }
   }
 }
 
@@ -45,73 +66,35 @@ function useControls(stepsCount: number) {
   const [state, dispatch] = useReducer(reducer, {
     stepsCount,
     currentStep: 0,
+    auto: false,
+    animate: false,
   })
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null)
 
   const currentStepRef = useRef(state.currentStep)
   useEffect(() => {
     currentStepRef.current = state.currentStep
   }, [state.currentStep])
 
-  const intervalIdRef = useRef(intervalId)
-  useEffect(() => {
-    intervalIdRef.current = intervalId
-  }, [intervalId])
-
-  useEffect(() => {
-    return () => {
-      if (intervalId !== null) {
-        clearInterval(intervalId)
-      }
-    }
-  }, [intervalId])
-
   const goTo = (step: number) => dispatch({ type: 'goTo', step })
 
   const reset = () => {
-    if (intervalId) {
-      setIntervalId(null)
-      clearInterval(intervalId)
-    }
     dispatch({ type: 'reset' })
   }
 
   const previous = () => {
-    if (intervalId) {
-      setIntervalId(null)
-      clearInterval(intervalId)
-    }
     dispatch({ type: 'previous' })
   }
 
   const next = () => {
-    if (intervalId) {
-      setIntervalId(null)
-      clearInterval(intervalId)
-    }
     dispatch({ type: 'next' })
   }
 
   const pause = () => {
-    if (intervalId) {
-      setIntervalId(null)
-      clearInterval(intervalId)
-    }
+    dispatch({ type: 'pause' })
   }
 
   const play = () => {
-    setIntervalId(
-      setInterval(() => {
-        if (currentStepRef.current < stepsCount - 1) dispatch({ type: 'next' })
-        if (
-          currentStepRef.current >= stepsCount - 2 &&
-          intervalIdRef.current !== null
-        ) {
-          setIntervalId(null)
-          clearInterval(intervalIdRef.current)
-        }
-      }, 1000)
-    )
+    dispatch({ type: 'play' })
   }
 
   return {
@@ -122,9 +105,10 @@ function useControls(stepsCount: number) {
     next,
     pause,
     play,
-    isPlaying: intervalId !== null,
     canPrevious: state.currentStep > 0,
     canNext: state.currentStep < stepsCount - 1,
+    auto: state.auto,
+    animate: state.animate,
   }
 }
 
@@ -137,20 +121,40 @@ export function CodeSteps({ steps }: Props) {
     next,
     pause,
     play,
-    isPlaying,
     canPrevious,
     canNext,
+    auto,
+    animate,
   } = useControls(steps.length)
+
+  const autoRef = useRef(auto)
+  useEffect(() => {
+    autoRef.current = auto
+  }, [auto])
+  const canNextRef = useRef(canNext)
+  useEffect(() => {
+    canNextRef.current = canNext
+  }, [canNext])
 
   return (
     <Card className="m-4">
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={currentStep}
+          key={`${currentStep},${animate},${auto}`}
+          animate={animate}
           fromCode={currentStep === 0 ? null : steps[currentStep - 1].code}
           toCode={steps[currentStep].code}
-          done={() => console.log('Done!')}
+          done={() => {
+            // console.log({ auto: autoRef.current, canNext: canNextRef.current })
+            setTimeout(() => {
+              if (autoRef.current && canNextRef.current) {
+                play()
+              } else {
+                pause()
+              }
+            }, 1000)
+          }}
         />
       </CardContent>
       <CardFooter className="justify-end gap-2">
@@ -170,16 +174,16 @@ export function CodeSteps({ steps }: Props) {
           <StepForwardIcon className="h-4 w-4" />
         </Button>
         <Button
-          disabled={isPlaying && !canNext}
+          disabled={!canNext}
           onClick={() => {
-            if (isPlaying) {
+            if (auto) {
               pause()
             } else {
               play()
             }
           }}
         >
-          {isPlaying ? (
+          {auto ? (
             <PauseIcon className="h-4 w-4" />
           ) : (
             <PlayIcon className="h-4 w-4" />

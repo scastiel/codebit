@@ -9,12 +9,16 @@ type Props = {
   fromCode: string | null
   toCode: string
   done: () => void
+  animate: boolean
 }
 
 const splitter = new GraphemeSplitter()
 
-export function CodeDiff({ fromCode, toCode, done }: Props) {
-  const diff = diffWordsWithSpace(fromCode ?? toCode, toCode)
+export function CodeDiff({ fromCode, toCode, done, animate }: Props) {
+  const diff = diffWordsWithSpace(
+    animate && fromCode ? fromCode : toCode,
+    toCode
+  )
   return <HighlightedCode>{getTypeAnimations(diff, done)}</HighlightedCode>
 }
 
