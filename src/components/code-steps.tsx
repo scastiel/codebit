@@ -9,8 +9,7 @@ import {
   StepBackIcon,
   StepForwardIcon,
 } from 'lucide-react'
-import { useEffect, useReducer, useRef, useState } from 'react'
-import { diffLines } from 'diff'
+import { useEffect, useReducer, useRef } from 'react'
 import { CodeDiff } from '@/components/code-diff'
 
 export type Props = {
@@ -62,75 +61,22 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-function useControls(stepsCount: number) {
+export function CodeSteps({ steps }: Props) {
   const [state, dispatch] = useReducer(reducer, {
-    stepsCount,
+    stepsCount: steps.length,
     currentStep: 0,
     auto: false,
     animate: false,
   })
 
-  const currentStepRef = useRef(state.currentStep)
+  const canPrevious = state.currentStep > 0
+  const canNext = state.currentStep < steps.length - 1
+
+  const autoRef = useRef(state.auto)
   useEffect(() => {
-    currentStepRef.current = state.currentStep
-  }, [state.currentStep])
+    autoRef.current = state.auto
+  }, [state.auto])
 
-  const goTo = (step: number) => dispatch({ type: 'goTo', step })
-
-  const reset = () => {
-    dispatch({ type: 'reset' })
-  }
-
-  const previous = () => {
-    dispatch({ type: 'previous' })
-  }
-
-  const next = () => {
-    dispatch({ type: 'next' })
-  }
-
-  const pause = () => {
-    dispatch({ type: 'pause' })
-  }
-
-  const play = () => {
-    dispatch({ type: 'play' })
-  }
-
-  return {
-    currentStep: state.currentStep,
-    goTo,
-    reset,
-    previous,
-    next,
-    pause,
-    play,
-    canPrevious: state.currentStep > 0,
-    canNext: state.currentStep < stepsCount - 1,
-    auto: state.auto,
-    animate: state.animate,
-  }
-}
-
-export function CodeSteps({ steps }: Props) {
-  const {
-    currentStep,
-    goTo,
-    reset,
-    previous,
-    next,
-    pause,
-    play,
-    canPrevious,
-    canNext,
-    auto,
-    animate,
-  } = useControls(steps.length)
-
-  const autoRef = useRef(auto)
-  useEffect(() => {
-    autoRef.current = auto
-  }, [auto])
   const canNextRef = useRef(canNext)
   useEffect(() => {
     canNextRef.current = canNext
@@ -141,17 +87,18 @@ export function CodeSteps({ steps }: Props) {
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={`${currentStep},${animate},${auto}`}
-          animate={animate}
-          fromCode={currentStep === 0 ? null : steps[currentStep - 1].code}
-          toCode={steps[currentStep].code}
+          key={`${state.currentStep},${state.animate},${state.auto}`}
+          animate={state.animate}
+          fromCode={
+            state.currentStep === 0 ? null : steps[state.currentStep - 1].code
+          }
+          toCode={steps[state.currentStep].code}
           done={() => {
-            // console.log({ auto: autoRef.current, canNext: canNextRef.current })
             setTimeout(() => {
               if (autoRef.current && canNextRef.current) {
-                play()
+                dispatch({ type: 'play' })
               } else {
-                pause()
+                dispatch({ type: 'pause' })
               }
             }, 1000)
           }}
@@ -161,29 +108,35 @@ export function CodeSteps({ steps }: Props) {
         <Slider
           max={steps.length - 1}
           step={1}
-          value={[currentStep]}
-          onValueChange={([step]) => goTo(step)}
+          value={[state.currentStep]}
+          onValueChange={([step]) => dispatch({ type: 'goTo', step })}
         />
-        <Button disabled={!canPrevious} variant="secondary" onClick={reset}>
+        <Button
+          disabled={!canPrevious}
+          variant="secondary"
+          onClick={() => dispatch({ type: 'reset' })}
+        >
           <SkipBackIcon className="h-4 w-4" />
         </Button>
-        <Button disabled={!canPrevious} variant="secondary" onClick={previous}>
+        <Button
+          disabled={!canPrevious}
+          variant="secondary"
+          onClick={() => dispatch({ type: 'play' })}
+        >
           <StepBackIcon className="h-4 w-4" />
         </Button>
-        <Button disabled={!canNext} variant="secondary" onClick={next}>
+        <Button
+          disabled={!canNext}
+          variant="secondary"
+          onClick={() => dispatch({ type: 'next' })}
+        >
           <StepForwardIcon className="h-4 w-4" />
         </Button>
         <Button
           disabled={!canNext}
-          onClick={() => {
-            if (auto) {
-              pause()
-            } else {
-              play()
-            }
-          }}
+          onClick={() => dispatch({ type: state.auto ? 'pause' : 'play' })}
         >
-          {auto ? (
+          {state.auto ? (
             <PauseIcon className="h-4 w-4" />
           ) : (
             <PlayIcon className="h-4 w-4" />
