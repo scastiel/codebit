@@ -19,7 +19,6 @@ export type Props = {
 type State = {
   stepsCount: number
   currentStep: number
-  auto: boolean
   animate: boolean
 }
 
@@ -36,28 +35,35 @@ const reducer = (state: State, action: Action): State => {
     case 'next':
       return {
         ...state,
-        currentStep: Math.max(0, state.currentStep + 1),
-        auto: false,
+        currentStep: Math.min(state.stepsCount - 1, state.currentStep + 1),
+        // animate: false,
       }
     case 'previous':
       return {
         ...state,
-        currentStep: Math.min(state.currentStep - 1, state.stepsCount - 1),
-        auto: false,
+        currentStep: Math.max(0, state.currentStep - 1),
+        // animate: false,
       }
     case 'goTo':
-      return { ...state, currentStep: action.step, animate: false, auto: false }
+      return {
+        ...state,
+        currentStep: action.step,
+        // animate: false
+      }
     case 'reset':
-      return { ...state, currentStep: 0, animate: false, auto: false }
+      return {
+        ...state,
+        currentStep: 0,
+        // , animate: false
+      }
     case 'play':
       return {
         ...state,
-        currentStep: Math.max(0, state.currentStep + 1),
-        auto: true,
+        // currentStep: Math.max(0, state.currentStep + 1),
         animate: true,
       }
     case 'pause':
-      return { ...state, auto: false, animate: false }
+      return { ...state, animate: false }
   }
 }
 
@@ -65,17 +71,16 @@ export function CodeSteps({ steps }: Props) {
   const [state, dispatch] = useReducer(reducer, {
     stepsCount: steps.length,
     currentStep: 0,
-    auto: false,
     animate: false,
   })
 
   const canPrevious = state.currentStep > 0
   const canNext = state.currentStep < steps.length - 1
 
-  const autoRef = useRef(state.auto)
+  const animateRef = useRef(state.animate)
   useEffect(() => {
-    autoRef.current = state.auto
-  }, [state.auto])
+    animateRef.current = state.animate
+  }, [state.animate])
 
   const canNextRef = useRef(canNext)
   useEffect(() => {
@@ -87,7 +92,7 @@ export function CodeSteps({ steps }: Props) {
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={`${state.currentStep},${state.animate},${state.auto}`}
+          key={`${state.currentStep},${state.animate}`}
           animate={state.animate}
           fromCode={
             state.currentStep === 0 ? null : steps[state.currentStep - 1].code
@@ -95,8 +100,8 @@ export function CodeSteps({ steps }: Props) {
           toCode={steps[state.currentStep].code}
           done={() => {
             setTimeout(() => {
-              if (autoRef.current && canNextRef.current) {
-                dispatch({ type: 'play' })
+              if (animateRef.current && canNextRef.current) {
+                dispatch({ type: 'next' })
               } else {
                 dispatch({ type: 'pause' })
               }
@@ -114,29 +119,38 @@ export function CodeSteps({ steps }: Props) {
         <Button
           disabled={!canPrevious}
           variant="secondary"
-          onClick={() => dispatch({ type: 'reset' })}
+          onClick={() => {
+            dispatch({ type: 'pause' })
+            dispatch({ type: 'reset' })
+          }}
         >
           <SkipBackIcon className="h-4 w-4" />
         </Button>
         <Button
           disabled={!canPrevious}
           variant="secondary"
-          onClick={() => dispatch({ type: 'play' })}
+          onClick={() => {
+            dispatch({ type: 'pause' })
+            dispatch({ type: 'previous' })
+          }}
         >
           <StepBackIcon className="h-4 w-4" />
         </Button>
         <Button
           disabled={!canNext}
           variant="secondary"
-          onClick={() => dispatch({ type: 'next' })}
+          onClick={() => {
+            dispatch({ type: 'pause' })
+            dispatch({ type: 'next' })
+          }}
         >
           <StepForwardIcon className="h-4 w-4" />
         </Button>
         <Button
           disabled={!canNext}
-          onClick={() => dispatch({ type: state.auto ? 'pause' : 'play' })}
+          onClick={() => dispatch({ type: state.animate ? 'pause' : 'play' })}
         >
-          {state.auto ? (
+          {state.animate ? (
             <PauseIcon className="h-4 w-4" />
           ) : (
             <PlayIcon className="h-4 w-4" />
