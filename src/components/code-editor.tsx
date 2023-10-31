@@ -7,9 +7,13 @@ import { StepsProvider, useSteps } from '@/contexts/steps-context'
 import { githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
+import { ExternalLink } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useRef } from 'react'
+import { getCodeFragments } from '../lib/code-steps-utils'
 
 type Props = {
+  snippetId?: string
   initialContent?: string
   saveSnippetAction?: (code: string) => Promise<void>
 }
@@ -22,7 +26,11 @@ export function CodeEditor(props: Props) {
   )
 }
 
-function CodeEditorWithContext({ initialContent, saveSnippetAction }: Props) {
+function CodeEditorWithContext({
+  snippetId,
+  initialContent,
+  saveSnippetAction,
+}: Props) {
   const editorRef = useRef<any>(null)
   const { id, steps, updateSteps } = useSteps()
   const editorWrapperRef = useRef(null)
@@ -52,6 +60,19 @@ function CodeEditorWithContext({ initialContent, saveSnippetAction }: Props) {
             variant="secondary"
           >
             Save
+          </Button>
+        )}
+        {snippetId && (
+          <Button variant="secondary" asChild>
+            <Link
+              href={`/${snippetId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-2"
+            >
+              <ExternalLink />
+              <span>Public URL</span>
+            </Link>
           </Button>
         )}
       </div>
@@ -85,11 +106,4 @@ console.log('Hello World!')
       </div>
     </div>
   )
-}
-
-function getCodeFragments(input: string) {
-  return input.split(/\n+---\n+/).map((page) => {
-    const [, lang, code] = page.match(/```([^\n]*)\n(.*)```/s) ?? []
-    return { lang, code }
-  })
 }

@@ -47,6 +47,7 @@ export default async function SnippetPage({
       </div>
       <div className="flex-1 flex [&>div]:w-full">
         <CodeEditor
+          snippetId={snippet.id}
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
         />
