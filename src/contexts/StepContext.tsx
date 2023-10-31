@@ -14,12 +14,12 @@ const defaultSteps = [
 type Steps = { lang: string; code: string }[];
 
 type stepType = {
-  step: Steps;
+  steps: Steps;
   sStep: (param: Steps) => void;
 };
 
 const stepContextDefaultValues: stepType = {
-  step: defaultSteps,
+  steps: defaultSteps,
   sStep: () => {},
 };
 
@@ -34,15 +34,15 @@ type Props = {
 };
 
 export function StepProvider({ children }: Props) {
-  const [step, setStep] = useState<Steps>(defaultSteps);
+  const [steps, setSteps] = useState<Steps>(defaultSteps);
 
   const sStep = (param: Steps) => {
     console.log("in sStep with: ", param);
-    setStep(param);
+    setSteps(param);
   };
 
   const value = {
-    step,
+    steps,
     sStep,
   };
 

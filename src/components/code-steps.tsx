@@ -12,12 +12,10 @@ import {
 import { useEffect, useReducer, useRef } from 'react'
 import { CodeDiff } from '@/components/code-diff'
 
-export type Props = {
-  steps: { lang: string; code: string }[]
-}
+import { useStep } from "../contexts/StepContext";
 
 type State = {
-  stepsCount: number
+  steps: { code: string; lang: string }[]
   currentStep: number
   animate: boolean
 }
@@ -35,7 +33,7 @@ const reducer = (state: State, action: Action): State => {
     case 'next':
       return {
         ...state,
-        currentStep: Math.min(state.stepsCount - 1, state.currentStep + 1),
+        currentStep: Math.min(state.steps.length - 1, state.currentStep + 1),
       }
     case 'previous':
       return { ...state, currentStep: Math.max(0, state.currentStep - 1) }
@@ -50,15 +48,22 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-export function CodeSteps({ steps }: Props) {
+export function CodeSteps() {
+  var { steps, sStep } = useStep();
+
+  useEffect(() => {
+    console.log("in useEffect with: ", steps);
+    state.steps = steps;
+  }, [sStep])
+
   const [state, dispatch] = useReducer(reducer, {
-    stepsCount: steps.length,
+    steps,
     currentStep: 0,
     animate: false,
   })
 
   const canPrevious = state.currentStep > 0
-  const canNext = state.currentStep < steps.length - 1
+  const canNext = state.currentStep < state.steps.length - 1
 
   const animateRef = useRef(state.animate)
   useEffect(() => {
@@ -78,9 +83,9 @@ export function CodeSteps({ steps }: Props) {
           key={`${state.currentStep},${state.animate}`}
           animate={state.animate}
           fromCode={
-            state.currentStep === 0 ? null : steps[state.currentStep - 1].code
+            state.currentStep === 0 ? null : state.steps[state.currentStep - 1].code
           }
-          toCode={steps[state.currentStep].code}
+          toCode={state.steps[state.currentStep].code}
           done={() => {
             if (animateRef.current && canNextRef.current) {
               setTimeout(() => {
@@ -96,7 +101,7 @@ export function CodeSteps({ steps }: Props) {
       </CardContent>
       <CardFooter className="justify-end gap-2">
         <Slider
-          max={steps.length - 1}
+          max={state.steps.length - 1}
           step={1}
           value={[state.currentStep]}
           onValueChange={([step]) => dispatch({ type: 'goTo', step })}

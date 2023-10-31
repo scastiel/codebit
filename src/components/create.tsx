@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 
 import { useStep } from "../contexts/StepContext";
 
-
 function getCodeFragments(input: string) {
   return input.split(/\n+---\n+/).map((page) => {
     const [, lang, code] = page.match(/```([^\n]*)\n(.*)```/s) ?? []
