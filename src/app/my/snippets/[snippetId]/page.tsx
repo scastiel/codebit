@@ -25,6 +25,7 @@ export default async function SnippetPage({
 
   async function saveSnippetAction(content: string) {
     'use server'
+    const snippet = await getSnippet(snippetId)
     if (!snippet) throw new Error('Missing snippet')
     const user = await getCurrentUser()
     if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
@@ -47,6 +48,7 @@ export default async function SnippetPage({
       </div>
       <div className="flex-1 flex [&>div]:w-full">
         <CodeEditor
+          snippetId={snippet.id}
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
         />

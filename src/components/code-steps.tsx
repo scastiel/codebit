@@ -71,7 +71,7 @@ export function CodeSteps() {
   }, [canNext])
 
   return (
-    <Card>
+    <Card className="bg-white bg-opacity-80">
       <CardHeader />
       <CardContent>
         <CodeDiff
@@ -106,7 +106,7 @@ export function CodeSteps() {
         />
         <Button
           disabled={!canPrevious}
-          variant="secondary"
+          variant="ghost"
           onClick={() => {
             dispatch({ type: 'pause' })
             dispatch({ type: 'reset' })
@@ -116,7 +116,7 @@ export function CodeSteps() {
         </Button>
         <Button
           disabled={!canPrevious}
-          variant="secondary"
+          variant="ghost"
           onClick={() => {
             dispatch({ type: 'pause' })
             dispatch({ type: 'previous' })
@@ -126,7 +126,7 @@ export function CodeSteps() {
         </Button>
         <Button
           disabled={!canNext}
-          variant="secondary"
+          variant="ghost"
           onClick={() => {
             dispatch({ type: 'pause' })
             dispatch({ type: 'next' })

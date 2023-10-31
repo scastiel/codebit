@@ -29,11 +29,12 @@ export function useSteps() {
 }
 
 type Props = {
+  initialSteps?: Steps
   children: ReactNode
 }
 
-export function StepsProvider({ children }: Props) {
-  const [steps, setSteps] = useState<Steps>(defaultSteps)
+export function StepsProvider({ initialSteps, children }: Props) {
+  const [steps, setSteps] = useState<Steps>(initialSteps ?? defaultSteps)
   const [id, setId] = useState<string>(uuid())
 
   const updateSteps = (param: Steps) => {
