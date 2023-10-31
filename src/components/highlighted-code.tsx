@@ -33,7 +33,7 @@ export function HighlightedCode({ children }: Props) {
       <code className="hidden" ref={hiddenRef}>
         {children}
       </code>
-      <code className="language-typescript" ref={visibleRef}></code>
+      <code ref={visibleRef}></code>
     </pre>
   )
 }
