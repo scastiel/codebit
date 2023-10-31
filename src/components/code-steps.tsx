@@ -71,7 +71,7 @@ export function CodeSteps() {
   }, [canNext])
 
   return (
-    <Card className="m-4">
+    <Card>
       <CardHeader />
       <CardContent>
         <CodeDiff

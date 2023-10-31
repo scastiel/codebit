@@ -1,18 +1,12 @@
 'use client'
 
-import { CodeSteps } from '@/components/code-steps'
-import { Create } from '@/components/create'
+import { CodeEditor } from '@/components/code-editor'
 import { StepProvider } from '@/contexts/steps-context'
 
 export default function Home() {
   return (
-    <main>
-      <StepProvider>
-        <Create />
-        {/* retrieve the value of the input field and pass it to CodeSteps component */}
-        <CodeSteps />
-        {/* <pre>{JSON.stringify(getCodeFragments(input), null, 2)}</pre> */}
-      </StepProvider>
-    </main>
+    <StepProvider>
+      <CodeEditor />
+    </StepProvider>
   )
 }
