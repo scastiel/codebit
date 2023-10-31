@@ -55,7 +55,7 @@ function getTypeAnimations(
   for (let i = 0; i < diff.length; i++) {
     arr.push(
       <TypeAnimation
-        key={`${i},${keystokeDelay}`}
+        key={i}
         preRenderFirstString
         sequence={
           diff[i].added
