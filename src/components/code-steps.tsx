@@ -113,6 +113,18 @@ export function CodeSteps() {
           }}
         />
         <Button
+          variant="ghost"
+          onClick={() => {
+            dispatch({ type: 'toogleVelocity' })
+          }}
+        >
+          {state.isX2 ? (
+            <RabbitIcon className="h-4 w-4" />
+          ) : (
+            <TurtleIcon className="h-4 w-4" />
+          )}
+        </Button>
+        <Button
           disabled={!canPrevious}
           variant="ghost"
           onClick={() => {
@@ -157,17 +169,6 @@ export function CodeSteps() {
             <PauseIcon className="h-4 w-4" />
           ) : (
             <PlayIcon className="h-4 w-4" />
-          )}
-        </Button>
-        <Button
-          onClick={() => {
-            dispatch({ type: 'toogleVelocity' })
-          }}
-        >
-          {state.isX2 ? (
-            <RabbitIcon className="h-4 w-4" />
-          ) : (
-            <TurtleIcon className="h-4 w-4" />
           )}
         </Button>
       </CardFooter>
