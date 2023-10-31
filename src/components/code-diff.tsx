@@ -30,12 +30,26 @@ function diffCode(from: string, to: string) {
     })
 }
 
-export function CodeDiff({ fromCode, toCode, done, animate, keystokeDelay }: Props) {
+export function CodeDiff({
+  fromCode,
+  toCode,
+  done,
+  animate,
+  keystokeDelay,
+}: Props) {
   const diff = diffCode(animate && fromCode ? fromCode : toCode, toCode)
-  return <HighlightedCode>{getTypeAnimations(diff, keystokeDelay, done)}</HighlightedCode>
+  return (
+    <HighlightedCode>
+      {getTypeAnimations(diff, keystokeDelay, done)}
+    </HighlightedCode>
+  )
 }
 
-function getTypeAnimations(diff: Change[], keystokeDelay: number, done: () => void) {
+function getTypeAnimations(
+  diff: Change[],
+  keystokeDelay: number,
+  done: () => void,
+) {
   let t = 0
   const arr = []
   for (let i = 0; i < diff.length; i++) {

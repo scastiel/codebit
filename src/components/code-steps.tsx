@@ -6,10 +6,10 @@ import { Slider } from '@/components/ui/slider'
 import {
   PauseIcon,
   PlayIcon,
+  RabbitIcon,
   SkipBackIcon,
   StepBackIcon,
   StepForwardIcon,
-  RabbitIcon,
   TurtleIcon,
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
