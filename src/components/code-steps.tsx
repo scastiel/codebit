@@ -49,12 +49,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export function CodeSteps() {
-  var { steps, sStep } = useStep();
-
-  useEffect(() => {
-    console.log("in useEffect with: ", steps);
-    state.steps = steps;
-  }, [sStep])
+  var { steps, id } = useStep();
 
   const [state, dispatch] = useReducer(reducer, {
     steps,
@@ -80,12 +75,12 @@ export function CodeSteps() {
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={`${state.currentStep},${state.animate}`}
+          key={`${state.currentStep},${state.animate},${id}`}
           animate={state.animate}
           fromCode={
-            state.currentStep === 0 ? null : state.steps[state.currentStep - 1].code
+            state.currentStep === 0 ? null : steps[state.currentStep - 1].code
           }
-          toCode={state.steps[state.currentStep].code}
+          toCode={steps[state.currentStep].code}
           done={() => {
             if (animateRef.current && canNextRef.current) {
               setTimeout(() => {
