@@ -1,14 +1,23 @@
+'use client'
 import { CodeSteps } from '@/components/code-steps'
 import { ImportFromUrl } from '@/components/import-from-url'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useSteps } from '@/contexts/steps-context'
+import { StepsProvider, useSteps } from '@/contexts/steps-context'
 import { githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { useEffect, useRef } from 'react'
 
 export function CodeEditor() {
+  return (
+    <StepsProvider>
+      <CodeEditorWithContext />
+    </StepsProvider>
+  )
+}
+
+function CodeEditorWithContext() {
   const editorRef = useRef<any>(null)
   const { id, steps, updateSteps } = useSteps()
   const editorWrapperRef = useRef(null)
@@ -24,7 +33,7 @@ export function CodeEditor() {
   }, [editorHeight])
 
   return (
-    <main className="flex flex-col gap-4 p-4 h-screen">
+    <div className="flex flex-col gap-4 p-4">
       <div ref={editorWrapperRef}>
         {steps.length > 0 && <CodeSteps key={id} />}
       </div>
@@ -56,7 +65,7 @@ console.log('Hello World!')
           }}
         />
       </div>
-    </main>
+    </div>
   )
 }
 
