@@ -1,18 +1,18 @@
-import { CodeSteps } from '@/components/code-steps'
-import { input } from '@/mocks/input'
+'use client'
 
-export default async function Home() {
+import { CodeSteps } from '@/components/code-steps'
+import { Create } from '@/components/create'
+import { StepProvider } from '@/contexts/steps-context'
+
+export default function Home() {
   return (
     <main>
-      <CodeSteps steps={getCodeFragments(input)} />
-      {/* <pre>{JSON.stringify(getCodeFragments(input), null, 2)}</pre> */}
+      <StepProvider>
+        <Create />
+        {/* retrieve the value of the input field and pass it to CodeSteps component */}
+        <CodeSteps />
+        {/* <pre>{JSON.stringify(getCodeFragments(input), null, 2)}</pre> */}
+      </StepProvider>
     </main>
   )
-}
-
-function getCodeFragments(input: string) {
-  return input.split(/\n+---\n+/).map((page) => {
-    const [, lang, code] = page.match(/```([^\n]*)\n(.*)```/s) ?? []
-    return { lang, code }
-  })
 }

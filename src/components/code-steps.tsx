@@ -12,9 +12,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
 
-export type Props = {
-  steps: { lang: string; code: string }[]
-}
+import { useStep } from '../contexts/steps-context'
 
 type State = {
   stepsCount: number
@@ -50,7 +48,9 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-export function CodeSteps({ steps }: Props) {
+export function CodeSteps() {
+  const { steps, id } = useStep()
+
   const [state, dispatch] = useReducer(reducer, {
     stepsCount: steps.length,
     currentStep: 0,
@@ -58,7 +58,7 @@ export function CodeSteps({ steps }: Props) {
   })
 
   const canPrevious = state.currentStep > 0
-  const canNext = state.currentStep < steps.length - 1
+  const canNext = state.currentStep < state.stepsCount - 1
 
   const animateRef = useRef(state.animate)
   useEffect(() => {
@@ -75,7 +75,7 @@ export function CodeSteps({ steps }: Props) {
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={`${state.currentStep},${state.animate}`}
+          key={`${state.currentStep},${state.animate},${id}`}
           animate={state.animate}
           fromCode={
             state.currentStep === 0 ? null : steps[state.currentStep - 1].code
@@ -96,7 +96,7 @@ export function CodeSteps({ steps }: Props) {
       </CardContent>
       <CardFooter className="justify-end gap-2">
         <Slider
-          max={steps.length - 1}
+          max={state.stepsCount - 1}
           step={1}
           value={[state.currentStep]}
           onValueChange={([step]) => dispatch({ type: 'goTo', step })}
