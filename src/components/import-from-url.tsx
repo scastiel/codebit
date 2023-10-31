@@ -8,7 +8,7 @@ type Props = {
   onCodeFetched: (code: string) => void
 }
 
-export function Create({ onCodeFetched }: Props) {
+export function ImportFromUrl({ onCodeFetched }: Props) {
   const [fUrl, setUrl] = useState(
     'https://gist.githubusercontent.com/maxday/330310ba31dfcb4613dc7331c25f9dce/raw/9551c965c2f56b4cde5c2b886af4d2c31b2ece8d/gistfile1.txt',
   )

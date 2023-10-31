@@ -1,8 +1,8 @@
 import { CodeSteps } from '@/components/code-steps'
-import { Create } from '@/components/create'
+import { ImportFromUrl } from '@/components/import-from-url'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useStep } from '@/contexts/steps-context'
+import { useSteps } from '@/contexts/steps-context'
 import { githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
@@ -10,7 +10,7 @@ import { useEffect, useRef } from 'react'
 
 export function CodeEditor() {
   const editorRef = useRef<any>(null)
-  const { id, steps, updateSteps } = useStep()
+  const { id, steps, updateSteps } = useSteps()
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
 
@@ -49,7 +49,7 @@ console.log('Hello World!')
         />
       </Card>
       <div className="flex-shrink-0">
-        <Create
+        <ImportFromUrl
           onCodeFetched={(code) => {
             editorRef.current?.setValue(code)
             update()
