@@ -1,5 +1,6 @@
 import { CodeEditor } from '@/components/code-editor'
 import { Button } from '@/components/ui/button'
+import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
@@ -13,7 +14,9 @@ export default async function SnippetPage({
 }: {
   params: { snippetId: string }
 }) {
-  const user = await getCurrentUserOrRedirect(`/my/snippets/${snippetId}`)
+  const user = await getCurrentUserOrRedirect(
+    `${env.NEXT_PUBLIC_BASE_URL}/my/snippets/${snippetId}`,
+  )
   const snippet = await getSnippet(snippetId)
   if (!snippet) notFound()
   if (snippet.userId !== user.id) {

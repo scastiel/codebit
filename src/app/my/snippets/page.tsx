@@ -1,11 +1,14 @@
 import { Button } from '@/components/ui/button'
+import { env } from '@/lib/env'
 import { createSnippet, getSnippets } from '@/lib/snippet'
-import { getCurrentUser } from '@/lib/user'
+import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export default async function SnippetsPage() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUserOrRedirect(
+    `${env.NEXT_PUBLIC_BASE_URL}/my/snippets`,
+  )
   const snippets = await getSnippets(user)
 
   return (
