@@ -29,7 +29,7 @@ export function HighlightedCode({ children }: Props) {
   }, [])
 
   return (
-    <pre>
+    <pre className="overflow-x-auto text-sm -mx-6 px-6 -my-3 py-3">
       <code className="hidden" ref={hiddenRef}>
         {children}
       </code>
