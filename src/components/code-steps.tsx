@@ -1,4 +1,5 @@
 'use client'
+import { CodeDiff } from '@/components/code-diff'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
@@ -10,7 +11,6 @@ import {
   StepForwardIcon,
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
-import { CodeDiff } from '@/components/code-diff'
 
 import { useStep } from "../contexts/StepContext";
 

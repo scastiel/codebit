@@ -1,9 +1,8 @@
-import { diffWordsWithSpace, Change } from 'diff'
-import GraphemeSplitter from 'grapheme-splitter'
-import { Fragment } from 'react'
-import { TypeAnimation } from 'react-type-animation'
-import 'highlight.js/styles/github.css'
 import { HighlightedCode } from '@/components/highlighted-code'
+import { Change, diffWordsWithSpace } from 'diff'
+import GraphemeSplitter from 'grapheme-splitter'
+import 'highlight.js/styles/github.css'
+import { TypeAnimation } from 'react-type-animation'
 
 type Props = {
   fromCode: string | null
@@ -19,7 +18,7 @@ function diffCode(from: string, to: string) {
     splitter.splitGraphemes(str).reverse().join('')
   return diffWordsWithSpace(
     `\n${reverseString(from)}\n`,
-    `\n${reverseString(to)}\n`
+    `\n${reverseString(to)}\n`,
   )
     .reverse()
     .map((change, index, arr) => {
@@ -61,7 +60,7 @@ function getTypeAnimations(diff: Change[], done: () => void) {
           value: keystrokeTime,
         }}
         splitter={(str) => splitter.splitGraphemes(str)}
-      />
+      />,
     )
 
     if (diff[i].added || diff[i].removed) {
@@ -74,7 +73,7 @@ function getTypeAnimations(diff: Change[], done: () => void) {
       preRenderFirstString
       sequence={['', t, done]}
       cursor={false}
-    />
+    />,
   )
   return arr
 }
