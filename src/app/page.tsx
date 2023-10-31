@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { CodeSteps } from "@/components/code-steps";
-import { Create } from "@/components/create";
-import { StepProvider } from "@/contexts/steps-context";
+import { CodeSteps } from '@/components/code-steps'
+import { Create } from '@/components/create'
+import { StepProvider } from '@/contexts/steps-context'
 
 export default function Home() {
   return (
@@ -14,5 +14,5 @@ export default function Home() {
         {/* <pre>{JSON.stringify(getCodeFragments(input), null, 2)}</pre> */}
       </StepProvider>
     </main>
-  );
+  )
 }

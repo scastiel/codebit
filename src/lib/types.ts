@@ -1,1 +1,1 @@
-type Steps = { lang: string; code: string }[];
+type Steps = { lang: string; code: string }[]
