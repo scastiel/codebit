@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
 
-import { useStep } from '../contexts/steps-context'
+import { useSteps } from '../contexts/steps-context'
 
 type State = {
   stepsCount: number
@@ -49,7 +49,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export function CodeSteps() {
-  const { steps, id } = useStep()
+  const { steps, id } = useSteps()
 
   const [state, dispatch] = useReducer(reducer, {
     stepsCount: steps.length,
@@ -71,7 +71,7 @@ export function CodeSteps() {
   }, [canNext])
 
   return (
-    <Card className="m-4">
+    <Card>
       <CardHeader />
       <CardContent>
         <CodeDiff
