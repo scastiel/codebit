@@ -3,8 +3,8 @@ import { env } from '@/lib/env'
 import { createSnippet, getSnippets } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
 import { Metadata } from 'next'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { SnippetListItem } from './snippet-list-item'
 
 export const metadata: Metadata = {
   title: 'My snippets',
@@ -17,18 +17,18 @@ export default async function SnippetsPage() {
   const snippets = await getSnippets(user)
 
   return (
-    <div className="p-4 flex flex-col gap-4">
+    <div className="p-4 flex flex-col gap-4 max-w-screen-lg mx-auto">
       <form action={createSnippetAction}>
         <Button type="submit">Create snippet</Button>
       </form>
-      <ul className="flex flex-col gap-2 justify-stretch">
-        {snippets.map((snippet) => (
-          <li key={snippet.id}>
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/my/snippets/${snippet.id}`}>{snippet.id}</Link>
-            </Button>
-          </li>
-        ))}
+      <ul className="grid grid-cols-1 flex-col gap-5 justify-stretch sm:grid-cols-2 md:grid-cols-3">
+        {snippets.map((snippet) => {
+          return (
+            <li key={snippet.id}>
+              <SnippetListItem snippet={snippet} />
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
