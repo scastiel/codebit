@@ -6,9 +6,11 @@ import { Slider } from '@/components/ui/slider'
 import {
   PauseIcon,
   PlayIcon,
+  RabbitIcon,
   SkipBackIcon,
   StepBackIcon,
   StepForwardIcon,
+  TurtleIcon,
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
 
@@ -18,6 +20,7 @@ type State = {
   stepsCount: number
   currentStep: number
   animate: boolean
+  isX2: boolean
 }
 
 type Action =
@@ -27,6 +30,7 @@ type Action =
   | { type: 'goTo'; step: number }
   | { type: 'play' }
   | { type: 'pause' }
+  | { type: 'toogleVelocity' }
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -45,6 +49,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, animate: true }
     case 'pause':
       return { ...state, animate: false }
+    case 'toogleVelocity':
+      return { ...state, isX2: !state.isX2 }
   }
 }
 
@@ -55,6 +61,7 @@ export function CodeSteps() {
     stepsCount: steps.length,
     currentStep: 0,
     animate: false,
+    isX2: false,
   })
 
   const canPrevious = state.currentStep > 0
@@ -75,7 +82,7 @@ export function CodeSteps() {
       <CardHeader />
       <CardContent>
         <CodeDiff
-          key={`${state.currentStep},${state.animate},${id}`}
+          key={`${state.currentStep},${state.animate},${id},${state.isX2}`}
           animate={state.animate}
           fromCode={
             state.currentStep === 0 ? null : steps[state.currentStep - 1].code
@@ -92,6 +99,7 @@ export function CodeSteps() {
               dispatch({ type: 'pause' })
             }
           }}
+          keystrokeDelay={state.isX2 ? 25 : 50}
         />
       </CardContent>
       <CardFooter className="justify-end gap-2">
@@ -104,6 +112,18 @@ export function CodeSteps() {
             dispatch({ type: 'goTo', step })
           }}
         />
+        <Button
+          variant="ghost"
+          onClick={() => {
+            dispatch({ type: 'toogleVelocity' })
+          }}
+        >
+          {state.isX2 ? (
+            <RabbitIcon className="h-4 w-4" />
+          ) : (
+            <TurtleIcon className="h-4 w-4" />
+          )}
+        </Button>
         <Button
           disabled={!canPrevious}
           variant="ghost"
