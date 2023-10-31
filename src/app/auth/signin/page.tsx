@@ -9,8 +9,7 @@ import { useSearchParams } from 'next/navigation'
 export default function SigninPage() {
   const searchParams = useSearchParams()
   const callbackUrl =
-    searchParams.get('callbackUrl') ??
-    `${process.env.NEXT_PUBLIC_BASE_URL}/react`
+    searchParams.get('callbackUrl') ?? `${process.env.NEXT_PUBLIC_BASE_URL}/my`
 
   return (
     <div className="flex flex-col-reverse lg:grid lg:min-h-[100dvh] lg:grid-cols-2">

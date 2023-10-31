@@ -9,21 +9,26 @@ import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { useEffect, useRef } from 'react'
 
-export function CodeEditor() {
+type Props = {
+  initialContent?: string
+  saveSnippetAction?: (code: string) => Promise<void>
+}
+
+export function CodeEditor(props: Props) {
   return (
     <StepsProvider>
-      <CodeEditorWithContext />
+      <CodeEditorWithContext {...props} />
     </StepsProvider>
   )
 }
 
-function CodeEditorWithContext() {
+function CodeEditorWithContext({ initialContent, saveSnippetAction }: Props) {
   const editorRef = useRef<any>(null)
   const { id, steps, updateSteps } = useSteps()
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
 
-  const update = () => {
+  const preview = () => {
     updateSteps(getCodeFragments(editorRef.current.getValue()))
   }
 
@@ -37,22 +42,35 @@ function CodeEditorWithContext() {
       <div ref={editorWrapperRef}>
         {steps.length > 0 && <CodeSteps key={id} />}
       </div>
-      <div className="flex-shrink-0">
-        <Button onClick={update}>Update</Button>
+      <div className="flex-shrink-0 gap-2 flex">
+        <Button onClick={preview} variant="secondary">
+          Preview
+        </Button>
+        {saveSnippetAction && (
+          <Button
+            onClick={() => saveSnippetAction(editorRef.current.getValue())}
+            variant="secondary"
+          >
+            Save
+          </Button>
+        )}
       </div>
       <Card className="flex-1 overflow-hidden">
         <Editor
           defaultLanguage="markdown"
-          defaultValue={`
+          defaultValue={
+            initialContent ??
+            `
 \`\`\`ts
 console.log('Hello World!')
 \`\`\`
-`.trim()}
+`.trim()
+          }
           onMount={(editor, monaco) => {
             monaco.editor.defineTheme('github', githubLight as any)
             monaco.editor.setTheme('github')
             editorRef.current = editor
-            update()
+            preview()
           }}
           options={{ lineNumbers: 'off', minimap: { enabled: false } }}
         />
@@ -61,7 +79,7 @@ console.log('Hello World!')
         <ImportFromUrl
           onCodeFetched={(code) => {
             editorRef.current?.setValue(code)
-            update()
+            preview()
           }}
         />
       </div>
