@@ -9,7 +9,7 @@ type Props = {
   toCode: string
   done: () => void
   animate: boolean
-  keystokeDelay: number
+  keystrokeDelay: number
 }
 
 const splitter = new GraphemeSplitter()
@@ -35,19 +35,19 @@ export function CodeDiff({
   toCode,
   done,
   animate,
-  keystokeDelay,
+  keystrokeDelay,
 }: Props) {
   const diff = diffCode(animate && fromCode ? fromCode : toCode, toCode)
   return (
     <HighlightedCode>
-      {getTypeAnimations(diff, keystokeDelay, done)}
+      {getTypeAnimations(diff, keystrokeDelay, done)}
     </HighlightedCode>
   )
 }
 
 function getTypeAnimations(
   diff: Change[],
-  keystokeDelay: number,
+  keystrokeDelay: number,
   done: () => void,
 ) {
   let t = 0
@@ -67,18 +67,18 @@ function getTypeAnimations(
         cursor={false}
         speed={{
           type: 'keyStrokeDelayInMs',
-          value: keystokeDelay,
+          value: keystrokeDelay,
         }}
         deletionSpeed={{
           type: 'keyStrokeDelayInMs',
-          value: keystokeDelay,
+          value: keystrokeDelay,
         }}
         splitter={(str) => splitter.splitGraphemes(str)}
       />,
     )
 
     if (diff[i].added || diff[i].removed) {
-      t += splitter.countGraphemes(diff[i].value) * keystokeDelay
+      t += splitter.countGraphemes(diff[i].value) * keystrokeDelay
     }
   }
   arr.push(

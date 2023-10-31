@@ -99,7 +99,7 @@ export function CodeSteps() {
               dispatch({ type: 'pause' })
             }
           }}
-          keystokeDelay={state.isX2 ? 25 : 50}
+          keystrokeDelay={state.isX2 ? 25 : 50}
         />
       </CardContent>
       <CardFooter className="justify-end gap-2">
