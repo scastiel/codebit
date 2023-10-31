@@ -15,7 +15,7 @@ import { useEffect, useReducer, useRef } from 'react'
 import { useStep } from '../contexts/steps-context'
 
 type State = {
-  steps: Steps
+  stepsCount: number
   currentStep: number
   animate: boolean
 }
@@ -33,7 +33,7 @@ const reducer = (state: State, action: Action): State => {
     case 'next':
       return {
         ...state,
-        currentStep: Math.min(state.steps.length - 1, state.currentStep + 1),
+        currentStep: Math.min(state.stepsCount - 1, state.currentStep + 1),
       }
     case 'previous':
       return { ...state, currentStep: Math.max(0, state.currentStep - 1) }
@@ -52,13 +52,13 @@ export function CodeSteps() {
   const { steps, id } = useStep()
 
   const [state, dispatch] = useReducer(reducer, {
-    steps,
+    stepsCount: steps.length,
     currentStep: 0,
     animate: false,
   })
 
   const canPrevious = state.currentStep > 0
-  const canNext = state.currentStep < state.steps.length - 1
+  const canNext = state.currentStep < state.stepsCount - 1
 
   const animateRef = useRef(state.animate)
   useEffect(() => {
@@ -96,7 +96,7 @@ export function CodeSteps() {
       </CardContent>
       <CardFooter className="justify-end gap-2">
         <Slider
-          max={state.steps.length - 1}
+          max={state.stepsCount - 1}
           step={1}
           value={[state.currentStep]}
           onValueChange={([step]) => dispatch({ type: 'goTo', step })}
