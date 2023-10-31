@@ -99,7 +99,10 @@ export function CodeSteps() {
           max={state.stepsCount - 1}
           step={1}
           value={[state.currentStep]}
-          onValueChange={([step]) => dispatch({ type: 'goTo', step })}
+          onValueChange={([step]) => {
+            dispatch({ type: 'pause' })
+            dispatch({ type: 'goTo', step })
+          }}
         />
         <Button
           disabled={!canPrevious}
