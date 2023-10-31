@@ -2,8 +2,13 @@ import { Button } from '@/components/ui/button'
 import { env } from '@/lib/env'
 import { createSnippet, getSnippets } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'My snippets',
+}
 
 export default async function SnippetsPage() {
   const user = await getCurrentUserOrRedirect(

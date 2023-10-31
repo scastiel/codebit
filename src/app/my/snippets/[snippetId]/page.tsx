@@ -5,9 +5,14 @@ import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
 import { ArrowLeft } from 'lucide-react'
+import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'Edit snippet',
+}
 
 export default async function SnippetPage({
   params: { snippetId },
