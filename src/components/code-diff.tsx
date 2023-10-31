@@ -14,11 +14,24 @@ type Props = {
 
 const splitter = new GraphemeSplitter()
 
-export function CodeDiff({ fromCode, toCode, done, animate }: Props) {
-  const diff = diffWordsWithSpace(
-    animate && fromCode ? fromCode : toCode,
-    toCode
+function diffCode(from: string, to: string) {
+  const reverseString = (str: string) =>
+    splitter.splitGraphemes(str).reverse().join('')
+  return diffWordsWithSpace(
+    `\n${reverseString(from)}\n`,
+    `\n${reverseString(to)}\n`
   )
+    .reverse()
+    .map((change, index, arr) => {
+      let value = reverseString(change.value)
+      if (index === 0) value = value.replace(/^\n/, '')
+      if (index === arr.length - 1) value = value.replace(/\n$/, '')
+      return { ...change, value }
+    })
+}
+
+export function CodeDiff({ fromCode, toCode, done, animate }: Props) {
+  const diff = diffCode(animate && fromCode ? fromCode : toCode, toCode)
   return <HighlightedCode>{getTypeAnimations(diff, done)}</HighlightedCode>
 }
 
@@ -27,38 +40,32 @@ function getTypeAnimations(diff: Change[], done: () => void) {
   const arr = []
   const keystrokeTime = 50
   for (let i = 0; i < diff.length; i++) {
-    if (diff[i].added) {
-      arr.push(
-        <TypeAnimation
-          key={i}
-          preRenderFirstString
-          sequence={[t, '', diff[i].value]}
-          cursor={false}
-          speed={{
-            type: 'keyStrokeDelayInMs',
-            value: keystrokeTime,
-          }}
-          splitter={(str) => splitter.splitGraphemes(str)}
-        />
-      )
+    arr.push(
+      <TypeAnimation
+        key={i}
+        preRenderFirstString
+        sequence={
+          diff[i].added
+            ? [t, '', diff[i].value]
+            : diff[i].removed
+            ? [t, diff[i].value, '']
+            : [diff[i].value]
+        }
+        cursor={false}
+        speed={{
+          type: 'keyStrokeDelayInMs',
+          value: keystrokeTime,
+        }}
+        deletionSpeed={{
+          type: 'keyStrokeDelayInMs',
+          value: keystrokeTime,
+        }}
+        splitter={(str) => splitter.splitGraphemes(str)}
+      />
+    )
+
+    if (diff[i].added || diff[i].removed) {
       t += splitter.countGraphemes(diff[i].value) * keystrokeTime
-    } else if (diff[i].removed) {
-      arr.push(
-        <TypeAnimation
-          key={i}
-          preRenderFirstString
-          sequence={[t, diff[i].value, '']}
-          cursor={false}
-          deletionSpeed={{
-            type: 'keyStrokeDelayInMs',
-            value: keystrokeTime,
-          }}
-          splitter={(str) => splitter.splitGraphemes(str)}
-        />
-      )
-      t += splitter.countGraphemes(diff[i].value) * keystrokeTime
-    } else {
-      arr.push(<Fragment key={i}>{diff[i].value}</Fragment>)
     }
   }
   arr.push(

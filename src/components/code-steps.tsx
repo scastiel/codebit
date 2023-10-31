@@ -82,13 +82,15 @@ export function CodeSteps({ steps }: Props) {
           }
           toCode={steps[state.currentStep].code}
           done={() => {
-            setTimeout(() => {
-              if (animateRef.current && canNextRef.current) {
-                dispatch({ type: 'next' })
-              } else {
-                dispatch({ type: 'pause' })
-              }
-            }, 1000)
+            if (animateRef.current && canNextRef.current) {
+              setTimeout(() => {
+                if (animateRef.current && canNextRef.current) {
+                  dispatch({ type: 'next' })
+                }
+              }, 1000)
+            } else {
+              dispatch({ type: 'pause' })
+            }
           }}
         />
       </CardContent>
@@ -130,8 +132,15 @@ export function CodeSteps({ steps }: Props) {
           <StepForwardIcon className="h-4 w-4" />
         </Button>
         <Button
-          disabled={!canNext}
-          onClick={() => dispatch({ type: state.animate ? 'pause' : 'play' })}
+          disabled={!canNext && !state.animate}
+          onClick={() => {
+            if (state.animate) {
+              dispatch({ type: 'pause' })
+            } else {
+              dispatch({ type: 'play' })
+              dispatch({ type: 'next' })
+            }
+          }}
         >
           {state.animate ? (
             <PauseIcon className="h-4 w-4" />
