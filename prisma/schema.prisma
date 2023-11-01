@@ -59,11 +59,13 @@ model VerificationToken {
 }
 
 model Snippet {
-  id      String   @id @default(cuid())
-  user    User     @relation(fields: [userId], references: [id])
-  content String
-  userId  String
-  Render  Render[]
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  content     String
+  preview     String?
+  previewLang String?
+  userId      String
+  Render      Render[]
 
   @@index([userId])
 }

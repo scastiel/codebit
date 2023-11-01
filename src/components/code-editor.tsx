@@ -56,7 +56,6 @@ function CodeEditorWithContext({
         {editorWidth > 0 && (
           <SnippetPlayer
             snippet={{
-              id: '',
               content:
                 `---\ntheme: ${theme}\n---\n\n` +
                 steps
@@ -64,7 +63,6 @@ function CodeEditorWithContext({
                     (step) => `\`\`\`${step.lang}\n${step.code.trim()}\n\`\`\``,
                   )
                   .join('\n\n---\n\n'),
-              userId: '',
             }}
             width={editorWidth}
             height={500}

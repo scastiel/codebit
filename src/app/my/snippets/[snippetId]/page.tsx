@@ -1,5 +1,6 @@
 import { CodeEditor } from '@/components/code-editor'
 import { Button } from '@/components/ui/button'
+import { getCodeFragments } from '@/lib/code-steps-utils'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
@@ -35,11 +36,16 @@ export default async function SnippetPage({
     if (!snippet) throw new Error('Missing snippet')
     const user = await getCurrentUser()
     if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
+
+    const { steps } = getCodeFragments(snippet.content)
+    const lastStep = steps[steps.length - 1]
+
     await getPrisma().snippet.update({
       where: { id: snippet.id },
-      data: { content },
+      data: { content, preview: lastStep?.code, previewLang: lastStep?.lang },
     })
     revalidatePath(`/my/snippets/${snippet.id}`)
+    revalidatePath(`/${snippet.id}`)
   }
 
   async function generateVideoAction() {

@@ -11,7 +11,7 @@ export function SnippetPlayer({
   width,
   height,
 }: {
-  snippet: Snippet
+  snippet: Pick<Snippet, 'content'>
   width: number
   height: number
 }) {
