@@ -1,0 +1,32 @@
+name: update site and compositions
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'on which env do you want to deploy?'
+        type: choice
+        options:
+          - dev
+          - prod
+        required: true
+
+jobs:
+  updater:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set Environment Variable
+        run: |
+          if [ ${{ github.event.inputs.env }} = "dev" ]; then
+            echo "ca-central-1" >> $GITHUB_ENV
+          elif [ ${{ github.event.inputs.env }} = "prod" ]; then
+            echo "us-east-2" >> $GITHUB_ENV
+          fi
+      - name: update site and compositions
+        run: ./updateCompositions.sh
+        env:
+          AWS_REGION: ${{ inputs.region }}
+          REMOTION_AWS_ACCESS_KEY_ID: ${{ secrets.REMOTION_AWS_ACCESS_KEY_ID }}
+          REMOTION_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMOTION_AWS_SECRET_ACCESS_KEY}}
