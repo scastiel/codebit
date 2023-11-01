@@ -1,6 +1,7 @@
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { WebhookPayload } from '@remotion/lambda/client'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
     )
   }
 
-  await getPrisma().render.update({
+  const render = await getPrisma().render.update({
     where: {
       bucketName_renderId: {
         bucketName: payload.bucketName,
@@ -32,6 +33,10 @@ export async function POST(req: Request) {
           : null,
     },
   })
+
+  if (payload.type === 'success') {
+    revalidatePath(`/my/renders/${render.id}/status`)
+  }
 
   return NextResponse.json({ success: true })
 }

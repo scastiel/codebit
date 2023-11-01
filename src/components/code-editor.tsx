@@ -1,4 +1,5 @@
 'use client'
+import { GenerateButton } from '@/components/generate-button'
 import { ImportFromUrl } from '@/components/import-from-url'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,7 @@ type Props = {
   initialContent?: string
   saveSnippetAction?: (code: string) => Promise<void>
   generateVideoAction?: () => Promise<string>
+  lastRenderId?: string | null
 }
 
 export function CodeEditor(props: Props) {
@@ -32,6 +34,7 @@ function CodeEditorWithContext({
   initialContent,
   saveSnippetAction,
   generateVideoAction,
+  lastRenderId,
 }: Props) {
   const editorRef = useRef<any>(null)
   const { id, steps, theme, updateSteps, updateTheme } = useSteps()
@@ -89,21 +92,16 @@ function CodeEditorWithContext({
               rel="noopener noreferrer"
               className="flex gap-2"
             >
-              <ExternalLink />
+              <ExternalLink className="w-4 h-4" />
               <span>Public URL</span>
             </Link>
           </Button>
         )}
         {generateVideoAction && (
-          <Button
-            variant="secondary"
-            onClick={async () => {
-              const id = await generateVideoAction()
-              console.log(`Started rendering! ID: ${id}`)
-            }}
-          >
-            Generate video
-          </Button>
+          <GenerateButton
+            initialRenderId={lastRenderId ?? null}
+            generateVideoAction={generateVideoAction}
+          />
         )}
       </div>
       <Card className="flex-1 overflow-hidden">

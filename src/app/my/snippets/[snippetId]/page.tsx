@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { getCodeFragments } from '@/lib/code-steps-utils'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
+import { getLastRenderId } from '@/lib/render'
 import { getSnippet } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
@@ -29,6 +30,7 @@ export default async function SnippetPage({
   if (snippet.userId !== user.id) {
     return <p>You are not authorized to edit this snippet.</p>
   }
+  const lastRenderId = await getLastRenderId(snippetId)
 
   async function saveSnippetAction(content: string) {
     'use server'
@@ -95,6 +97,7 @@ export default async function SnippetPage({
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
           generateVideoAction={generateVideoAction}
+          lastRenderId={lastRenderId}
         />
       </div>
     </div>
