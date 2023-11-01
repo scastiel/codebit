@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Highlight from 'react-highlight'
 
 export function SnippetListItem({ snippet }: { snippet: Snippet }) {
-  const steps = getCodeFragments(snippet.content)
+  const { steps } = getCodeFragments(snippet.content)
   const step = steps[steps.length - 1]
   const createdAt = new Date(parseInt(snippet.id.slice(1, 9), 36))
 

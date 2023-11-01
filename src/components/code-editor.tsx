@@ -32,12 +32,14 @@ function CodeEditorWithContext({
   saveSnippetAction,
 }: Props) {
   const editorRef = useRef<any>(null)
-  const { id, steps, updateSteps } = useSteps()
+  const { id, steps, theme, updateSteps, updateTheme } = useSteps()
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
 
   const preview = () => {
-    updateSteps(getCodeFragments(editorRef.current.getValue()))
+    const { steps, metadata } = getCodeFragments(editorRef.current.getValue())
+    updateSteps(steps)
+    updateTheme(metadata.theme)
   }
 
   useEffect(() => {
@@ -53,15 +55,17 @@ function CodeEditorWithContext({
           <SnippetPlayer
             snippet={{
               id: '',
-              content: steps
-                .map(
-                  (step) => `\`\`\`${step.lang}\n${step.code.trim()}\n\`\`\``,
-                )
-                .join('\n\n---\n\n'),
+              content:
+                `---\ntheme: ${theme}\n---\n\n` +
+                steps
+                  .map(
+                    (step) => `\`\`\`${step.lang}\n${step.code.trim()}\n\`\`\``,
+                  )
+                  .join('\n\n---\n\n'),
               userId: '',
             }}
             width={editorWidth}
-            height={400}
+            height={500}
           />
         )}
       </div>
