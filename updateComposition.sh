@@ -1,0 +1,1 @@
+npx remotion lambda sites create src/remotion/index.ts --site-name=codevideo
