@@ -55,8 +55,11 @@ export default async function SnippetPage({
       composition: 'Code',
       serveUrl: env.REMOTION_SERVE_URL,
       codec: 'h264',
+      inputProps: {
+        markdown: snippet.content,
+      },
     })
-    console.log({ bucketName, renderId })
+    return `https://${bucketName}.s3.${env.REMOTION_AWS_REGION}.amazonaws.com/renders/${renderId}/out.mp4`
   }
 
   return (
