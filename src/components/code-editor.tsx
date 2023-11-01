@@ -16,6 +16,7 @@ type Props = {
   snippetId?: string
   initialContent?: string
   saveSnippetAction?: (code: string) => Promise<void>
+  generateVideoAction?: () => Promise<void>
 }
 
 export function CodeEditor(props: Props) {
@@ -30,6 +31,7 @@ function CodeEditorWithContext({
   snippetId,
   initialContent,
   saveSnippetAction,
+  generateVideoAction,
 }: Props) {
   const editorRef = useRef<any>(null)
   const { id, steps, theme, updateSteps, updateTheme } = useSteps()
@@ -92,6 +94,11 @@ function CodeEditorWithContext({
               <ExternalLink />
               <span>Public URL</span>
             </Link>
+          </Button>
+        )}
+        {generateVideoAction && (
+          <Button variant="secondary" onClick={() => generateVideoAction()}>
+            Generate video
           </Button>
         )}
       </div>
