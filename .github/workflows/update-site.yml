@@ -25,7 +25,7 @@ jobs:
             echo "REGION=ca-central-1" >> "$GITHUB_ENV"
           fi
       - name: update site and compositions
-        run: ./updateComposition.sh
+        run: npm install && ./updateComposition.sh
         env:
           AWS_REGION: ${REGION}
           REMOTION_AWS_ACCESS_KEY_ID: ${{ secrets.REMOTION_AWS_ACCESS_KEY_ID }}
