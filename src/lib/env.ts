@@ -9,6 +9,11 @@ const envSchema = z.object({
     .optional()
     .transform((s) => s?.split(',') ?? []),
   RESEND_API_KEY: z.string().min(1),
+  REMOTION_AWS_REGION: z.string().min(1),
+  REMOTION_AWS_ACCESS_KEY_ID: z.string().min(1),
+  REMOTION_AWS_FUNCTION_NAME: z.string().min(1),
+  REMOTION_SERVE_URL: z.string().min(1),
+  REMOTION_AWS_SECRET_ACCESS_KEY: z.string().min(1),
 })
 
 export const env = envSchema.parse(process.env)
