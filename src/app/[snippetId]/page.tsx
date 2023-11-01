@@ -1,4 +1,4 @@
-import { PublicSnippetPageClient } from '@/app/[snippetId]/page-client'
+import { PublicSnippetPageClient } from '@/app/[snippetId]/other-page-client'
 import { getSnippet } from '@/lib/snippet'
 import { notFound } from 'next/navigation'
 

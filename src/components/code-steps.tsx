@@ -1,5 +1,4 @@
 'use client'
-import { CodeDiff } from '@/components/code-diff'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
@@ -14,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useReducer, useRef } from 'react'
 
+import { CodeDiff } from '@/components/code-diff'
 import { useSteps } from '../contexts/steps-context'
 
 type State = {

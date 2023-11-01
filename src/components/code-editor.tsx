@@ -1,6 +1,6 @@
 'use client'
-import { CodeSteps } from '@/components/code-steps'
 import { ImportFromUrl } from '@/components/import-from-url'
+import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StepsProvider, useSteps } from '@/contexts/steps-context'
@@ -48,7 +48,22 @@ function CodeEditorWithContext({
   return (
     <div className="flex flex-col gap-4 p-4">
       <div ref={editorWrapperRef}>
-        {steps.length > 0 && <CodeSteps key={id} />}
+        {/* {steps.length > 0 && <CodeSteps key={id} />} */}
+        {editorWidth > 0 && (
+          <SnippetPlayer
+            snippet={{
+              id: '',
+              content: steps
+                .map(
+                  (step) => `\`\`\`${step.lang}\n${step.code.trim()}\n\`\`\``,
+                )
+                .join('\n\n---\n\n'),
+              userId: '',
+            }}
+            width={editorWidth}
+            height={400}
+          />
+        )}
       </div>
       <div className="flex-shrink-0 gap-2 flex">
         <Button onClick={preview} variant="secondary">
