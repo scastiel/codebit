@@ -108,8 +108,19 @@ function CodeEditorWithContext({
           defaultValue={
             initialContent ??
             `
+---
+theme: light
+---
+
 \`\`\`ts
-console.log('Hello World!')
+console.log('Hello!')
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log('Hello!')
+console.log('How are you today?')
 \`\`\`
 `.trim()
           }
