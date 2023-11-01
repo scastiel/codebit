@@ -16,7 +16,7 @@ type Props = {
   snippetId?: string
   initialContent?: string
   saveSnippetAction?: (code: string) => Promise<void>
-  generateVideoAction?: () => Promise<void>
+  generateVideoAction?: () => Promise<string>
 }
 
 export function CodeEditor(props: Props) {
