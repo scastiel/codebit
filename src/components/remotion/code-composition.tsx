@@ -1,6 +1,6 @@
 import { Change, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
-import 'highlight.js/styles/github.css'
+// import 'highlight.js/styles/github-dark.css'
 import { Code2 } from 'lucide-react'
 import Highlight from 'react-highlight'
 import { AbsoluteFill, Composition, Sequence, useCurrentFrame } from 'remotion'
@@ -35,7 +35,7 @@ export function CodeVideo({
   framesBetweenSteps: number
   fontSize: number
 }) {
-  const steps = getCodeFragments(markdown)
+  const { metadata, steps } = getCodeFragments(markdown)
   const sequences = [
     <Sequence durationInFrames={framesBetweenSteps} layout="none" key={-1}>
       <CodeSequence
@@ -56,9 +56,27 @@ export function CodeVideo({
     )
     from += duration
   }
+
+  // if (metadata.theme === 'dark') import('highlight.js/styles/github-dark.css')
+  // else import('highlight.js/styles/github.css')
+
   return (
-    <AbsoluteFill className="root bg-gradient-1">
-      {sequences}
+    <AbsoluteFill className={`root ${metadata.theme}`}>
+      {metadata.theme === 'dark' ? (
+        <link href="/themes/github-dark.css" rel="stylesheet" />
+      ) : (
+        <link href="/themes/github.css" rel="stylesheet" />
+      )}
+      <div className="code" style={{ fontSize }}>
+        <div className="window-buttons">
+          <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="50" fill="#fe5f57" />
+            <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
+            <circle cx="400" cy="50" r="50" fill="#27cd41" />
+          </svg>
+        </div>
+        {sequences}
+      </div>
       <p className="watermark" style={{ fontSize }}>
         Generated with
         <a
@@ -132,11 +150,7 @@ function CodeSequence({
     }
   }
 
-  return (
-    <div className="code" style={{ fontSize }}>
-      <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
-    </div>
-  )
+  return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
 }
 
 export function CodeComposition() {
@@ -171,7 +185,7 @@ export function snippetDurationInFrames(
   markdown: string,
   framesBetweenSteps: number,
 ) {
-  const steps = getCodeFragments(markdown)
+  const { steps } = getCodeFragments(markdown)
   let duration = framesBetweenSteps
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)

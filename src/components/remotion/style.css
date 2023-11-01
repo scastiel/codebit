@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap');
 
 pre {
+  padding: 0 1em;
 }
 
 pre > code {
@@ -8,7 +9,22 @@ pre > code {
   background-color: transparent !important;
 }
 
-.bg-gradient-1 {
+.root.dark {
+  background-color: #067384;
+  background-image: radial-gradient(
+      at 76% 57%,
+      rgb(47, 126, 37) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 58% 43%, hsla(232, 97%, 70%, 1) 0px, transparent 50%),
+    radial-gradient(at 86% 87%, rgb(114, 31, 41) 0px, transparent 50%),
+    radial-gradient(at 6% 21%, rgb(46, 100, 114) 0px, transparent 50%),
+    radial-gradient(at 36% 99%, hsla(203, 62%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 37% 3%, rgb(116, 95, 56) 0px, transparent 50%),
+    radial-gradient(at 10% 16%, hsla(244, 64%, 73%, 1) 0px, transparent 50%);
+}
+
+.root.light {
   background-color: #99f1ff;
   background-image: radial-gradient(
       at 76% 57%,
@@ -24,25 +40,40 @@ pre > code {
 }
 
 .root {
-  padding: 100px;
+  padding: 1em 1em;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.root.light .code {
+  background-color: rgba(255, 255, 255, 60%);
+}
+
+.root.dark .code {
+  background-color: rgba(0, 0, 0, 60%);
+}
+
 .code {
-  padding: 0 30px;
-  background-color: rgba(255, 255, 255, 50%);
-  width: 100%;
-  border-radius: 1em;
+  min-width: 50em;
+  border-radius: 0.75em;
+  overflow: hidden;
 }
 
 .watermark {
   margin-top: 0.5em;
-  opacity: 50%;
+  opacity: 60%;
   display: flex;
   gap: 0.4em;
   font-family: Inter;
+}
+
+.root.light .watermark {
+  color: black;
+}
+
+.root.dark .watermark {
+  color: white;
 }
 
 .watermark a {
@@ -60,4 +91,24 @@ pre > code {
   flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
+}
+
+.root.dark .window-buttons {
+  background-color: rgba(255, 255, 255, 5%);
+}
+.root.light .window-buttons {
+  background-color: rgba(255, 255, 255, 40%);
+}
+
+.window-buttons {
+  padding: 0.75em 1em;
+}
+.window-buttons {
+  padding: 0.75em 1em;
+  background-color: rgba(255, 255, 255, 5%);
+}
+
+.window-buttons svg {
+  width: 3em;
+  height: 0.75em;
 }

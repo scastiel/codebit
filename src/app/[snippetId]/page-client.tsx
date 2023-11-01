@@ -11,7 +11,7 @@ type Props = {
 }
 
 export function PublicSnippetPageClient({ snippet }: Props) {
-  const steps = getCodeFragments(snippet.content)
+  const { steps } = getCodeFragments(snippet.content)
 
   return (
     <div className="h-screen w-screen flex flex-col gap-2 items-center justify-center p-4 bg-gradient-1">

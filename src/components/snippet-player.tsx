@@ -24,6 +24,7 @@ export function SnippetPlayer({
         markdown: snippet.content,
         framesBetweenSteps,
         fontSize: 16,
+        theme: 'dark',
       }}
       durationInFrames={snippetDurationInFrames(
         snippet.content,

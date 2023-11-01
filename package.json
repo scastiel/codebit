@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "diff": "^5.1.0",
+    "front-matter": "^4.0.2",
     "grapheme-splitter": "^1.0.4",
     "highlight.js": "^11.9.0",
     "lucide-react": "^0.290.0",
