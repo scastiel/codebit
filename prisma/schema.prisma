@@ -47,6 +47,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Snippet       Snippet[]
+  Render        Render[]
 }
 
 model VerificationToken {
@@ -58,10 +59,29 @@ model VerificationToken {
 }
 
 model Snippet {
-  id      String @id @default(cuid())
-  user    User   @relation(fields: [userId], references: [id])
+  id      String   @id @default(cuid())
+  user    User     @relation(fields: [userId], references: [id])
   content String
   userId  String
+  Render  Render[]
 
   @@index([userId])
+}
+
+model Render {
+  id         String    @id @default(cuid())
+  snippet    Snippet   @relation(fields: [snippetId], references: [id])
+  snippetId  String
+  bucketName String
+  renderId   String
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  progress   Float     @default(0)
+  error      Boolean   @default(false)
+  done       Boolean   @default(false)
+  startedAt  DateTime  @default(now())
+  endedAt    DateTime?
+  videoUrl   String?
+
+  @@unique([bucketName, renderId])
 }

@@ -59,7 +59,12 @@ export default async function SnippetPage({
         markdown: snippet.content,
       },
     })
-    return `https://${bucketName}.s3.${env.REMOTION_AWS_REGION}.amazonaws.com/renders/${renderId}/out.mp4`
+
+    const { id } = await getPrisma().render.create({
+      data: { bucketName, renderId, snippetId, userId: user.id },
+      select: { id: true },
+    })
+    return id
   }
 
   return (

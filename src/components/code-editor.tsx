@@ -100,8 +100,8 @@ function CodeEditorWithContext({
           <Button
             variant="secondary"
             onClick={async () => {
-              const url = await generateVideoAction()
-              console.log(`Started rendering! Output video URL: ${url}`)
+              const id = await generateVideoAction()
+              console.log(`Started rendering! ID: ${id}`)
             }}
           >
             Generate video

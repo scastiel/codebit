@@ -14,6 +14,7 @@ const envSchema = z.object({
   REMOTION_AWS_FUNCTION_NAME: z.string().min(1),
   REMOTION_SERVE_URL: z.string().min(1),
   REMOTION_AWS_SECRET_ACCESS_KEY: z.string().min(1),
+  REMOTION_WEBHOOK_SECRET: z.string().min(1),
 })
 
 export const env = envSchema.parse(process.env)
