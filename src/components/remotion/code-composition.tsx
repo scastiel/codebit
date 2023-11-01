@@ -1,6 +1,7 @@
 import { Change, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 import 'highlight.js/styles/github.css'
+import { Code2 } from 'lucide-react'
 import Highlight from 'react-highlight'
 import { AbsoluteFill, Composition, Sequence, useCurrentFrame } from 'remotion'
 import { getCodeFragments } from '../../lib/code-steps-utils'
@@ -55,7 +56,21 @@ export function CodeVideo({
     )
     from += duration
   }
-  return <AbsoluteFill className="root bg-gradient-1">{sequences}</AbsoluteFill>
+  return (
+    <AbsoluteFill className="root bg-gradient-1">
+      {sequences}
+      <p className="watermark" style={{ fontSize }}>
+        Generated with
+        <a
+          href="https://codevideo.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Code2 /> <span>Share Code</span>
+        </a>
+      </p>
+    </AbsoluteFill>
+  )
 }
 
 function durationInFramesForDiff(diff: Change[]) {

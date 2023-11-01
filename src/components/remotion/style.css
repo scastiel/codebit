@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap');
 
 pre {
 }
@@ -35,4 +35,29 @@ pre > code {
   background-color: rgba(255, 255, 255, 50%);
   width: 100%;
   border-radius: 1em;
+}
+
+.watermark {
+  margin-top: 0.5em;
+  opacity: 50%;
+  display: flex;
+  gap: 0.4em;
+  font-family: Inter;
+}
+
+.watermark a {
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.2em;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.watermark svg {
+  display: block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  width: 1.2em;
+  height: 1.2em;
 }
