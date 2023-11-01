@@ -32,6 +32,9 @@ export async function UserMenu() {
           <Button variant="ghost">
             <Link href="/my/snippets">My snippets</Link>
           </Button>
+          <Button variant="ghost">
+            <Link href="/my/renders">My renders</Link>
+          </Button>
           <SignoutButton />
         </>
       ) : (

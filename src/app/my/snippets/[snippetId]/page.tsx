@@ -58,8 +58,19 @@ export default async function SnippetPage({
       inputProps: {
         markdown: snippet.content,
       },
+      webhook: env.NEXT_PUBLIC_BASE_URL.startsWith('http://localhost:')
+        ? undefined
+        : {
+            url: `${env.NEXT_PUBLIC_BASE_URL}/api/remotion-webhook`,
+            secret: null,
+          },
     })
-    return `https://${bucketName}.s3.${env.REMOTION_AWS_REGION}.amazonaws.com/renders/${renderId}/out.mp4`
+
+    const { id } = await getPrisma().render.create({
+      data: { bucketName, renderId, snippetId, userId: user.id },
+      select: { id: true },
+    })
+    return id
   }
 
   return (
