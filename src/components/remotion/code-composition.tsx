@@ -5,6 +5,7 @@ import { Code2 } from 'lucide-react'
 import Highlight from 'react-highlight'
 import { AbsoluteFill, Composition, Sequence, useCurrentFrame } from 'remotion'
 import { getCodeFragments } from '../../lib/code-steps-utils'
+import { env } from '../../lib/env'
 import { input } from '../../mocks/input'
 import './style.css'
 
@@ -63,9 +64,15 @@ export function CodeVideo({
   return (
     <AbsoluteFill className={`root ${metadata.theme}`}>
       {metadata.theme === 'dark' ? (
-        <link href="/themes/github-dark.css" rel="stylesheet" />
+        <link
+          href={`${env.NEXT_PUBLIC_BASE_URL}/themes/github-dark.css`}
+          rel="stylesheet"
+        />
       ) : (
-        <link href="/themes/github.css" rel="stylesheet" />
+        <link
+          href={`${env.NEXT_PUBLIC_BASE_URL}/themes/github.css`}
+          rel="stylesheet"
+        />
       )}
       <div className="code" style={{ fontSize }}>
         <div className="window-buttons">
