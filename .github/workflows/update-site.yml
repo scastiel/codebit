@@ -19,9 +19,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Set Environment Variable
         run: |
-          if [ ${{ inputs.env }} = "dev" ]; then
+          if [ "${{ inputs.env }}" = "dev" ]; then
             echo "ca-central-1" >> $GITHUB_ENV
-          elif [ ${{ inputs.env }} = "prod" ]; then
+          elif [ "${{ inputs.env }}" = "prod" ]; then
             echo "us-east-2" >> $GITHUB_ENV
           fi
       - name: update site and compositions
