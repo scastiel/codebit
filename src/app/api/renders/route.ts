@@ -9,10 +9,7 @@ import rateLimiter from '../../../utils/rate-limiter'
 const limiter = rateLimiter()
 
 export async function POST(req: Request) {
-  console.log('Trigger render')
-  console.log(req)
   const payload = (await req.json()) as TriggerRenderPayload
-  console.log(payload)
   try {
     const headers = await limiter.check(
       env.RATE_LIMIT_RENDER_REQUEST_PER_MINUTE,
@@ -55,7 +52,5 @@ async function triggerRender(snippetId: string, userId: string) {
     data: { bucketName, renderId, snippetId, userId },
     select: { id: true },
   })
-  console.log('Created render', id)
-  console.log('Render ID', renderId)
-  return renderId
+  return id
 }
