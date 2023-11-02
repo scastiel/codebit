@@ -5,10 +5,11 @@ import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StepsProvider, useSteps } from '@/contexts/steps-context'
-import { githubLight } from '@/lib/monaco-themes'
+import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { ExternalLink } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { getCodeFragments } from '../lib/code-steps-utils'
@@ -49,6 +50,8 @@ function CodeEditorWithContext({
     editorRef.current?.layout({ width: 0, height: 0 })
     window.requestAnimationFrame(() => editorRef.current?.layout())
   }, [editorHeight])
+
+  const { theme: appTheme } = useTheme()
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -108,7 +111,10 @@ function CodeEditorWithContext({
           defaultValue={initialContent ?? ''}
           onMount={(editor, monaco) => {
             monaco.editor.defineTheme('github', githubLight as any)
-            monaco.editor.setTheme('github')
+            monaco.editor.defineTheme('github-dark', githubDark as any)
+            monaco.editor.setTheme(
+              appTheme === 'dark' ? 'github-dark' : 'github',
+            )
             editorRef.current = editor
             preview()
           }}
