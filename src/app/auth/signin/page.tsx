@@ -55,6 +55,7 @@ export default function SigninPage() {
             label="GitHub"
             icon={<Github className="mr-2 h-4 w-4" />}
             callbackUrl={callbackUrl}
+            disabled
           />
         </div>
       </div>

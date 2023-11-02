@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react'
 export function LandingPlayer() {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const [width, height] = useSize(playerRef)
-  console.log({ width, height })
 
   const [browser, setBrowser] = useState(false)
   useEffect(() => setBrowser(true), [])
