@@ -47,12 +47,10 @@ async function triggerRender(snippet: Snippet) {
     inputProps: {
       markdown: snippet.content,
     },
-    webhook: env.NEXT_PUBLIC_BASE_URL.startsWith('http://localhost:')
-      ? undefined
-      : {
-          url: `${env.NEXT_PUBLIC_BASE_URL}/api/remotion-webhook`,
-          secret: null,
-        },
+    webhook: {
+      url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,
+      secret: null,
+    },
   })
   const snippetId = snippet.id
   const userId = snippet.userId
