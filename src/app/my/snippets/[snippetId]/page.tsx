@@ -6,7 +6,6 @@ import { getPrisma } from '@/lib/prisma'
 import { getLastRenderId } from '@/lib/render'
 import { getSnippet } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
-import { renderMediaOnLambda } from '@remotion/lambda/client'
 import { ArrowLeft } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -50,35 +49,15 @@ export default async function SnippetPage({
     revalidatePath(`/${snippet.id}`)
   }
 
-  async function generateVideoAction() {
+  const renderRequestAction = async () => {
     'use server'
-    const snippet = await getSnippet(snippetId)
-    if (!snippet) throw new Error('Missing snippet')
-    const user = await getCurrentUser()
-    if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
-
-    const { bucketName, renderId } = await renderMediaOnLambda({
-      region: env.REMOTION_AWS_REGION as any,
-      functionName: env.REMOTION_AWS_FUNCTION_NAME,
-      composition: 'Code',
-      serveUrl: env.REMOTION_SERVE_URL,
-      codec: 'h264',
-      inputProps: {
-        markdown: snippet.content,
-      },
-      webhook: env.NEXT_PUBLIC_BASE_URL.startsWith('http://localhost:')
-        ? undefined
-        : {
-            url: `${env.NEXT_PUBLIC_BASE_URL}/api/remotion-webhook`,
-            secret: null,
-          },
+    const result = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/api/renders`, {
+      method: 'POST',
+      // @scastiel, can we strongly check this against TriggerRenderPayload?
+      body: JSON.stringify({ snippetId: snippet.id, userId: snippet.userId }),
     })
-
-    const { id } = await getPrisma().render.create({
-      data: { bucketName, renderId, snippetId, userId: user.id },
-      select: { id: true },
-    })
-    return id
+    const json = await result.json()
+    return json.renderId
   }
 
   return (
@@ -96,7 +75,7 @@ export default async function SnippetPage({
           snippetId={snippet.id}
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
-          generateVideoAction={generateVideoAction}
+          generateVideoAction={renderRequestAction}
           lastRenderId={lastRenderId}
         />
       </div>
