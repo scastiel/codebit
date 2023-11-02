@@ -15,7 +15,7 @@ export default function rateLimiter() {
       }
       tokenCount[0] += 1
       const currentUsage = tokenCount[0]
-      const usageExceeded = currentUsage >= limit
+      const isRateLimited = currentUsage >= limit
 
       const rateLimitHeaders = new Headers()
       rateLimitHeaders.set('X-RateLimit-Limit', limit.toString())
@@ -25,7 +25,7 @@ export default function rateLimiter() {
       )
 
       return {
-        isRateLimited: usageExceeded,
+        isRateLimited,
         headers: rateLimitHeaders,
       }
     },

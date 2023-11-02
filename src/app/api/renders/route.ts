@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
   const { isRateLimited, headers } = limiter.check(
     env.RATE_LIMIT_RENDER_REQUEST_PER_MINUTE,
-    `${snippet.id}-render`,
+    `${user.id}-render`,
   )
   if (isRateLimited)
     return NextResponse.json(
