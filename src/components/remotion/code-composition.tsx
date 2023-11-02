@@ -48,7 +48,6 @@ export function CodeVideo({
     <Sequence durationInFrames={framesBetweenSteps} layout="none" key={-1}>
       <CodeSequence
         diff={diffCode(steps[0].code, steps[0].code)}
-        fontSize={fontSize}
         lang={steps[0].lang}
       />
     </Sequence>,
@@ -59,20 +58,20 @@ export function CodeVideo({
     const duration = durationInFramesForDiff(diff) + framesBetweenSteps
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
-        <CodeSequence diff={diff} fontSize={fontSize} lang={steps[0].lang} />
+        <CodeSequence diff={diff} lang={steps[0].lang} />
       </Sequence>,
     )
     from += duration
   }
 
   return (
-    <AbsoluteFill className={`root ${metadata.theme}`}>
+    <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
       {metadata.theme === 'dark' ? (
         <link href={staticFile('themes/github-dark.css')} rel="stylesheet" />
       ) : (
         <link href={staticFile('themes/github.css')} rel="stylesheet" />
       )}
-      <div className="code-wrapper" style={{ fontSize }}>
+      <div className="code-wrapper">
         <div className="code">
           <div className="window-buttons">
             <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
@@ -85,7 +84,7 @@ export function CodeVideo({
         </div>
       </div>
       {watermark && (
-        <p className="watermark" style={{ fontSize }}>
+        <p className="watermark">
           Generated with
           <a
             href="https://codevideo.vercel.app"
@@ -106,15 +105,7 @@ function durationInFramesForDiff(diff: Change[]) {
     .reduce((a, b) => a + b, 0)
 }
 
-function CodeSequence({
-  diff,
-  fontSize,
-  lang,
-}: {
-  diff: Change[]
-  fontSize: number
-  lang: string
-}) {
+function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
   const frame = useCurrentFrame()
 
   let codeToDisplay = ''
@@ -168,12 +159,12 @@ export function CodeComposition() {
       id="Code"
       component={CodeVideo}
       fps={30}
-      width={1920}
-      height={1080}
+      width={1280}
+      height={720}
       defaultProps={{
         markdown: input,
         framesBetweenSteps: 10,
-        fontSize: 32,
+        fontSize: 24,
       }}
       calculateMetadata={async ({
         props: { markdown },
