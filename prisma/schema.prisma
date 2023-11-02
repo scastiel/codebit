@@ -87,3 +87,9 @@ model Render {
 
   @@unique([bucketName, renderId])
 }
+
+model BetaSignups {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  signedUpAt DateTime @default(now())
+}

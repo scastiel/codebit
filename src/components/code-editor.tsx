@@ -107,25 +107,7 @@ function CodeEditorWithContext({
       <Card className="flex-1 overflow-hidden">
         <Editor
           defaultLanguage="markdown"
-          defaultValue={
-            initialContent ??
-            `
----
-theme: light
----
-
-\`\`\`ts
-console.log('Hello!')
-\`\`\`
-
----
-
-\`\`\`ts
-console.log('Hello!')
-console.log('How are you today?')
-\`\`\`
-`.trim()
-          }
+          defaultValue={initialContent ?? ''}
           onMount={(editor, monaco) => {
             monaco.editor.defineTheme('github', githubLight as any)
             monaco.editor.setTheme('github')
