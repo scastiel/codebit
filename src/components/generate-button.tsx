@@ -7,7 +7,7 @@ import useSWR from 'swr'
 
 type Props = {
   initialRenderId: string | null
-  generateVideoAction: () => Promise<string>
+  snippetId: string
 }
 
 type Status =
@@ -29,8 +29,8 @@ function getStatus(isLoading: boolean, error: boolean, data: any): Status {
 }
 
 export function GenerateButton({
-  generateVideoAction,
   initialRenderId,
+  snippetId,
 }: Props): JSX.Element {
   const [renderId, setRenderId] = useState(initialRenderId)
 
@@ -55,7 +55,9 @@ export function GenerateButton({
       variant="secondary"
       onClick={async () => {
         setStatus('starting')
-        const renderId = await generateVideoAction()
+        fetch(`/api/renders?snippetId=${snippetId}`, { method: 'POST' })
+          .then((res) => res.json())
+          .then(({ renderId }) => setRenderId(renderId))
         setRenderId(renderId)
       }}
       className="flex gap-2"

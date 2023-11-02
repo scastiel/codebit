@@ -7,8 +7,3 @@ export const metadataSchema = z.object({
 })
 
 export type Metadata = z.infer<typeof metadataSchema>
-
-export type TriggerRenderPayload = {
-  snippetId: string
-  userId: string
-}

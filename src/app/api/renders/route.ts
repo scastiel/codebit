@@ -1,36 +1,60 @@
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
-import { TriggerRenderPayload } from '@/lib/types'
+import { getCurrentUser } from '@/lib/user'
+import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
 import { NextResponse } from 'next/server'
 import rateLimiter from '../../../utils/rate-limiter'
 
 const limiter = rateLimiter()
 
-export async function POST(req: Request) {
-  const payload = (await req.json()) as TriggerRenderPayload
+const getSecureSnippet = async (snippetId: string | null) => {
   try {
-    const headers = await limiter.check(
-      env.RATE_LIMIT_RENDER_REQUEST_PER_MINUTE,
-      `${payload.userId}-render`,
-    )
-    try {
-      await triggerRender(payload.snippetId, payload.userId)
-    } catch (error) {
-      return NextResponse.json({ error }, { status: 400 })
-    }
-    return NextResponse.json({ renderId }, { headers })
-  } catch (e) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+    if (!snippetId) throw new Error('Missing snippetId')
+    const user = await getCurrentUser()
+    const snippet = await getSnippet(snippetId)
+    if (!snippet) throw new Error('Missing snippet')
+    if (user.id !== snippet.userId) throw new Error('Unauthorized')
+    return snippet
+  } catch {
+    throw new Error('Unauthorized')
   }
 }
 
-async function triggerRender(snippetId: string, userId: string) {
-  const snippet = await getSnippet(snippetId)
-  if (!snippet) throw new Error('Missing snippet')
-  if (userId !== snippet.userId) throw new Error('Unauthorized')
+const render = async (headers: Headers, snippet: Snippet) => {
+  try {
+    const renderId = await triggerRender(snippet)
+    return NextResponse.json({ renderId }, { headers })
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 })
+  }
+}
 
+export async function POST(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const snippetId = searchParams.get('snippetId')
+  try {
+    const snippet = await getSecureSnippet(snippetId)
+    try {
+      const headers = await limiter.check(
+        env.RATE_LIMIT_RENDER_REQUEST_PER_MINUTE,
+        `${snippet.id}-render`,
+      )
+      const renderId = await render(headers, snippet)
+      return NextResponse.json({ renderId }, { headers })
+    } catch (e) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      )
+    }
+  } catch (e) {
+    throw e
+  }
+}
+
+async function triggerRender(snippet: Snippet) {
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,
     functionName: env.REMOTION_AWS_FUNCTION_NAME,
@@ -47,7 +71,8 @@ async function triggerRender(snippetId: string, userId: string) {
           secret: null,
         },
   })
-
+  const snippetId = snippet.id
+  const userId = snippet.userId
   const { id } = await getPrisma().render.create({
     data: { bucketName, renderId, snippetId, userId },
     select: { id: true },
