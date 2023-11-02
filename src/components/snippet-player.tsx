@@ -10,10 +10,12 @@ export function SnippetPlayer({
   snippet,
   width,
   height,
+  fontSize,
 }: {
   snippet: Pick<Snippet, 'content'>
   width: number
   height: number
+  fontSize?: number
 }) {
   const framesBetweenSteps = 10
 
@@ -23,7 +25,7 @@ export function SnippetPlayer({
       inputProps={{
         markdown: snippet.content,
         framesBetweenSteps,
-        fontSize: 16,
+        fontSize: fontSize ?? 16,
         theme: 'dark',
       }}
       durationInFrames={snippetDurationInFrames(

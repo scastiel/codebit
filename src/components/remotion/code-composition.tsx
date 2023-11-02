@@ -63,9 +63,6 @@ export function CodeVideo({
     from += duration
   }
 
-  // if (metadata.theme === 'dark') import('highlight.js/styles/github-dark.css')
-  // else import('highlight.js/styles/github.css')
-
   return (
     <AbsoluteFill className={`root ${metadata.theme}`}>
       {metadata.theme === 'dark' ? (
@@ -73,15 +70,17 @@ export function CodeVideo({
       ) : (
         <link href={staticFile('themes/github.css')} rel="stylesheet" />
       )}
-      <div className="code" style={{ fontSize }}>
-        <div className="window-buttons">
-          <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="50" fill="#fe5f57" />
-            <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
-            <circle cx="400" cy="50" r="50" fill="#27cd41" />
-          </svg>
+      <div className="code-wrapper" style={{ fontSize }}>
+        <div className="code">
+          <div className="window-buttons">
+            <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="50" fill="#fe5f57" />
+              <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
+              <circle cx="400" cy="50" r="50" fill="#27cd41" />
+            </svg>
+          </div>
+          {sequences}
         </div>
-        {sequences}
       </div>
       <p className="watermark" style={{ fontSize }}>
         Generated with
