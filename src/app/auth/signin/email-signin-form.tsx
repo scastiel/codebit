@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Mail } from 'lucide-react'
 import { signIn } from 'next-auth/react'
+import Link from 'next/link'
 import { FormEvent, useState } from 'react'
 
 export function EmailSigninForm({ callbackUrl }: { callbackUrl: string }) {
   const [pending, setPending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [notInvited, setNotInvited] = useState(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -16,9 +18,14 @@ export function EmailSigninForm({ callbackUrl }: { callbackUrl: string }) {
     const email = formData.get('email')
     setSent(false)
     setPending(true)
+    setNotInvited(false)
     try {
-      await signIn('email', { email, callbackUrl, redirect: false })
-      setSent(true)
+      const res = await signIn('email', { email, callbackUrl, redirect: false })
+      if (res?.url?.endsWith('?not-invited')) {
+        setNotInvited(true)
+      } else {
+        setSent(true)
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -47,6 +54,15 @@ export function EmailSigninForm({ callbackUrl }: { callbackUrl: string }) {
         {sent && (
           <div className="text-sm text-slate-500 dark:text-slate-400">
             We just sent you an email with a sign in link!
+          </div>
+        )}
+        {notInvited && (
+          <div className="text-sm text-slate-500 dark:text-slate-400 text-center">
+            You haven’t been invited to use the service yet.
+            <br />
+            <Link href="/" className="underline">
+              Sign up to know when we are ready!
+            </Link>
           </div>
         )}
       </div>
