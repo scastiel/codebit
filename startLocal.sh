@@ -8,8 +8,7 @@ else
     ngrok http 3000 --config ngrok.yml > /dev/null &
     sleep 2 # Wait for ngrok to start
     public_url=$(curl -s localhost:4050/api/tunnels | jq -r '.tunnels[0].public_url')
-    new_env=$(cat .env | sed "s#^NGROK_URL=.*#NGROK_URL=$public_url#")
-    echo "$new_env" > .env
+    echo "Add the following value in your .env: REMOTION_WEBHOOK_URL=$public_url"
 fi
 
 #docker

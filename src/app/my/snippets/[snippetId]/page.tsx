@@ -57,8 +57,6 @@ export default async function SnippetPage({
     const user = await getCurrentUser()
     if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
 
-    const webhookBaseUrl = env.NEXT_PUBLIC_BASE_URL.startsWith('http://localhost:') ? env.NGROK_URL : env.NEXT_PUBLIC_BASE_URL;
-
     const { bucketName, renderId } = await renderMediaOnLambda({
       region: env.REMOTION_AWS_REGION as any,
       functionName: env.REMOTION_AWS_FUNCTION_NAME,
@@ -69,9 +67,9 @@ export default async function SnippetPage({
         markdown: snippet.content,
       },
       webhook: {
-            url: `${webhookBaseUrl}/api/remotion-webhook`,
-            secret: null,
-          },
+        url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,
+        secret: null,
+      },
     })
 
     const { id } = await getPrisma().render.create({
