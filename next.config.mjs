@@ -1,5 +1,8 @@
-const path = require('path')
-const { NormalModuleReplacementPlugin } = require('webpack')
+import { withPlausibleProxy } from 'next-plausible'
+import path from 'path'
+import webpack from 'webpack'
+
+const { NormalModuleReplacementPlugin } = webpack
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -14,7 +17,7 @@ const nextConfig = {
     config.plugins.push(
       new NormalModuleReplacementPlugin(
         /email\/render/,
-        path.resolve(__dirname, './renderEmailFix.js'),
+        path.resolve('./renderEmailFix.js'),
       ),
     )
     // Important: return the modified config
@@ -22,4 +25,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default withPlausibleProxy()(nextConfig)

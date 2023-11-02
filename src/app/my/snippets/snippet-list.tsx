@@ -16,7 +16,7 @@ export function SnippetList({ snippets }: Props) {
       {theme === 'dark' ? (
         <link href="/themes/github-dark.css" rel="stylesheet" />
       ) : (
-        <link href="/themes/github-light.css" rel="stylesheet" />
+        <link href="/themes/github.css" rel="stylesheet" />
       )}
       <ul className="grid grid-cols-1 flex-col gap-5 justify-stretch sm:grid-cols-2 md:grid-cols-3">
         {snippets.map((snippet) => {

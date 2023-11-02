@@ -48,8 +48,6 @@ export function GenerateButton({
     setStatus(getStatus(isLoading, error, data))
   }, [isLoading, error, data])
 
-  console.log({ status, renderId, data, error, isLoading })
-
   const GenerateButton = ({ children }: { children: ReactNode }) => (
     <Button
       variant="secondary"

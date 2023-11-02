@@ -1,6 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { usePlausible } from 'next-plausible'
 import { useState } from 'react'
 
 type Props = {
@@ -12,6 +13,7 @@ export function SignupBetaForm({ signUpAction }: Props) {
   const [status, setStatus] = useState<
     'initial' | 'pending' | 'error' | 'done'
   >('initial')
+  const plausible = usePlausible()
 
   return (
     <form
@@ -22,6 +24,7 @@ export function SignupBetaForm({ signUpAction }: Props) {
         try {
           await signUpAction(email)
           setStatus('done')
+          plausible('Beta: Sign up with email', { props: { email } })
         } catch (error) {
           console.error(error)
           setStatus('error')
