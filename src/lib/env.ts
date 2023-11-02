@@ -16,6 +16,9 @@ const envSchema = z.object({
   REMOTION_AWS_SECRET_ACCESS_KEY: z.string().min(1),
   REMOTION_WEBHOOK_SECRET: z.string().min(1),
   REMOTION_WEBHOOK_URL: z.string().min(1),
+  RATE_LIMIT_MAX_ITEMS_IN_CACHE: z.coerce.number(),
+  RATE_LIMIT_CACHE_ITEM_TTL_IN_MS: z.coerce.number(),
+  RATE_LIMIT_RENDER_REQUEST_PER_MINUTE: z.coerce.number(),
 })
 
 export const env = envSchema.parse(process.env)

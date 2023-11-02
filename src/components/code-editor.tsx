@@ -17,7 +17,6 @@ type Props = {
   snippetId?: string
   initialContent?: string
   saveSnippetAction?: (code: string) => Promise<void>
-  generateVideoAction?: () => Promise<string>
   lastRenderId?: string | null
 }
 
@@ -33,7 +32,6 @@ function CodeEditorWithContext({
   snippetId,
   initialContent,
   saveSnippetAction,
-  generateVideoAction,
   lastRenderId,
 }: Props) {
   const editorRef = useRef<any>(null)
@@ -85,23 +83,23 @@ function CodeEditorWithContext({
           </Button>
         )}
         {snippetId && (
-          <Button variant="secondary" asChild>
-            <Link
-              href={`/${snippetId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex gap-2"
-            >
-              <ExternalLink className="w-4 h-4" />
-              <span>Public URL</span>
-            </Link>
-          </Button>
-        )}
-        {generateVideoAction && (
-          <GenerateButton
-            initialRenderId={lastRenderId ?? null}
-            generateVideoAction={generateVideoAction}
-          />
+          <>
+            <Button variant="secondary" asChild>
+              <Link
+                href={`/${snippetId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Public URL</span>
+              </Link>
+            </Button>
+            <GenerateButton
+              initialRenderId={lastRenderId ?? null}
+              snippetId={snippetId}
+            />
+          </>
         )}
       </div>
       <Card className="flex-1 overflow-hidden">
