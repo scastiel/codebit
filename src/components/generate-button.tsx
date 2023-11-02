@@ -37,6 +37,7 @@ export function GenerateButton({
   const { data, error, isLoading } = useSWR(
     renderId ? `/my/renders/${renderId}/status` : '',
     fetcher,
+    { refreshInterval: 5000, refreshWhenHidden: true },
   )
 
   const [status, setStatus] = useState<Status>(
@@ -91,9 +92,7 @@ export function GenerateButton({
           <GenerateButton>Re-generate video</GenerateButton>
           <Button asChild variant="secondary">
             <Link
-              href={data.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/my/renders/${renderId}/download`}
               className="flex gap-2"
             >
               <Download className="w-4 h-4" />

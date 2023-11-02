@@ -11,8 +11,16 @@ export async function GET(
   const render = await getRender(params.renderId, user.id)
   if (!render) notFound()
 
-  return NextResponse.json({
-    done: render.done,
-    error: render.error,
+  if (!render.videoUrl) {
+    return new NextResponse('No video to download', { status: 400 })
+  }
+
+  const response = await fetch(render.videoUrl)
+
+  return new NextResponse(response.body, {
+    headers: {
+      ...response.headers, // copy the previous headers
+      'content-disposition': `attachment; filename="code-video.mp4"`,
+    },
   })
 }
