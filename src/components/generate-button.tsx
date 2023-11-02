@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Download, FileVideo, Loader } from 'lucide-react'
+import { Download, FileVideo, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, useEffect, useState } from 'react'
 import useSWR from 'swr'
@@ -58,10 +58,9 @@ export function GenerateButton({
           .then(({ renderId }) => setRenderId(renderId))
         setRenderId(renderId)
       }}
-      className="flex gap-2"
     >
-      <FileVideo className="w-4 h-4" />
-      <span>{children}</span>
+      <FileVideo className="mr-2 h-4 w-4" />
+      {children}
     </Button>
   )
 
@@ -89,7 +88,7 @@ export function GenerateButton({
     case 'generation-done':
       return (
         <>
-          <GenerateButton>Re-generate video</GenerateButton>
+          <GenerateButton>Regenerate video</GenerateButton>
           <Button asChild variant="secondary">
             <Link
               href={`/my/renders/${renderId}/download`}
@@ -114,8 +113,8 @@ const fetcher = (...args: Parameters<typeof fetch>) =>
 function LoadingButton({ children }: { children: ReactNode }) {
   return (
     <Button disabled variant="secondary" className="flex gap-2">
-      <Loader className="w-4 h-4 animate-spin" />
-      <span>{children}</span>
+      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+      {children}
     </Button>
   )
 }

@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
 import { env } from '@/lib/env'
 import { getRendersForUser } from '@/lib/render'
 import { getCurrentUserOrRedirect } from '@/lib/user'
+import { Bug, ExternalLink, Loader2 } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -30,6 +32,9 @@ export default async function SnippetsPage() {
             <TableHead>ID</TableHead>
             <TableHead>Snippet</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Started at</TableHead>
+            <TableHead>Finished at</TableHead>
+            <TableHead>Duration</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -41,17 +46,48 @@ export default async function SnippetsPage() {
               </TableCell>
               <TableCell>
                 {render.error ? (
-                  'Error'
+                  <Badge className="bg-red-300">
+                    <Bug className="w-3 h-3 mr-1" />
+                    Error
+                  </Badge>
                 ) : render.done ? (
                   <Link
                     href={render.videoUrl!}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    Done
+                    <Badge className="bg-green-300">
+                      <ExternalLink className="w-3 h-3 mr-1" />
+                      Finished
+                    </Badge>
                   </Link>
                 ) : (
-                  'In progress'
+                  <Badge className="bg-orange-300">
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    In progress
+                  </Badge>
+                )}
+              </TableCell>
+              <TableCell>
+                {render.startedAt.toLocaleString('en-US', {
+                  dateStyle: 'medium',
+                  timeStyle: 'medium',
+                })}
+              </TableCell>
+              <TableCell>
+                {render.endedAt?.toLocaleString('en-US', {
+                  timeStyle: 'medium',
+                })}
+              </TableCell>
+              <TableCell>
+                {render.endedAt && (
+                  <>
+                    {Math.round(
+                      (render.endedAt.valueOf() - render.startedAt.valueOf()) /
+                        1000,
+                    )?.toLocaleString('en-US', {})}{' '}
+                    secs{' '}
+                  </>
                 )}
               </TableCell>
             </TableRow>
