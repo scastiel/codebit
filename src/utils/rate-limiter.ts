@@ -8,26 +8,26 @@ export default function rateLimiter() {
   })
 
   return {
-    check: (limit: number, token: string) =>
-      new Promise<Headers>((resolve, reject) => {
-        const tokenCount = (tokenCache.get(token) as number[]) || [0]
-        if (tokenCount[0] === 0) {
-          tokenCache.set(token, tokenCount)
-        }
-        tokenCount[0] += 1
-        const currentUsage = tokenCount[0]
-        const isRateLimited = currentUsage >= limit
+    check: (limit: number, token: string) => {
+      const tokenCount = (tokenCache.get(token) as number[]) || [0]
+      if (tokenCount[0] === 0) {
+        tokenCache.set(token, tokenCount)
+      }
+      tokenCount[0] += 1
+      const currentUsage = tokenCount[0]
+      const usageExceeded = currentUsage >= limit
 
-        const rateLimitHeaders = new Headers()
-        rateLimitHeaders.set('X-RateLimit-Limit', limit.toString())
-        rateLimitHeaders.set(
-          'X-RateLimit-Remaining',
-          isRateLimited ? '0' : (limit - currentUsage).toString(),
-        )
+      const rateLimitHeaders = new Headers()
+      rateLimitHeaders.set('X-RateLimit-Limit', limit.toString())
+      rateLimitHeaders.set(
+        'X-RateLimit-Remaining',
+        isRateLimited ? '0' : (limit - currentUsage).toString(),
+      )
 
-        return isRateLimited
-          ? reject(rateLimitHeaders)
-          : resolve(rateLimitHeaders)
-      }),
+      return {
+        isRateLimited: usageExceeded,
+        headers: rateLimitHeaders,
+      }
+    },
   }
 }
