@@ -1,7 +1,6 @@
 'use client'
 import { Badge } from '@/components/ui/badge'
 import { Snippet } from '@prisma/client'
-import 'highlight.js/styles/github.css'
 import Link from 'next/link'
 import Highlight from 'react-highlight'
 
@@ -15,7 +14,7 @@ export function SnippetListItem({
   return (
     <Link
       href={`/my/snippets/${snippet.id}`}
-      className="flex flex-col justify-end gap-1 border rounded-lg overflow-hidden group"
+      className="flex flex-col justify-end gap-1 border rounded-lg overflow-hidden group dark:bg-black"
     >
       <div className="h-32 overflow-hidden relative">
         {snippet.preview && (

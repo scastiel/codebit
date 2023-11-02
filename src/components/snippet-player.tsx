@@ -11,11 +11,15 @@ export function SnippetPlayer({
   width,
   height,
   fontSize,
+  autoMode,
+  watermark,
 }: {
   snippet: Pick<Snippet, 'content'>
   width: number
   height: number
   fontSize?: number
+  autoMode?: boolean
+  watermark?: boolean
 }) {
   const framesBetweenSteps = 10
 
@@ -26,7 +30,7 @@ export function SnippetPlayer({
         markdown: snippet.content,
         framesBetweenSteps,
         fontSize: fontSize ?? 16,
-        theme: 'dark',
+        watermark,
       }}
       durationInFrames={snippetDurationInFrames(
         snippet.content,
@@ -36,9 +40,10 @@ export function SnippetPlayer({
       compositionHeight={height}
       fps={30}
       style={{ width, height }}
-      loop={false}
+      loop={autoMode}
       clickToPlay={false}
-      controls
+      autoPlay={autoMode}
+      controls={!autoMode}
       allowFullscreen={false}
       moveToBeginningWhenEnded={false}
       showVolumeControls={false}

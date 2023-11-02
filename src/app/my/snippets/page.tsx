@@ -1,10 +1,10 @@
+import { SnippetList } from '@/app/my/snippets/snippet-list'
 import { Button } from '@/components/ui/button'
 import { env } from '@/lib/env'
 import { createSnippet, getSnippets } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { SnippetListItem } from './snippet-list-item'
 
 export const metadata: Metadata = {
   title: 'My snippets',
@@ -21,15 +21,7 @@ export default async function SnippetsPage() {
       <form action={createSnippetAction}>
         <Button type="submit">Create snippet</Button>
       </form>
-      <ul className="grid grid-cols-1 flex-col gap-5 justify-stretch sm:grid-cols-2 md:grid-cols-3">
-        {snippets.map((snippet) => {
-          return (
-            <li key={snippet.id}>
-              <SnippetListItem snippet={snippet} />
-            </li>
-          )
-        })}
-      </ul>
+      <SnippetList snippets={snippets} />
     </div>
   )
 }

@@ -36,10 +36,12 @@ export function CodeVideo({
   markdown,
   framesBetweenSteps,
   fontSize,
+  watermark = true,
 }: {
   markdown: string
   framesBetweenSteps: number
   fontSize: number
+  watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
   const sequences = [
@@ -82,16 +84,18 @@ export function CodeVideo({
           {sequences}
         </div>
       </div>
-      <p className="watermark" style={{ fontSize }}>
-        Generated with
-        <a
-          href="https://codevideo.vercel.app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Code2 /> <span>Share Code</span>
-        </a>
-      </p>
+      {watermark && (
+        <p className="watermark" style={{ fontSize }}>
+          Generated with
+          <a
+            href="https://codevideo.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Code2 /> <span>CodeBit.xyz</span>
+          </a>
+        </p>
+      )}
     </AbsoluteFill>
   )
 }

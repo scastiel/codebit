@@ -28,7 +28,7 @@ export function PublicSnippetPageClient({ snippet }: Props) {
           rel="noopener noreferrer"
           className="inline-flex font-semibold gap-1 items-center"
         >
-          <Code2 /> <span>Share Code</span>
+          <Code2 /> <span>CodeBit</span>
         </Link>
       </p>
     </div>

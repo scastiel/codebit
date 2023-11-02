@@ -7,9 +7,9 @@ import { Text } from '@react-email/text'
 export function SigninEmailTemplate({ url }: { url: string }) {
   return (
     <Html>
-      <Preview>This is your sign in link for Share Code</Preview>
+      <Preview>This is your sign in link for CodeBit</Preview>
       <Heading>
-        Sign in to <strong>Share Code</strong>
+        Sign in to <strong>CodeBit</strong>
       </Heading>
       <Button
         href={url}
