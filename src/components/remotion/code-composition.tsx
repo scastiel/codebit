@@ -48,21 +48,31 @@ export function CodeVideo({
   watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
+
   const sequences = [
     <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
       <CodeSequence
         diff={diffCode(steps[0].code, steps[0].code)}
         lang={steps[0].lang}
+        fontSize={fontSize}
+        jitterFrame={[]}
       />
     </Sequence>,
   ]
   let from = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    const duration = durationInFramesForDiff(diff) + framesBetweenSteps
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps)
+    const duration = jitteredFrame.length
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
-        <CodeSequence diff={diff} lang={steps[i].lang} />
+        <CodeSequence
+          diff={diff}
+          fontSize={fontSize}
+          lang={steps[0].lang}
+          jitterFrame={jitteredFrame}
+        />
       </Sequence>,
     )
     from += duration
@@ -80,6 +90,8 @@ export function CodeVideo({
           steps[steps.length - 1].code,
         )}
         lang={steps[steps.length - 1].lang}
+        fontSize={fontSize}
+        jitterFrame={[]}
       />
     </Sequence>,
   )
@@ -125,9 +137,49 @@ function durationInFramesForDiff(diff: Change[]) {
     .reduce((a, b) => a + b, 0)
 }
 
-function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
+function CodeSequence({
+  diff,
+  fontSize,
+  lang,
+  jitterFrame,
+}: {
+  diff: Change[]
+  fontSize: number
+  lang: string
+  jitterFrame: number[]
+}) {
   const frame = useCurrentFrame()
+  const codeToDisplay = codeFromFrame(diff, jitterFrame[frame])
+  return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
+}
 
+const jitterFrame = (
+  maxFrameIdx: number,
+  jitterFrameCount: number,
+  framesBetweenSteps: number,
+) => {
+  let nbMaxJitter = maxFrameIdx / 5
+  let nbJitter = Math.floor(Math.random() * nbMaxJitter)
+  let jitterFrames = []
+  for (let i = 0; i < nbJitter; i++) {
+    jitterFrames.push(Math.floor(Math.random() * maxFrameIdx))
+  }
+
+  const allFrames = Array.from({ length: maxFrameIdx }, (_, i) => i + 1)
+
+  for (let i = 0; i < jitterFrameCount; i++) {
+    allFrames.push(...jitterFrames)
+  }
+
+  allFrames.sort((a, b) => a - b)
+  for (let i = 0; i < framesBetweenSteps; i++) {
+    allFrames.push(maxFrameIdx + i)
+  }
+
+  return allFrames
+}
+
+const codeFromFrame = (diff: Change[], frame: number) => {
   let codeToDisplay = ''
   let currentChangeIndex = 0
   let i = 0
@@ -169,8 +221,7 @@ function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
       break
     }
   }
-
-  return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
+  return codeToDisplay
 }
 
 export function CodeComposition() {
