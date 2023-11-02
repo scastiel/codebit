@@ -2,6 +2,7 @@
 
 pre {
   padding: 0 1em;
+  overflow: auto;
 }
 
 pre > code {
@@ -41,7 +42,6 @@ pre > code {
 
 .root {
   padding: 1em 1em;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -54,9 +54,17 @@ pre > code {
   background-color: rgba(0, 0, 0, 60%);
 }
 
+.code-wrapper {
+  width: min(50em, 100%);
+  overflow: hidden;
+  display: flex;
+}
+
 .code {
-  min-width: 50em;
+  width: 100%;
   border-radius: 0.75em;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 

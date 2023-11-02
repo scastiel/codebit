@@ -16,5 +16,16 @@ export function PublicSnippetPageClient({ snippet }: Props) {
 
   if (!browser) return null
 
-  return <SnippetPlayer snippet={snippet} width={width} height={height} />
+  const fontSize = Math.min(
+    Math.max(8, Math.min(0.02 * width, 16)),
+    Math.max(8, Math.min(0.03 * height, 16)),
+  )
+  return (
+    <SnippetPlayer
+      snippet={snippet}
+      width={width}
+      height={height}
+      fontSize={fontSize}
+    />
+  )
 }
