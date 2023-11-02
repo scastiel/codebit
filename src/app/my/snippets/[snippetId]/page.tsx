@@ -49,17 +49,6 @@ export default async function SnippetPage({
     revalidatePath(`/${snippet.id}`)
   }
 
-  const renderRequestAction = async () => {
-    'use server'
-    const result = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/api/renders`, {
-      method: 'POST',
-      // @scastiel, can we strongly check this against TriggerRenderPayload?
-      body: JSON.stringify({ snippetId: snippet.id, userId: snippet.userId }),
-    })
-    const json = await result.json()
-    return json.renderId
-  }
-
   return (
     <div className="flex flex-col">
       <div className="px-4">
@@ -75,7 +64,6 @@ export default async function SnippetPage({
           snippetId={snippet.id}
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
-          generateVideoAction={renderRequestAction}
           lastRenderId={lastRenderId}
         />
       </div>
