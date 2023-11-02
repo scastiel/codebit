@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "./startDocker.sh && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "./startDocker.sh && prisma migrate deploy && prisma generate",
+    "postinstall": "prisma migrate deploy && prisma generate",
     "remotion-studio": "remotion studio src/remotion/index.ts"
   },
   "dependencies": {
