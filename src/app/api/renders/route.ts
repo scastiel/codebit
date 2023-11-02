@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     } catch (error) {
       return NextResponse.json({ error }, { status: 400 })
     }
-    return NextResponse.json({ msg: 'Success' }, { headers })
+    return NextResponse.json({ renderId }, { headers })
   } catch (e) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
