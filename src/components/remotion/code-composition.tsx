@@ -35,34 +35,54 @@ function diffCode(from: string, to: string) {
 export function CodeVideo({
   markdown,
   framesBetweenSteps,
+  framesAtStart,
+  framesAtEnd,
   fontSize,
   watermark = true,
 }: {
   markdown: string
   framesBetweenSteps: number
+  framesAtStart: number
+  framesAtEnd: number
   fontSize: number
   watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
   const sequences = [
-    <Sequence durationInFrames={framesBetweenSteps} layout="none" key={-1}>
+    <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
       <CodeSequence
         diff={diffCode(steps[0].code, steps[0].code)}
         lang={steps[0].lang}
       />
     </Sequence>,
   ]
-  let from = framesBetweenSteps
+  let from = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
     const duration = durationInFramesForDiff(diff) + framesBetweenSteps
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
-        <CodeSequence diff={diff} lang={steps[0].lang} />
+        <CodeSequence diff={diff} lang={steps[i].lang} />
       </Sequence>,
     )
     from += duration
   }
+  sequences.push(
+    <Sequence
+      durationInFrames={framesAtEnd}
+      from={from}
+      layout="none"
+      key={steps.length}
+    >
+      <CodeSequence
+        diff={diffCode(
+          steps[steps.length - 1].code,
+          steps[steps.length - 1].code,
+        )}
+        lang={steps[steps.length - 1].lang}
+      />
+    </Sequence>,
+  )
 
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
@@ -164,16 +184,20 @@ export function CodeComposition() {
       defaultProps={{
         markdown: input,
         framesBetweenSteps: 10,
+        framesAtStart: 20,
+        framesAtEnd: 30,
         fontSize: 24,
       }}
       calculateMetadata={async ({
         props: { markdown },
-        defaultProps: { framesBetweenSteps },
+        defaultProps: { framesBetweenSteps, framesAtStart, framesAtEnd },
       }) => {
         return {
           durationInFrames: snippetDurationInFrames(
             markdown,
             framesBetweenSteps,
+            framesAtStart,
+            framesAtEnd,
           ),
         }
       }}
@@ -184,12 +208,17 @@ export function CodeComposition() {
 export function snippetDurationInFrames(
   markdown: string,
   framesBetweenSteps: number,
+  framesAtStart: number,
+  framesAtEnd: number,
 ) {
   const { steps } = getCodeFragments(markdown)
-  let duration = framesBetweenSteps
+  let duration = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    duration += durationInFramesForDiff(diff) + framesBetweenSteps
+    duration +=
+      durationInFramesForDiff(diff) +
+      (i < steps.length - 2 ? framesBetweenSteps : 0)
   }
+  duration += framesAtEnd
   return duration
 }

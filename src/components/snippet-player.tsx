@@ -22,6 +22,8 @@ export function SnippetPlayer({
   watermark?: boolean
 }) {
   const framesBetweenSteps = 10
+  const framesAtStart = 20
+  const framesAtEnd = 30
 
   return (
     <Player
@@ -29,12 +31,16 @@ export function SnippetPlayer({
       inputProps={{
         markdown: snippet.content,
         framesBetweenSteps,
+        framesAtStart,
+        framesAtEnd,
         fontSize: fontSize ?? 16,
         watermark,
       }}
       durationInFrames={snippetDurationInFrames(
         snippet.content,
         framesBetweenSteps,
+        framesAtStart,
+        framesAtEnd,
       )}
       compositionWidth={width}
       compositionHeight={height}
