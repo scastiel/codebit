@@ -44,15 +44,20 @@ export function CodeEditor({
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
-      <div ref={editorWrapperRef} className="lg:w-1/3">
-        {editorWidth > 0 && (
-          <SnippetPlayer
-            markdown={markdown}
-            width={editorWidth}
-            height={Math.round((editorWidth * 9) / 16)}
-            fontSize={fontSize}
-          />
-        )}
+      <div
+        ref={editorWrapperRef}
+        className="w-full lg:w-1/3 rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start"
+      >
+        <div className="overflow-hidden rounded-[8px]">
+          {editorWidth > 0 && (
+            <SnippetPlayer
+              markdown={markdown}
+              width={editorWidth - 4}
+              height={Math.round((editorWidth * 9) / 16)}
+              fontSize={fontSize}
+            />
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-2 flex-1">
         <div className="flex-shrink-0 gap-2 flex">
