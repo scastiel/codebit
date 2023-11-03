@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap');
-
 pre {
   padding: 0 1em;
   overflow: auto;
 }
 
 pre > code {
-  font-family: 'JetBrains Mono';
+  font-family: 'GeistMono';
   background-color: transparent !important;
 }
 
@@ -74,7 +72,7 @@ pre > code {
   opacity: 50%;
   display: flex;
   gap: 0.4em;
-  font-family: Inter;
+  font-family: Geist;
 }
 
 .root.light .watermark {
@@ -100,6 +98,10 @@ pre > code {
   flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
+}
+
+.watermark strong {
+  font-weight: 600;
 }
 
 .root.dark .window-buttons {

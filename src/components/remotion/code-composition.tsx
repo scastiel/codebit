@@ -1,6 +1,4 @@
 import { Change, diffChars } from 'diff'
-import { jitterFrame, noJitterFrame } from '../../utils/jitter'
-
 import GraphemeSplitter from 'grapheme-splitter'
 import { Code2 } from 'lucide-react'
 import createRandomSeed from 'random-seed'
@@ -14,6 +12,8 @@ import {
 } from 'remotion'
 import { getCodeFragments } from '../../lib/code-steps-utils'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
+import { jitterFrame, noJitterFrame } from '../../utils/jitter'
+import { loadFonts } from './load-fonts'
 import './style.css'
 
 const splitter = new GraphemeSplitter()
@@ -46,6 +46,8 @@ export function CodeVideo({
   fontSize: number
   watermark?: boolean
 }) {
+  loadFonts()
+
   const { metadata, steps } = getCodeFragments(markdown)
   const rand = createRandomSeed.create(markdown)
 
@@ -121,7 +123,7 @@ export function CodeVideo({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Code2 /> <span>CodeBit.xyz</span>
+            <Code2 /> <strong>CodeBit.xyz</strong>
           </a>
         </p>
       )}
