@@ -2,6 +2,7 @@ import { Change, diffChars } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 import { Code2 } from 'lucide-react'
 import createRandomSeed from 'random-seed'
+import { useEffect } from 'react'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -46,10 +47,12 @@ export function CodeVideo({
   fontSize: number
   watermark?: boolean
 }) {
-  loadFonts()
-
   const { metadata, steps } = getCodeFragments(markdown)
   const rand = createRandomSeed.create(markdown)
+
+  useEffect(() => {
+    loadFonts()
+  }, [])
 
   const sequences = [
     <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>

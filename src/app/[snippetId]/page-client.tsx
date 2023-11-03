@@ -24,6 +24,7 @@ export function PublicSnippetPageClient({ snippet }: Props) {
       width={width}
       height={height}
       fontSize={fontSize}
+      autoMode
     />
   )
 }

@@ -14,7 +14,9 @@ export default async function SnippetsPage() {
   const user = await getCurrentUserOrRedirect(
     `${env.NEXT_PUBLIC_BASE_URL}/my/snippets`,
   )
+  console.time('getSnippets')
   const snippets = await getSnippets(user)
+  console.timeEnd('getSnippets')
 
   return (
     <div className="p-4 flex flex-col gap-4 max-w-screen-lg mx-auto">

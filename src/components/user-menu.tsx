@@ -1,5 +1,5 @@
+import { SigninButton } from '@/components/signin-button'
 import { SignoutButton } from '@/components/signout-button'
-import { Button } from '@/components/ui/button'
 import { User } from '@prisma/client'
 import { Code2 } from 'lucide-react'
 import Image from 'next/image'
@@ -36,9 +36,7 @@ export async function UserMenu({ user }: Props) {
           <SignoutButton />
         </div>
       ) : (
-        <Button variant="ghost" asChild>
-          <Link href="/my">Sign in</Link>
-        </Button>
+        <SigninButton />
       )}
     </div>
   )
