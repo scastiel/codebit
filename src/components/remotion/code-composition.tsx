@@ -2,6 +2,7 @@ import { Change, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 // import 'highlight.js/styles/github-dark.css'
 import { Code2 } from 'lucide-react'
+import createRandomSeed from 'random-seed'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -13,7 +14,6 @@ import {
 import { getCodeFragments } from '../../lib/code-steps-utils'
 import { input } from '../../mocks/input'
 import './style.css'
-import { number } from 'zod'
 
 const splitter = new GraphemeSplitter()
 
@@ -49,6 +49,8 @@ export function CodeVideo({
   watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
+  const rand = createRandomSeed.create(markdown)
+
   const sequences = [
     <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
       <CodeSequence
@@ -64,8 +66,7 @@ export function CodeVideo({
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
     const nbRealFrame = durationInFramesForDiff(diff)
-    console.log('real frame', nbRealFrame);
-    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps)
+    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
     const duration = jitteredFrame.length
     console.log('jittered duration', duration)
     sequences.push(
@@ -140,6 +141,52 @@ function durationInFramesForDiff(diff: Change[]) {
     .reduce((a, b) => a + b, 0)
 }
 
+<<<<<<< HEAD
+=======
+function CodeSequence({
+  diff,
+  fontSize,
+  lang,
+  jitterFrame,
+}: {
+  diff: Change[]
+  fontSize: number
+  lang: string
+  jitterFrame: number[]
+}) {
+  const frame = useCurrentFrame()
+  const codeToDisplay = codeFromFrame(diff, jitterFrame[frame])
+  return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
+}
+
+const jitterFrame = (
+  maxFrameIdx: number,
+  jitterFrameCount: number,
+  framesBetweenSteps: number,
+  rand: RandomSeed,
+) => {
+  let nbMaxJitter = maxFrameIdx / 5
+  let nbJitter = Math.floor(rand.random() * nbMaxJitter)
+  let jitterFrames = []
+  for (let i = 0; i < nbJitter; i++) {
+    jitterFrames.push(Math.floor(rand.random() * maxFrameIdx))
+  }
+
+  const allFrames = Array.from({ length: maxFrameIdx }, (_, i) => i + 1)
+
+  for (let i = 0; i < jitterFrameCount; i++) {
+    allFrames.push(...jitterFrames)
+  }
+
+  allFrames.sort((a, b) => a - b)
+  for (let i = 0; i < framesBetweenSteps; i++) {
+    allFrames.push(maxFrameIdx + i)
+  }
+
+  return allFrames
+}
+
+>>>>>>> f3ffa93 (Fix randomness)
 const codeFromFrame = (diff: Change[], frame: number) => {
   let codeToDisplay = ''
   let currentChangeIndex = 0
@@ -263,13 +310,14 @@ export function snippetDurationInFrames(
   framesAtStart: number,
   framesAtEnd: number,
 ) {
+  const rand = createRandomSeed.create(markdown)
   const { steps } = getCodeFragments(markdown)
   let duration = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    duration +=
-      durationInFramesForDiff(diff) +
-      (i < steps.length - 2 ? framesBetweenSteps : 0)
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
+    duration += jitteredFrame.length
   }
   duration += framesAtEnd
   return duration
