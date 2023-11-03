@@ -1,15 +1,14 @@
 'use client'
 import { SnippetPlayer } from '@/components/snippet-player'
+import { useIsBrowser } from '@/lib/hooks'
 import { landingPageSnippet } from '@/lib/landing-page-snippet'
 import useSize from '@react-hook/size'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 export function LandingPlayer() {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const [width, height] = useSize(playerRef)
-
-  const [browser, setBrowser] = useState(false)
-  useEffect(() => setBrowser(true), [])
+  const browser = useIsBrowser()
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * width, 16)))
 
