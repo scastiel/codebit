@@ -1,8 +1,7 @@
 import { Change, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
-// import 'highlight.js/styles/github-dark.css'
 import { Code2 } from 'lucide-react'
-import createRandomSeed from 'random-seed'
+import createRandomSeed, { RandomSeed } from 'random-seed'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -14,6 +13,10 @@ import {
 import { getCodeFragments } from '../../lib/code-steps-utils'
 import { input } from '../../mocks/input'
 import './style.css'
+
+/* Those 2 hardcoded values could be dynamically set depending on the step diff size in the future */
+const JITTER_FRAME_COUNT = 2 
+const MAX_JITTER_PER_DIFF = 5
 
 const splitter = new GraphemeSplitter()
 
@@ -66,7 +69,7 @@ export function CodeVideo({
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
     const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
+    const jitteredFrame = jitterFrame(nbRealFrame, JITTER_FRAME_COUNT, MAX_JITTER_PER_DIFF, framesBetweenSteps, rand)
     const duration = jitteredFrame.length
     console.log('jittered duration', duration)
     sequences.push(
@@ -144,10 +147,11 @@ function durationInFramesForDiff(diff: Change[]) {
 const jitterFrame = (
   maxFrameIdx: number,
   jitterFrameCount: number,
+  maxJitterPerDiff: number,
   framesBetweenSteps: number,
   rand: RandomSeed,
 ) => {
-  let nbMaxJitter = maxFrameIdx / 5
+  let nbMaxJitter = maxFrameIdx / maxJitterPerDiff
   let nbJitter = Math.floor(rand.random() * nbMaxJitter)
   let jitterFrames = []
   for (let i = 0; i < nbJitter; i++) {
@@ -273,7 +277,7 @@ export function snippetDurationInFrames(
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
     const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
+    const jitteredFrame = jitterFrame(nbRealFrame, JITTER_FRAME_COUNT, MAX_JITTER_PER_DIFF, framesBetweenSteps, rand)
     duration += jitteredFrame.length
   }
   duration += framesAtEnd
