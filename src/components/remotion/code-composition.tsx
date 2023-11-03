@@ -2,6 +2,7 @@ import { Change, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 // import 'highlight.js/styles/github-dark.css'
 import { Code2 } from 'lucide-react'
+import createRandomSeed, { RandomSeed } from 'random-seed'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -48,6 +49,7 @@ export function CodeVideo({
   watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
+  const rand = createRandomSeed.create(markdown)
 
   const sequences = [
     <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
@@ -63,7 +65,7 @@ export function CodeVideo({
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
     const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps)
+    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
     const duration = jitteredFrame.length
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
@@ -157,12 +159,13 @@ const jitterFrame = (
   maxFrameIdx: number,
   jitterFrameCount: number,
   framesBetweenSteps: number,
+  rand: RandomSeed,
 ) => {
   let nbMaxJitter = maxFrameIdx / 5
-  let nbJitter = Math.floor(Math.random() * nbMaxJitter)
+  let nbJitter = Math.floor(rand.random() * nbMaxJitter)
   let jitterFrames = []
   for (let i = 0; i < nbJitter; i++) {
-    jitterFrames.push(Math.floor(Math.random() * maxFrameIdx))
+    jitterFrames.push(Math.floor(rand.random() * maxFrameIdx))
   }
 
   const allFrames = Array.from({ length: maxFrameIdx }, (_, i) => i + 1)
@@ -262,13 +265,14 @@ export function snippetDurationInFrames(
   framesAtStart: number,
   framesAtEnd: number,
 ) {
+  const rand = createRandomSeed.create(markdown)
   const { steps } = getCodeFragments(markdown)
   let duration = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    duration +=
-      durationInFramesForDiff(diff) +
-      (i < steps.length - 2 ? framesBetweenSteps : 0)
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, 5, framesBetweenSteps, rand)
+    duration += jitteredFrame.length
   }
   duration += framesAtEnd
   return duration
