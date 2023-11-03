@@ -3,18 +3,17 @@ import {
   CodeVideo,
   snippetDurationInFrames,
 } from '@/components/remotion/code-composition'
-import { Snippet } from '@prisma/client'
 import { Player } from '@remotion/player'
 
 export function SnippetPlayer({
-  snippet,
+  markdown,
   width,
   height,
   fontSize,
   autoMode,
   watermark,
 }: {
-  snippet: Pick<Snippet, 'content'>
+  markdown: string
   width: number
   height: number
   fontSize?: number
@@ -29,7 +28,7 @@ export function SnippetPlayer({
     <Player
       component={CodeVideo}
       inputProps={{
-        markdown: snippet.content,
+        markdown,
         framesBetweenSteps,
         framesAtStart,
         framesAtEnd,
@@ -37,7 +36,7 @@ export function SnippetPlayer({
         watermark,
       }}
       durationInFrames={snippetDurationInFrames(
-        snippet.content,
+        markdown,
         framesBetweenSteps,
         framesAtStart,
         framesAtEnd,

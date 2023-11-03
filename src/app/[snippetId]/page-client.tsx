@@ -20,7 +20,7 @@ export function PublicSnippetPageClient({ snippet }: Props) {
   )
   return (
     <SnippetPlayer
-      snippet={snippet}
+      markdown={snippet.content}
       width={width}
       height={height}
       fontSize={fontSize}
