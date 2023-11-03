@@ -32,7 +32,7 @@ export function SignupBetaForm({ signUpAction }: Props) {
       }}
     >
       <p>
-        We’ll still in private alpha.
+        We’re still in private alpha.
         <br />
         Sign up to know when we’re ready!
       </p>
