@@ -1,6 +1,9 @@
+import { jitterFrame, noJitterFrame } from '@/utils/jitter'
 import { Change, diffChars } from 'diff'
+
 import GraphemeSplitter from 'grapheme-splitter'
 import { Code2 } from 'lucide-react'
+import createRandomSeed from 'random-seed'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -44,21 +47,31 @@ export function CodeVideo({
   watermark?: boolean
 }) {
   const { metadata, steps } = getCodeFragments(markdown)
+  const rand = createRandomSeed.create(markdown)
+
   const sequences = [
     <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
       <CodeSequence
         diff={diffCode(steps[0].code, steps[0].code)}
         lang={steps[0].lang}
+        jitterFrame={noJitterFrame(framesAtStart)}
       />
     </Sequence>,
   ]
   let from = framesAtStart
+
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    const duration = durationInFramesForDiff(diff) + framesBetweenSteps
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
+    const duration = jitteredFrame.length
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
-        <CodeSequence diff={diff} lang={steps[i].lang} />
+        <CodeSequence
+          diff={diff}
+          lang={steps[0].lang}
+          jitterFrame={jitteredFrame}
+        />
       </Sequence>,
     )
     from += duration
@@ -76,6 +89,7 @@ export function CodeVideo({
           steps[steps.length - 1].code,
         )}
         lang={steps[steps.length - 1].lang}
+        jitterFrame={[]}
       />
     </Sequence>,
   )
@@ -125,9 +139,7 @@ function durationInFramesForDiff(diff: Change[]) {
     .reduce((a, b) => a + b, 0)
 }
 
-function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
-  const frame = useCurrentFrame()
-
+const codeFromFrame = (diff: Change[], frame: number) => {
   let codeToDisplay = ''
   let currentChangeIndex = 0
   let i = 0
@@ -172,7 +184,20 @@ function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
       break
     }
   }
+  return codeToDisplay
+}
 
+function CodeSequence({
+  diff,
+  lang,
+  jitterFrame,
+}: {
+  diff: Change[]
+  lang: string
+  jitterFrame: number[]
+}) {
+  const frame = useCurrentFrame()
+  const codeToDisplay = codeFromFrame(diff, jitterFrame[frame])
   return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
 }
 
@@ -214,13 +239,14 @@ export function snippetDurationInFrames(
   framesAtStart: number,
   framesAtEnd: number,
 ) {
+  const rand = createRandomSeed.create(markdown)
   const { steps } = getCodeFragments(markdown)
   let duration = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
     const diff = diffCode(steps[i].code, steps[i + 1].code)
-    duration +=
-      durationInFramesForDiff(diff) +
-      (i < steps.length - 2 ? framesBetweenSteps : 0)
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
+    duration += jitteredFrame.length
   }
   duration += framesAtEnd
   return duration
