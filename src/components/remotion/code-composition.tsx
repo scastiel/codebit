@@ -54,7 +54,6 @@ export function CodeVideo({
       <CodeSequence
         diff={diffCode(steps[0].code, steps[0].code)}
         lang={steps[0].lang}
-        fontSize={fontSize}
         jitterFrame={noJitterFrame(framesAtStart)}
       />
     </Sequence>,
@@ -66,12 +65,10 @@ export function CodeVideo({
     const nbRealFrame = durationInFramesForDiff(diff)
     const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
     const duration = jitteredFrame.length
-    console.log('jittered duration', duration)
     sequences.push(
       <Sequence durationInFrames={duration} from={from} key={i} layout="none">
         <CodeSequence
           diff={diff}
-          fontSize={fontSize}
           lang={steps[0].lang}
           jitterFrame={jitteredFrame}
         />
@@ -92,7 +89,6 @@ export function CodeVideo({
           steps[steps.length - 1].code,
         )}
         lang={steps[steps.length - 1].lang}
-        fontSize={fontSize}
         jitterFrame={[]}
       />
     </Sequence>,
@@ -193,12 +189,10 @@ const codeFromFrame = (diff: Change[], frame: number) => {
 
 function CodeSequence({
   diff,
-  fontSize,
   lang,
   jitterFrame,
 }: {
   diff: Change[]
-  fontSize: number
   lang: string
   jitterFrame: number[]
 }) {
