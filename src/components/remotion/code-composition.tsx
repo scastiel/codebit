@@ -1,5 +1,5 @@
-import { jitterFrame, noJitterFrame } from '@/utils/jitter'
 import { Change, diffChars } from 'diff'
+import { jitterFrame, noJitterFrame } from '../../utils/jitter'
 
 import GraphemeSplitter from 'grapheme-splitter'
 import { Code2 } from 'lucide-react'
