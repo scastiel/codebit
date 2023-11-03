@@ -4,46 +4,34 @@ import { ImportFromUrl } from '@/components/import-from-url'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { StepsProvider, useSteps } from '@/contexts/steps-context'
 import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { ExternalLink, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
-import { getCodeFragments } from '../lib/code-steps-utils'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   snippetId?: string
-  initialContent?: string
+  initialContent: string
   saveSnippetAction?: (code: string) => Promise<void>
   lastRenderId?: string | null
 }
 
-export function CodeEditor(props: Props) {
-  return (
-    <StepsProvider>
-      <CodeEditorWithContext {...props} />
-    </StepsProvider>
-  )
-}
-
-function CodeEditorWithContext({
+export function CodeEditor({
   snippetId,
   initialContent,
   saveSnippetAction,
   lastRenderId,
 }: Props) {
   const editorRef = useRef<any>(null)
-  const { id, steps, theme, updateSteps, updateTheme } = useSteps()
+  const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
 
   const preview = () => {
-    const { steps, metadata } = getCodeFragments(editorRef.current.getValue())
-    updateSteps(steps)
-    updateTheme(metadata.theme)
+    setMarkdown(editorRef.current.getValue())
   }
 
   useEffect(() => {
@@ -56,21 +44,8 @@ function CodeEditorWithContext({
   return (
     <div className="flex flex-col gap-4 p-4">
       <div ref={editorWrapperRef}>
-        {/* {steps.length > 0 && <CodeSteps key={id} />} */}
         {editorWidth > 0 && (
-          <SnippetPlayer
-            snippet={{
-              content:
-                `---\ntheme: ${theme}\n---\n\n` +
-                steps
-                  .map(
-                    (step) => `\`\`\`${step.lang}\n${step.code.trim()}\n\`\`\``,
-                  )
-                  .join('\n\n---\n\n'),
-            }}
-            width={editorWidth}
-            height={500}
-          />
+          <SnippetPlayer markdown={markdown} width={editorWidth} height={500} />
         )}
       </div>
       <div className="flex-shrink-0 gap-2 flex">
@@ -123,8 +98,9 @@ function CodeEditorWithContext({
       </Card>
       <div className="flex-shrink-0">
         <ImportFromUrl
-          onCodeFetched={(code) => {
+          onCodeFetched={async (code) => {
             editorRef.current?.setValue(code)
+            if (saveSnippetAction) await saveSnippetAction(code)
             preview()
           }}
         />

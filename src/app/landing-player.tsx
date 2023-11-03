@@ -20,7 +20,7 @@ export function LandingPlayer() {
       >
         {browser && width > 0 && height > 0 && (
           <SnippetPlayer
-            snippet={{ content: landingPageSnippet }}
+            markdown={landingPageSnippet}
             width={width}
             height={height}
             fontSize={fontSize}
