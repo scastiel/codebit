@@ -1,6 +1,5 @@
-import { Change, diffWordsWithSpace } from 'diff'
+import { Change, diffChars } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
-// import 'highlight.js/styles/github-dark.css'
 import { Code2 } from 'lucide-react'
 import Highlight from 'react-highlight'
 import {
@@ -19,10 +18,7 @@ const splitter = new GraphemeSplitter()
 function diffCode(from: string, to: string) {
   const reverseString = (str: string) =>
     splitter.splitGraphemes(str).reverse().join('')
-  return diffWordsWithSpace(
-    `\n${reverseString(from)}\n`,
-    `\n${reverseString(to)}\n`,
-  )
+  return diffChars(`\n${reverseString(from)}\n`, `\n${reverseString(to)}\n`)
     .reverse()
     .map((change, index, arr) => {
       let value = reverseString(change.value)
@@ -121,7 +117,11 @@ export function CodeVideo({
 
 function durationInFramesForDiff(diff: Change[]) {
   return diff
-    .map((change) => (change.added || change.removed ? change.value.length : 0))
+    .map((change) =>
+      change.added || change.removed
+        ? splitter.countGraphemes(change.value)
+        : 0,
+    )
     .reduce((a, b) => a + b, 0)
 }
 
@@ -136,29 +136,32 @@ function CodeSequence({ diff, lang }: { diff: Change[]; lang: string }) {
     if (change.added) {
       if (i > frame) {
         currentChangeIndex++
-      } else if (i > frame - change.value.length) {
-        codeToDisplay += change.value.slice(0, frame - i)
+      } else if (i > frame - splitter.countGraphemes(change.value)) {
+        codeToDisplay += splitter
+          .splitGraphemes(change.value)
+          .slice(0, frame - i)
+          .join('')
         i = frame
         currentChangeIndex++
       } else {
         codeToDisplay += change.value
         currentChangeIndex++
-        i += change.value.length
+        i += splitter.countGraphemes(change.value)
       }
     } else if (change.removed) {
       if (i > frame) {
         codeToDisplay += change.value
         currentChangeIndex++
-      } else if (i > frame - change.value.length) {
-        codeToDisplay += change.value.slice(
-          0,
-          change.value.length - (frame - i),
-        )
+      } else if (i > frame - splitter.countGraphemes(change.value)) {
+        codeToDisplay += splitter
+          .splitGraphemes(change.value)
+          .slice(0, splitter.countGraphemes(change.value) - (frame - i))
+          .join('')
         i = frame
         currentChangeIndex++
       } else {
         currentChangeIndex++
-        i += change.value.length
+        i += splitter.countGraphemes(change.value)
       }
     } else {
       codeToDisplay += change.value

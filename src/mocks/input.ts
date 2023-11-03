@@ -1,154 +1,132 @@
 export const input = `
 \`\`\`ts
-type User = { name: string }
+console.log("Hi there 👋")
+\`\`\`
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
+---
+
+\`\`\`ts
+
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("")
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+
+
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+
+console.log("")
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+
+console.log("Did you notice that this is *not* a video?")
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+
+console.log("Did you notice that this is *not* a video?")
+
+ 
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Ready to tell a story with your code?")
+
+console.log("Did you notice that this is *not* a video?")
+
+if (interested) {
+  
 }
 \`\`\`
 
 ---
 
 \`\`\`ts
-type User = { name: string }
+console.log("Ready to tell a story with your code?")
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
-  // ⛔️ \`user\` can be anything!
+console.log("Did you notice that this is *not* a video?")
+
+if (interested) {
+  console.log("")
 }
 \`\`\`
 
 ---
 
 \`\`\`ts
-type User = { name: string }
+console.log("Ready to tell a story with your code?")
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
+console.log("Did you notice that this is *not* a video?")
+
+if (interested) {
+  console.log("Enter your email to know when we go public!")
 }
 \`\`\`
 
 ---
 
 \`\`\`ts
-// Let’s use a Zod schema to define the User type
-type User = { name: string }
+console.log("Ready to tell a story with your code?")
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
+console.log("Did you notice that this is *not* a video?")
+
+if (interested) {
+  console.log("Enter your email to know when we go public!")
+  // 👇
 }
 \`\`\`
 
 ---
 
 \`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = { name: string }
+console.log("Ready to tell a story with your code?")
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
+console.log("Did you notice that this is *not* a video?")
+
+if (interested) {
+  console.log("Enter your email to know when we go public!")
+  // 👇👇
 }
 \`\`\`
 
 ---
 
 \`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
+console.log("Ready to tell a story with your code?")
 
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
-}
-\`\`\`
+console.log("Did you notice that this is *not* a video?")
 
----
-
-\`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
-
-// Let’s define the parameter as \`unknown\`
-export async function createUser(user: User) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
-}
-\`\`\`
-
----
-
-\`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
-
-// Let’s define the parameter as \`unknown\`
-export async function createUser(param: unknown) {
-  'use server'
-  console.log(\`User name: \${user.name}\`)
-}
-\`\`\`
-
----
-
-\`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
-
-// Let’s define the parameter as \`unknown\`
-export async function createUser(param: unknown) {
-  'use server'
-  // We can parse \`params\` with the schema
-  console.log(\`User name: \${user.name}\`)
-}
-\`\`\`
-
----
-
-\`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
-
-// Let’s define the parameter as \`unknown\`
-export async function createUser(param: unknown) {
-  'use server'
-  // We can parse \`params\` with the schema
-  const user = userSchema.parse(param)
-  console.log(\`User name: \${user.name}\`)
-}
-\`\`\`
-
----
-
-\`\`\`ts
-// Let’s use a Zod schema to define the User type
-import z from 'zod'
-const userSchema = z.object({ name: z.string() })
-type User = z.infer<typeof userSchema>
-
-// Let’s define the parameter as \`unknown\`
-export async function createUser(param: unknown) {
-  'use server'
-  // We can parse \`params\` with the schema
-  const user = userSchema.parse(param)
-  // ✅ \`user\` is a User!
-  console.log(\`User name: \${user.name}\`)
+if (interested) {
+  console.log("Enter your email to know when we go public!")
+  // 👇👇👇
 }
 \`\`\`
 
