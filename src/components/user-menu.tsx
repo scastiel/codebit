@@ -20,7 +20,7 @@ export async function UserMenu({ user }: Props) {
       </h1>
       <div className="flex-1"></div>
       {user ? (
-        <>
+        <div className="text-sm flex gap-3 items-center">
           {user?.image && (
             <Image
               className="rounded-full"
@@ -30,15 +30,11 @@ export async function UserMenu({ user }: Props) {
               height={24}
             />
           )}
-          <span className="text-sm">{user.name ?? user.email}</span>
-          <Button variant="ghost">
-            <Link href="/my/snippets">My snippets</Link>
-          </Button>
-          <Button variant="ghost">
-            <Link href="/my/renders">My renders</Link>
-          </Button>
+          <span>{user.name ?? user.email}</span>
+          <Link href="/my/snippets">My snippets</Link>
+          <Link href="/my/renders">My renders</Link>
           <SignoutButton />
-        </>
+        </div>
       ) : (
         <Button variant="ghost">
           <Link href="/my">Sign in</Link>

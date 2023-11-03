@@ -1,7 +1,7 @@
 'use client'
+import { useIsBrowser } from '@/lib/hooks'
 import { Snippet } from '@prisma/client'
 import { useWindowSize } from '@react-hook/window-size'
-import { useEffect, useState } from 'react'
 import { SnippetPlayer } from '../../components/snippet-player'
 
 type Props = {
@@ -10,9 +10,7 @@ type Props = {
 
 export function PublicSnippetPageClient({ snippet }: Props) {
   const [width, height] = useWindowSize()
-  const [browser, setBrowser] = useState(false)
-
-  useEffect(() => setBrowser(true), [])
+  const browser = useIsBrowser()
 
   if (!browser) return null
 

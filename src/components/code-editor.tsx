@@ -8,7 +8,7 @@ import { StepsProvider, useSteps } from '@/contexts/steps-context'
 import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
@@ -74,14 +74,15 @@ function CodeEditorWithContext({
         )}
       </div>
       <div className="flex-shrink-0 gap-2 flex">
-        <Button onClick={preview} variant="secondary">
-          Preview
-        </Button>
         {saveSnippetAction && (
           <Button
-            onClick={() => saveSnippetAction(editorRef.current.getValue())}
+            onClick={async () => {
+              await saveSnippetAction(editorRef.current.getValue())
+              preview()
+            }}
             variant="secondary"
           >
+            <Save className="mr-2 h-4 w-4" />
             Save
           </Button>
         )}
@@ -92,10 +93,9 @@ function CodeEditorWithContext({
                 href={`/${snippetId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex gap-2"
               >
-                <ExternalLink className="w-4 h-4" />
-                <span>Public URL</span>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Share
               </Link>
             </Button>
             <GenerateButton

@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <PlausibleProvider domain="codevideo.vercel.app" trackOutboundLinks />
-      <body className="min-h-screen flex flex-col dark:bg-gradient-to-br dark:from-slate-950 dark:to-slate-800">
+      <body className="min-h-[100dvh] flex flex-col dark:bg-gradient-to-br dark:from-slate-950 dark:to-slate-800">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

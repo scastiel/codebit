@@ -24,7 +24,7 @@ export default async function Home() {
         <LandingPlayer />
         <SignupBetaForm signUpAction={signUpAction} />
       </main>
-      <footer className="text-slate-400 [&_a]:text-white text-center p-2 text-sm">
+      <footer className="text-slate-400 [&_a]:text-white text-center p-2 text-xs sm:text-sm mt-16">
         Made with ♥ in Montreal by{' '}
         <a
           target="_blank"
