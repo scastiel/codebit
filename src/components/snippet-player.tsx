@@ -10,14 +10,18 @@ export function SnippetPlayer({
   width,
   height,
   fontSize,
-  autoMode,
-  watermark,
+  autoPlay = false,
+  loop = false,
+  controls = true,
+  watermark = true,
 }: {
   markdown: string
   width: number
   height: number
   fontSize?: number
-  autoMode?: boolean
+  autoPlay?: boolean
+  loop?: boolean
+  controls?: boolean
   watermark?: boolean
 }) {
   const framesBetweenSteps = 10
@@ -45,10 +49,10 @@ export function SnippetPlayer({
       compositionHeight={height}
       fps={30}
       style={{ width, height }}
-      loop={autoMode}
+      loop={loop}
       clickToPlay={false}
-      autoPlay={autoMode}
-      controls={!autoMode}
+      autoPlay={autoPlay}
+      controls={controls}
       allowFullscreen={false}
       moveToBeginningWhenEnded={false}
       showVolumeControls={false}

@@ -24,7 +24,9 @@ export function LandingPlayer() {
             width={width}
             height={height}
             fontSize={fontSize}
-            autoMode
+            autoPlay
+            loop
+            controls={false}
             watermark={false}
           />
         )}
