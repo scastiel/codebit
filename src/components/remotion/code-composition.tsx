@@ -10,7 +10,7 @@ import {
   useCurrentFrame,
 } from 'remotion'
 import { getCodeFragments } from '../../lib/code-steps-utils'
-import { input } from '../../mocks/input'
+import { landingPageSnippet } from '../../lib/landing-page-snippet'
 import './style.css'
 
 const splitter = new GraphemeSplitter()
@@ -185,7 +185,7 @@ export function CodeComposition() {
       width={1280}
       height={720}
       defaultProps={{
-        markdown: input,
+        markdown: landingPageSnippet,
         framesBetweenSteps: 10,
         framesAtStart: 20,
         framesAtEnd: 30,

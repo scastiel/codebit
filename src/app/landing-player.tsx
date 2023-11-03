@@ -1,5 +1,6 @@
 'use client'
 import { SnippetPlayer } from '@/components/snippet-player'
+import { landingPageSnippet } from '@/lib/landing-page-snippet'
 import useSize from '@react-hook/size'
 import { useEffect, useRef, useState } from 'react'
 
@@ -20,7 +21,7 @@ export function LandingPlayer() {
       >
         {browser && width > 0 && height > 0 && (
           <SnippetPlayer
-            snippet={{ content: snippet }}
+            snippet={{ content: landingPageSnippet }}
             width={width}
             height={height}
             fontSize={fontSize}
@@ -32,136 +33,3 @@ export function LandingPlayer() {
     </div>
   )
 }
-
-const snippet = `
-\`\`\`ts
-console.log("Hi there 👋")
-\`\`\`
-
----
-
-\`\`\`ts
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  console.log("")
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  console.log("Enter your email to know when we go public!")
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  console.log("Enter your email to know when we go public!")
-  // 👇
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  console.log("Enter your email to know when we go public!")
-  // 👇 👇
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code?")
-
-console.log("Did you notice that this is *not* a video?")
-
-if (interested) {
-  console.log("Enter your email to know when we go public!")
-  // 👇 👇 👇
-}
-\`\`\`
-`
