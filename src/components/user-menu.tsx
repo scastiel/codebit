@@ -36,7 +36,7 @@ export async function UserMenu({ user }: Props) {
           <SignoutButton />
         </div>
       ) : (
-        <Button variant="ghost">
+        <Button variant="ghost" asChild>
           <Link href="/my">Sign in</Link>
         </Button>
       )}
