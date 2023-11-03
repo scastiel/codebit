@@ -119,7 +119,7 @@ export function CodeVideo({
         <p className="watermark">
           Generated with
           <a
-            href="https://codevideo.vercel.app"
+            href={process.env.NEXT_PUBLIC_BASE_URL}
             target="_blank"
             rel="noopener noreferrer"
           >
