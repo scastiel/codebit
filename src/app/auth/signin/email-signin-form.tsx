@@ -42,6 +42,7 @@ export function EmailSigninForm({ callbackUrl }: { callbackUrl: string }) {
           placeholder="your@email.com"
           required
           disabled={pending}
+          className="text-base"
         />
         <Button type="submit" disabled={pending}>
           {pending ? (
