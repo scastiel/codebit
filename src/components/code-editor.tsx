@@ -40,70 +40,78 @@ export function CodeEditor({
   }, [editorHeight])
 
   const { theme: appTheme } = useTheme()
+  const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div ref={editorWrapperRef}>
+    <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
+      <div ref={editorWrapperRef} className="lg:w-1/3">
         {editorWidth > 0 && (
-          <SnippetPlayer markdown={markdown} width={editorWidth} height={500} />
+          <SnippetPlayer
+            markdown={markdown}
+            width={editorWidth}
+            height={Math.round((editorWidth * 9) / 16)}
+            fontSize={fontSize}
+          />
         )}
       </div>
-      <div className="flex-shrink-0 gap-2 flex">
-        {saveSnippetAction && (
-          <Button
-            onClick={async () => {
-              await saveSnippetAction(editorRef.current.getValue())
+      <div className="flex flex-col gap-2 flex-1">
+        <div className="flex-shrink-0 gap-2 flex">
+          {saveSnippetAction && (
+            <Button
+              onClick={async () => {
+                await saveSnippetAction(editorRef.current.getValue())
+                preview()
+              }}
+              variant="secondary"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          )}
+          {snippetId && (
+            <>
+              <Button variant="secondary" asChild>
+                <Link
+                  href={`/${snippetId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Share
+                </Link>
+              </Button>
+              <GenerateButton
+                initialRenderId={lastRenderId ?? null}
+                snippetId={snippetId}
+              />
+            </>
+          )}
+        </div>
+        <Card className="flex-1 overflow-hidden">
+          <Editor
+            defaultLanguage="markdown"
+            defaultValue={initialContent ?? ''}
+            onMount={(editor, monaco) => {
+              monaco.editor.defineTheme('github', githubLight as any)
+              monaco.editor.defineTheme('github-dark', githubDark as any)
+              monaco.editor.setTheme(
+                appTheme === 'dark' ? 'github-dark' : 'github',
+              )
+              editorRef.current = editor
               preview()
             }}
-            variant="secondary"
-          >
-            <Save className="mr-2 h-4 w-4" />
-            Save
-          </Button>
-        )}
-        {snippetId && (
-          <>
-            <Button variant="secondary" asChild>
-              <Link
-                href={`/${snippetId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Share
-              </Link>
-            </Button>
-            <GenerateButton
-              initialRenderId={lastRenderId ?? null}
-              snippetId={snippetId}
-            />
-          </>
-        )}
-      </div>
-      <Card className="flex-1 overflow-hidden">
-        <Editor
-          defaultLanguage="markdown"
-          defaultValue={initialContent ?? ''}
-          onMount={(editor, monaco) => {
-            monaco.editor.defineTheme('github', githubLight as any)
-            monaco.editor.defineTheme('github-dark', githubDark as any)
-            monaco.editor.setTheme(
-              appTheme === 'dark' ? 'github-dark' : 'github',
-            )
-            editorRef.current = editor
-            preview()
-          }}
-          options={{ lineNumbers: 'off', minimap: { enabled: false } }}
-        />
-      </Card>
-      <div className="flex-shrink-0">
-        <ImportFromUrl
-          onCodeFetched={async (code) => {
-            editorRef.current?.setValue(code)
-            if (saveSnippetAction) await saveSnippetAction(code)
-            preview()
-          }}
-        />
+            options={{ lineNumbers: 'off', minimap: { enabled: false } }}
+          />
+        </Card>
+        <div className="flex-shrink-0">
+          <ImportFromUrl
+            onCodeFetched={async (code) => {
+              editorRef.current?.setValue(code)
+              if (saveSnippetAction) await saveSnippetAction(code)
+              preview()
+            }}
+          />
+        </div>
       </div>
     </div>
   )
