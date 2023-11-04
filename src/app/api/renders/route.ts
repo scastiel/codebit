@@ -1,4 +1,3 @@
-import { getCompositionData } from '@/components/remotion/composition-data'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
@@ -39,12 +38,6 @@ export async function POST(req: Request) {
 }
 
 async function triggerRender(snippet: Snippet) {
-  const compositionData = getCompositionData({
-    framesAtStart: 20,
-    framesAtEnd: 30,
-    framesBetweenSteps: 10,
-    markdown: snippet.content,
-  })
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,
     functionName: env.REMOTION_AWS_FUNCTION_NAME,
@@ -52,7 +45,10 @@ async function triggerRender(snippet: Snippet) {
     serveUrl: env.REMOTION_SERVE_URL,
     codec: 'h264',
     inputProps: {
-      compositionData: compositionData,
+      framesAtStart: 20,
+      framesAtEnd: 30,
+      framesBetweenSteps: 10,
+      markdown: snippet.content,
     },
     webhook: {
       url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,

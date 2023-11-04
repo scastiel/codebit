@@ -39,7 +39,10 @@ export function SnippetPlayer({
     <Player
       component={CodeVideo}
       inputProps={{
-        compositionData: compositionData,
+        framesAtStart,
+        framesAtEnd,
+        framesBetweenSteps,
+        markdown,
         fontSize: fontSize ?? 16,
         watermark,
       }}

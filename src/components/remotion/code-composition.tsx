@@ -1,5 +1,5 @@
 import { Code2 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
@@ -18,17 +18,34 @@ import { loadFonts } from './load-fonts'
 import './style.css'
 
 export function CodeVideo({
-  compositionData: { sequences, metadata },
+  framesAtStart,
+  framesAtEnd,
+  framesBetweenSteps,
+  markdown,
   fontSize,
   watermark = true,
 }: {
-  compositionData: CompositionData
+  framesBetweenSteps: number
+  framesAtStart: number
+  framesAtEnd: number
+  markdown: string
   fontSize: number
   watermark?: boolean
 }) {
   useEffect(() => {
     loadFonts()
   }, [])
+
+  const { metadata, sequences } = useMemo(
+    () =>
+      getCompositionData({
+        framesAtStart,
+        framesAtEnd,
+        framesBetweenSteps,
+        markdown,
+      }),
+    [framesAtStart, framesAtEnd, framesBetweenSteps, markdown],
+  )
 
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
@@ -109,16 +126,24 @@ export function CodeComposition() {
       height={720}
       defaultProps={{
         fontSize: 24,
-        compositionData: getCompositionData({
-          framesAtStart: 20,
-          framesAtEnd: 30,
-          framesBetweenSteps: 10,
-          markdown: landingPageSnippet,
-        }),
+        framesAtStart: 20,
+        framesAtEnd: 30,
+        framesBetweenSteps: 10,
+        markdown: landingPageSnippet,
       }}
-      calculateMetadata={async ({ props: { compositionData } }) => ({
-        durationInFrames: compositionDurationInFrames(compositionData),
-      })}
+      calculateMetadata={async ({
+        props: { framesAtStart, framesAtEnd, framesBetweenSteps, markdown },
+      }) => {
+        const compositionData = getCompositionData({
+          framesAtStart,
+          framesAtEnd,
+          framesBetweenSteps,
+          markdown,
+        })
+        return {
+          durationInFrames: compositionDurationInFrames(compositionData),
+        }
+      }}
     />
   )
 }
