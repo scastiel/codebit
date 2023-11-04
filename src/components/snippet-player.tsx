@@ -1,8 +1,9 @@
 'use client'
+import { CodeVideo } from '@/components/remotion/code-composition'
 import {
-  CodeVideo,
-  snippetDurationInFrames,
-} from '@/components/remotion/code-composition'
+  compositionDurationInFrames,
+  getCompositionData,
+} from '@/components/remotion/composition-data'
 import { Player } from '@remotion/player'
 
 export function SnippetPlayer({
@@ -28,23 +29,21 @@ export function SnippetPlayer({
   const framesAtStart = 20
   const framesAtEnd = 30
 
+  const compositionData = getCompositionData({
+    framesAtStart,
+    framesAtEnd,
+    framesBetweenSteps,
+    markdown,
+  })
   return (
     <Player
       component={CodeVideo}
       inputProps={{
-        markdown,
-        framesBetweenSteps,
-        framesAtStart,
-        framesAtEnd,
+        compositionData: compositionData,
         fontSize: fontSize ?? 16,
         watermark,
       }}
-      durationInFrames={snippetDurationInFrames(
-        markdown,
-        framesBetweenSteps,
-        framesAtStart,
-        framesAtEnd,
-      )}
+      durationInFrames={compositionDurationInFrames(compositionData)}
       compositionWidth={width}
       compositionHeight={height}
       fps={30}

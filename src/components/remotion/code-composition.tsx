@@ -1,7 +1,4 @@
-import { Change, diffChars } from 'diff'
-import GraphemeSplitter from 'grapheme-splitter'
 import { Code2 } from 'lucide-react'
-import createRandomSeed from 'random-seed'
 import { useEffect } from 'react'
 import Highlight from 'react-highlight'
 import {
@@ -11,93 +8,27 @@ import {
   staticFile,
   useCurrentFrame,
 } from 'remotion'
-import { getCodeFragments } from '../../lib/code-steps-utils'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
-import { jitterFrame, noJitterFrame } from '../../utils/jitter'
+import {
+  CompositionData,
+  compositionDurationInFrames,
+  getCompositionData,
+} from './composition-data'
 import { loadFonts } from './load-fonts'
 import './style.css'
 
-const splitter = new GraphemeSplitter()
-
-function diffCode(from: string, to: string) {
-  const reverseString = (str: string) =>
-    splitter.splitGraphemes(str).reverse().join('')
-  return diffChars(`\n${reverseString(from)}\n`, `\n${reverseString(to)}\n`)
-    .reverse()
-    .map((change, index, arr) => {
-      let value = reverseString(change.value)
-      if (index === 0) value = value.replace(/^\n/, '')
-      if (index === arr.length - 1) value = value.replace(/\n$/, '')
-      return { ...change, value }
-    })
-}
-
 export function CodeVideo({
-  markdown,
-  framesBetweenSteps,
-  framesAtStart,
-  framesAtEnd,
+  compositionData: { sequences, metadata },
   fontSize,
   watermark = true,
 }: {
-  markdown: string
-  framesBetweenSteps: number
-  framesAtStart: number
-  framesAtEnd: number
+  compositionData: CompositionData
   fontSize: number
   watermark?: boolean
 }) {
-  const { metadata, steps } = getCodeFragments(markdown)
-  const rand = createRandomSeed.create(markdown)
-
   useEffect(() => {
     loadFonts()
   }, [])
-
-  const sequences = [
-    <Sequence durationInFrames={framesAtStart} layout="none" key={-1}>
-      <CodeSequence
-        diff={diffCode(steps[0].code, steps[0].code)}
-        lang={steps[0].lang}
-        jitterFrame={noJitterFrame(framesAtStart)}
-      />
-    </Sequence>,
-  ]
-  let from = framesAtStart
-
-  for (let i = 0; i < steps.length - 1; i++) {
-    const diff = diffCode(steps[i].code, steps[i + 1].code)
-    const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
-    const duration = jitteredFrame.length
-    sequences.push(
-      <Sequence durationInFrames={duration} from={from} key={i} layout="none">
-        <CodeSequence
-          diff={diff}
-          lang={steps[0].lang}
-          jitterFrame={jitteredFrame}
-        />
-      </Sequence>,
-    )
-    from += duration
-  }
-  sequences.push(
-    <Sequence
-      durationInFrames={framesAtEnd}
-      from={from}
-      layout="none"
-      key={steps.length}
-    >
-      <CodeSequence
-        diff={diffCode(
-          steps[steps.length - 1].code,
-          steps[steps.length - 1].code,
-        )}
-        lang={steps[steps.length - 1].lang}
-        jitterFrame={[]}
-      />
-    </Sequence>,
-  )
 
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
@@ -115,7 +46,7 @@ export function CodeVideo({
               <circle cx="400" cy="50" r="50" fill="#27cd41" />
             </svg>
           </div>
-          {sequences}
+          <CodeSequences sequences={sequences} />
         </div>
       </div>
       {watermark && (
@@ -134,76 +65,38 @@ export function CodeVideo({
   )
 }
 
-function durationInFramesForDiff(diff: Change[]) {
-  return diff
-    .map((change) =>
-      change.added || change.removed
-        ? splitter.countGraphemes(change.value)
-        : 0,
-    )
-    .reduce((a, b) => a + b, 0)
-}
+function CodeSequences({
+  sequences: seqs,
+}: {
+  sequences: CompositionData['sequences']
+}) {
+  const sequences = seqs.map((seq, i) => (
+    <Sequence
+      durationInFrames={seq.durationInFrames}
+      from={seq.from}
+      layout="none"
+      key={i}
+    >
+      <CodeSequence
+        lang={seq.lang}
+        codeForFrame={(frame) => seq.frames[frame]}
+      />
+    </Sequence>
+  ))
 
-const codeFromFrame = (diff: Change[], frame: number) => {
-  let codeToDisplay = ''
-  let currentChangeIndex = 0
-  let i = 0
-  while (true) {
-    const change = diff[currentChangeIndex]
-    if (change.added) {
-      if (i > frame) {
-        currentChangeIndex++
-      } else if (i > frame - splitter.countGraphemes(change.value)) {
-        codeToDisplay += splitter
-          .splitGraphemes(change.value)
-          .slice(0, frame - i)
-          .join('')
-        i = frame
-        currentChangeIndex++
-      } else {
-        codeToDisplay += change.value
-        currentChangeIndex++
-        i += splitter.countGraphemes(change.value)
-      }
-    } else if (change.removed) {
-      if (i > frame) {
-        codeToDisplay += change.value
-        currentChangeIndex++
-      } else if (i > frame - splitter.countGraphemes(change.value)) {
-        codeToDisplay += splitter
-          .splitGraphemes(change.value)
-          .slice(0, splitter.countGraphemes(change.value) - (frame - i))
-          .join('')
-        i = frame
-        currentChangeIndex++
-      } else {
-        currentChangeIndex++
-        i += splitter.countGraphemes(change.value)
-      }
-    } else {
-      codeToDisplay += change.value
-      currentChangeIndex++
-    }
-
-    if (currentChangeIndex === diff.length) {
-      break
-    }
-  }
-  return codeToDisplay
+  return <>{sequences}</>
 }
 
 function CodeSequence({
-  diff,
   lang,
-  jitterFrame,
+  codeForFrame,
 }: {
-  diff: Change[]
   lang: string
-  jitterFrame: number[]
+  codeForFrame: (frame: number) => string
 }) {
   const frame = useCurrentFrame()
-  const codeToDisplay = codeFromFrame(diff, jitterFrame[frame])
-  return <Highlight className={`language-${lang}`}>{codeToDisplay}</Highlight>
+  const code = codeForFrame(frame)
+  return <Highlight className={`language-${lang}`}>{code}</Highlight>
 }
 
 export function CodeComposition() {
@@ -215,44 +108,17 @@ export function CodeComposition() {
       width={1280}
       height={720}
       defaultProps={{
-        markdown: landingPageSnippet,
-        framesBetweenSteps: 10,
-        framesAtStart: 20,
-        framesAtEnd: 30,
         fontSize: 24,
+        compositionData: getCompositionData({
+          framesAtStart: 20,
+          framesAtEnd: 30,
+          framesBetweenSteps: 10,
+          markdown: landingPageSnippet,
+        }),
       }}
-      calculateMetadata={async ({
-        props: { markdown },
-        defaultProps: { framesBetweenSteps, framesAtStart, framesAtEnd },
-      }) => {
-        return {
-          durationInFrames: snippetDurationInFrames(
-            markdown,
-            framesBetweenSteps,
-            framesAtStart,
-            framesAtEnd,
-          ),
-        }
-      }}
+      calculateMetadata={async ({ props: { compositionData } }) => ({
+        durationInFrames: compositionDurationInFrames(compositionData),
+      })}
     />
   )
-}
-
-export function snippetDurationInFrames(
-  markdown: string,
-  framesBetweenSteps: number,
-  framesAtStart: number,
-  framesAtEnd: number,
-) {
-  const rand = createRandomSeed.create(markdown)
-  const { steps } = getCodeFragments(markdown)
-  let duration = framesAtStart
-  for (let i = 0; i < steps.length - 1; i++) {
-    const diff = diffCode(steps[i].code, steps[i + 1].code)
-    const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
-    duration += jitteredFrame.length
-  }
-  duration += framesAtEnd
-  return duration
 }

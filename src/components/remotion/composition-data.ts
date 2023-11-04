@@ -1,0 +1,154 @@
+import { Change, diffChars } from 'diff'
+import GraphemeSplitter from 'grapheme-splitter'
+import randomSeed from 'random-seed'
+import { getCodeFragments } from '../../lib/code-steps-utils'
+import { jitterFrame, noJitterFrame } from '../../utils/jitter'
+
+const splitter = new GraphemeSplitter()
+
+export function getCompositionData({
+  framesAtStart,
+  framesAtEnd,
+  framesBetweenSteps,
+  markdown,
+}: {
+  framesBetweenSteps: number
+  framesAtStart: number
+  framesAtEnd: number
+  markdown: string
+}) {
+  const { steps, metadata } = getCodeFragments(markdown)
+  const rand = randomSeed.create(markdown)
+
+  const sequences: {
+    durationInFrames: number
+    from?: number
+    frames: string[]
+    lang: string
+  }[] = []
+
+  sequences.push({
+    durationInFrames: framesAtStart,
+    frames: Array.from(Array(framesAtStart)).map(() =>
+      codeFromFrame(
+        diffCode(steps[0].code, steps[0].code),
+        noJitterFrame(framesAtStart)[0],
+      ),
+    ),
+    lang: steps[0].lang,
+  })
+
+  let from = framesAtStart
+
+  for (let i = 0; i < steps.length - 1; i++) {
+    const diff = diffCode(steps[i].code, steps[i + 1].code)
+    const nbRealFrame = durationInFramesForDiff(diff)
+    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
+    const duration = jitteredFrame.length
+
+    sequences.push({
+      durationInFrames: duration,
+      from,
+      frames: Array.from(Array(duration)).map((_, frame) =>
+        codeFromFrame(diff, jitteredFrame[frame]),
+      ),
+      lang: steps[i].lang,
+    })
+
+    from += duration
+  }
+
+  sequences.push({
+    durationInFrames: framesAtEnd,
+    from,
+    frames: Array.from(Array(framesAtEnd)).map(() =>
+      codeFromFrame(
+        diffCode(steps[steps.length - 1].code, steps[steps.length - 1].code),
+        noJitterFrame(framesAtStart)[0],
+      ),
+    ),
+    lang: steps[steps.length - 1].lang,
+  })
+
+  return { sequences, metadata }
+}
+
+export type CompositionData = ReturnType<typeof getCompositionData>
+
+function codeFromFrame(diff: Change[], frame: number) {
+  let codeToDisplay = ''
+  let currentChangeIndex = 0
+  let i = 0
+  while (true) {
+    const change = diff[currentChangeIndex]
+    if (change.added) {
+      if (i > frame) {
+        currentChangeIndex++
+      } else if (i > frame - splitter.countGraphemes(change.value)) {
+        codeToDisplay += splitter
+          .splitGraphemes(change.value)
+          .slice(0, frame - i)
+          .join('')
+        i = frame
+        currentChangeIndex++
+      } else {
+        codeToDisplay += change.value
+        currentChangeIndex++
+        i += splitter.countGraphemes(change.value)
+      }
+    } else if (change.removed) {
+      if (i > frame) {
+        codeToDisplay += change.value
+        currentChangeIndex++
+      } else if (i > frame - splitter.countGraphemes(change.value)) {
+        codeToDisplay += splitter
+          .splitGraphemes(change.value)
+          .slice(0, splitter.countGraphemes(change.value) - (frame - i))
+          .join('')
+        i = frame
+        currentChangeIndex++
+      } else {
+        currentChangeIndex++
+        i += splitter.countGraphemes(change.value)
+      }
+    } else {
+      codeToDisplay += change.value
+      currentChangeIndex++
+    }
+
+    if (currentChangeIndex === diff.length) {
+      break
+    }
+  }
+  return codeToDisplay
+}
+
+function diffCode(from: string, to: string) {
+  const reverseString = (str: string) =>
+    splitter.splitGraphemes(str).reverse().join('')
+  return diffChars(`\n${reverseString(from)}\n`, `\n${reverseString(to)}\n`)
+    .reverse()
+    .map((change, index, arr) => {
+      let value = reverseString(change.value)
+      if (index === 0) value = value.replace(/^\n/, '')
+      if (index === arr.length - 1) value = value.replace(/\n$/, '')
+      return { ...change, value }
+    })
+}
+
+function durationInFramesForDiff(diff: Change[]) {
+  return diff
+    .map((change) =>
+      change.added || change.removed
+        ? splitter.countGraphemes(change.value)
+        : 0,
+    )
+    .reduce((a, b) => a + b, 0)
+}
+
+export function compositionDurationInFrames(compositionData: CompositionData) {
+  const sequences = compositionData.sequences
+  if (sequences.length === 0) return 1
+  const lastSequence = sequences[sequences.length - 1]
+  return lastSequence.from! + lastSequence.durationInFrames
+}
