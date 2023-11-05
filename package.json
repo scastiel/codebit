@@ -30,6 +30,7 @@
     "@remotion/cli": "4.0.59",
     "@remotion/lambda": "4.0.59",
     "@remotion/player": "4.0.59",
+    "@total-typescript/ts-reset": "^0.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "diff": "^5.1.0",

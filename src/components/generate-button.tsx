@@ -4,6 +4,7 @@ import { Download, FileVideo, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, useEffect, useState } from 'react'
 import useSWR from 'swr'
+import { z } from 'zod'
 
 type Props = {
   initialRenderId: string | null
@@ -55,7 +56,10 @@ export function GenerateButton({
         setStatus('starting')
         fetch(`/api/renders?snippetId=${snippetId}`, { method: 'POST' })
           .then((res) => res.json())
-          .then(({ renderId }) => setRenderId(renderId))
+          .then((res) => {
+            const { renderId } = z.object({ renderId: z.string() }).parse(res)
+            setRenderId(renderId)
+          })
         setRenderId(renderId)
       }}
     >

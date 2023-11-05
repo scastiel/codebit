@@ -10,9 +10,12 @@ export function getCodeFragments(markdown: string): {
   const metadata: Metadata = metadataParseResult.success
     ? metadataParseResult.data
     : metadataSchema.parse({})
-  const steps = body.split(/\n+---\n+/).map((page) => {
-    const [, lang, code] = page.match(/```([^\n]*)\n(.*)```/s) ?? []
-    return { lang, code }
-  })
+  const steps = body
+    .split(/\n+---\n+/)
+    .map((page) => {
+      const [, lang, code] = page.match(/```([^\n]*)\n(.*?)```/s) ?? []
+      return code ? { lang, code } : null
+    })
+    .filter(Boolean)
   return { steps, metadata }
 }
