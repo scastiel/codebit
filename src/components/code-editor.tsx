@@ -10,13 +10,15 @@ import useSize from '@react-hook/size'
 import { ExternalLink, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 type Props = {
   snippetId?: string
   initialContent: string
   saveSnippetAction?: (code: string) => Promise<void>
   lastRenderId?: string | null
+  toolbarRef: MutableRefObject<HTMLDivElement | null>
 }
 
 export function CodeEditor({
@@ -24,6 +26,7 @@ export function CodeEditor({
   initialContent,
   saveSnippetAction,
   lastRenderId,
+  toolbarRef,
 }: Props) {
   const editorRef = useRef<any>(null)
   const [markdown, setMarkdown] = useState(initialContent)
@@ -59,38 +62,42 @@ export function CodeEditor({
         </div>
       </div>
       <div className="flex flex-col gap-2 flex-1">
-        <div className="flex-shrink-0 gap-2 flex">
-          {saveSnippetAction && (
-            <Button
-              onClick={async () => {
-                await saveSnippetAction(editorRef.current.getValue())
-                preview()
-              }}
-              variant="secondary"
-            >
-              <Save className="mr-2 h-4 w-4" />
-              Save
-            </Button>
-          )}
-          {snippetId && (
+        {toolbarRef.current &&
+          createPortal(
             <>
-              <Button variant="secondary" asChild>
-                <Link
-                  href={`/${snippetId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              {saveSnippetAction && (
+                <Button
+                  onClick={async () => {
+                    await saveSnippetAction(editorRef.current.getValue())
+                    preview()
+                  }}
+                  variant="secondary"
                 >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Share
-                </Link>
-              </Button>
-              <GenerateButton
-                initialRenderId={lastRenderId ?? null}
-                snippetId={snippetId}
-              />
-            </>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save
+                </Button>
+              )}
+              {snippetId && (
+                <>
+                  <Button variant="secondary" asChild>
+                    <Link
+                      href={`/${snippetId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Share
+                    </Link>
+                  </Button>
+                  <GenerateButton
+                    initialRenderId={lastRenderId ?? null}
+                    snippetId={snippetId}
+                  />
+                </>
+              )}
+            </>,
+            toolbarRef.current,
           )}
-        </div>
         <Card className="flex-1 overflow-hidden">
           <Editor
             defaultLanguage="markdown"
