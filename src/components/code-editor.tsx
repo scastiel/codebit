@@ -51,10 +51,9 @@ export function CodeEditor({
         <div className="overflow-hidden rounded-[8px]">
           {editorWidth > 0 && (
             <SnippetPlayer
-              markdown={markdown}
+              options={{ markdown, fontSize }}
               width={editorWidth - 4}
               height={Math.round((editorWidth * 9) / 16)}
-              fontSize={fontSize}
             />
           )}
         </div>

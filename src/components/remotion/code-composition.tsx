@@ -17,33 +17,33 @@ import {
 import { loadFonts } from './load-fonts'
 import './style.css'
 
-export function CodeVideo({
-  framesAtStart,
-  framesAtEnd,
-  framesBetweenSteps,
-  markdown,
-  fontSize,
-  watermark = true,
-}: {
-  framesBetweenSteps: number
-  framesAtStart: number
-  framesAtEnd: number
+export type CodeVideoOptions = {
+  framesBetweenSteps?: number
+  framesAtStart?: number
+  framesAtEnd?: number
   markdown: string
   fontSize: number
-  watermark?: boolean
-}) {
+  watermark?: 'generated' | 'get-your-own' | 'none'
+}
+
+type CodeVideoProps = { options: CodeVideoOptions }
+
+export function CodeVideo({ options }: CodeVideoProps) {
   useEffect(() => {
     loadFonts()
   }, [])
 
+  const {
+    framesAtStart = 20,
+    framesAtEnd = 30,
+    framesBetweenSteps = 10,
+    markdown,
+    fontSize,
+    watermark = 'generated',
+  } = options
+
   const { metadata, sequences } = useMemo(
-    () =>
-      getCompositionData({
-        framesAtStart,
-        framesAtEnd,
-        framesBetweenSteps,
-        markdown,
-      }),
+    () => getCompositionData(options),
     [framesAtStart, framesAtEnd, framesBetweenSteps, markdown],
   )
 
@@ -66,9 +66,13 @@ export function CodeVideo({
           <CodeSequences sequences={sequences} />
         </div>
       </div>
-      {watermark && (
+      {watermark !== 'none' && (
         <p className="watermark">
-          Generated with
+          {watermark === 'generated' ? (
+            <>Generated with</>
+          ) : watermark === 'get-your-own' ? (
+            <>Create your code animation at</>
+          ) : null}
           <a
             href={process.env.NEXT_PUBLIC_BASE_URL}
             target="_blank"
@@ -117,6 +121,11 @@ function CodeSequence({
 }
 
 export function CodeComposition() {
+  const options: CodeVideoOptions = {
+    fontSize: 24,
+    markdown: landingPageSnippet,
+    watermark: 'generated',
+  }
   return (
     <Composition
       id="Code"
@@ -124,22 +133,9 @@ export function CodeComposition() {
       fps={30}
       width={1280}
       height={720}
-      defaultProps={{
-        fontSize: 24,
-        framesAtStart: 20,
-        framesAtEnd: 30,
-        framesBetweenSteps: 10,
-        markdown: landingPageSnippet,
-      }}
-      calculateMetadata={async ({
-        props: { framesAtStart, framesAtEnd, framesBetweenSteps, markdown },
-      }) => {
-        const compositionData = getCompositionData({
-          framesAtStart,
-          framesAtEnd,
-          framesBetweenSteps,
-          markdown,
-        })
+      defaultProps={{ options } as CodeVideoProps}
+      calculateMetadata={async ({ props: { options } }) => {
+        const compositionData = getCompositionData(options)
         return {
           durationInFrames: compositionDurationInFrames(compositionData),
         }

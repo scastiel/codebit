@@ -20,10 +20,13 @@ export function PublicSnippetPageClient({ snippet }: Props) {
   )
   return (
     <SnippetPlayer
-      markdown={snippet.content}
+      options={{
+        markdown: snippet.content,
+        fontSize,
+        watermark: 'get-your-own',
+      }}
       width={width}
       height={height}
-      fontSize={fontSize}
       autoPlay
       loop
     />

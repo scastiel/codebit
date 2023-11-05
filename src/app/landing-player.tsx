@@ -1,4 +1,5 @@
 'use client'
+import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { useIsBrowser } from '@/lib/hooks'
 import { landingPageSnippet } from '@/lib/landing-page-snippet'
@@ -12,6 +13,12 @@ export function LandingPlayer() {
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * width, 16)))
 
+  const options: CodeVideoOptions = {
+    markdown: landingPageSnippet,
+    fontSize,
+    watermark: 'none',
+  }
+
   return (
     <div className="w-full max-w-2xl rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800">
       <div
@@ -20,14 +27,12 @@ export function LandingPlayer() {
       >
         {browser && width > 0 && height > 0 && (
           <SnippetPlayer
-            markdown={landingPageSnippet}
+            options={options}
             width={width}
             height={height}
-            fontSize={fontSize}
             autoPlay
             loop
             controls={false}
-            watermark={false}
           />
         )}
       </div>

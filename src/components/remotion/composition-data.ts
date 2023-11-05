@@ -1,3 +1,4 @@
+import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { Change, diffChars } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 import randomSeed from 'random-seed'
@@ -7,16 +8,11 @@ import { jitterFrame, noJitterFrame } from '../../utils/jitter'
 const splitter = new GraphemeSplitter()
 
 export function getCompositionData({
-  framesAtStart,
-  framesAtEnd,
-  framesBetweenSteps,
+  framesAtStart = 20,
+  framesAtEnd = 30,
+  framesBetweenSteps = 10,
   markdown,
-}: {
-  framesBetweenSteps: number
-  framesAtStart: number
-  framesAtEnd: number
-  markdown: string
-}) {
+}: CodeVideoOptions) {
   const { steps, metadata } = getCodeFragments(markdown)
   const rand = randomSeed.create(markdown)
 
