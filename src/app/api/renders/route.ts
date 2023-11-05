@@ -1,3 +1,7 @@
+import {
+  CodeVideoOptions,
+  CodeVideoProps,
+} from '@/components/remotion/code-composition'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippet } from '@/lib/snippet'
@@ -38,18 +42,18 @@ export async function POST(req: Request) {
 }
 
 async function triggerRender(snippet: Snippet) {
+  const options: CodeVideoOptions = {
+    markdown: snippet.content,
+    fontSize: 24,
+    watermark: 'generated',
+  }
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,
     functionName: env.REMOTION_AWS_FUNCTION_NAME,
     composition: 'Code',
     serveUrl: env.REMOTION_SERVE_URL,
     codec: 'h264',
-    inputProps: {
-      framesAtStart: 20,
-      framesAtEnd: 30,
-      framesBetweenSteps: 10,
-      markdown: snippet.content,
-    },
+    inputProps: { options } as CodeVideoProps,
     webhook: {
       url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,
       secret: null,

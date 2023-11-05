@@ -26,7 +26,7 @@ export type CodeVideoOptions = {
   watermark?: 'generated' | 'get-your-own' | 'none'
 }
 
-type CodeVideoProps = { options: CodeVideoOptions }
+export type CodeVideoProps = { options: CodeVideoOptions }
 
 export function CodeVideo({ options }: CodeVideoProps) {
   useEffect(() => {
