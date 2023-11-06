@@ -8,36 +8,6 @@ pre > code {
   background-color: transparent !important;
 }
 
-.root.dark {
-  background-color: #067384;
-  background-image: radial-gradient(
-      at 76% 57%,
-      rgb(47, 126, 37) 0px,
-      transparent 50%
-    ),
-    radial-gradient(at 58% 43%, hsla(232, 97%, 70%, 1) 0px, transparent 50%),
-    radial-gradient(at 86% 87%, rgb(114, 31, 41) 0px, transparent 50%),
-    radial-gradient(at 6% 21%, rgb(46, 100, 114) 0px, transparent 50%),
-    radial-gradient(at 36% 99%, hsla(203, 62%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 37% 3%, rgb(116, 95, 56) 0px, transparent 50%),
-    radial-gradient(at 10% 16%, hsla(244, 64%, 73%, 1) 0px, transparent 50%);
-}
-
-.root.light {
-  background-color: #99f1ff;
-  background-image: radial-gradient(
-      at 76% 57%,
-      hsla(113, 89%, 61%, 1) 0px,
-      transparent 50%
-    ),
-    radial-gradient(at 58% 43%, hsla(232, 97%, 70%, 1) 0px, transparent 50%),
-    radial-gradient(at 86% 87%, hsla(353, 86%, 60%, 1) 0px, transparent 50%),
-    radial-gradient(at 6% 21%, hsla(192, 81%, 65%, 1) 0px, transparent 50%),
-    radial-gradient(at 36% 99%, hsla(203, 62%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 37% 3%, hsla(39, 76%, 74%, 1) 0px, transparent 50%),
-    radial-gradient(at 10% 16%, hsla(244, 64%, 73%, 1) 0px, transparent 50%);
-}
-
 .root {
   padding: 1em 1em;
   justify-content: center;
@@ -77,10 +47,12 @@ pre > code {
 
 .root.light .watermark {
   color: black;
+  filter: drop-shadow(0 0 2px #fff);
 }
 
 .root.dark .watermark {
   color: white;
+  filter: drop-shadow(0 0 2px #222);
 }
 
 .watermark a {

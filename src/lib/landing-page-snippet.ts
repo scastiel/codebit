@@ -1,4 +1,9 @@
 export const landingPageSnippet = `
+---
+theme: dark
+background: 3223
+---
+
 \`\`\`ts
 console.log("Hi there 👋")
 \`\`\`
@@ -149,4 +154,4 @@ if (interested) {
   // 👇👇👇
 }
 \`\`\`
-`
+`.trim()

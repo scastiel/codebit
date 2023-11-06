@@ -8,6 +8,7 @@ import {
   staticFile,
   useCurrentFrame,
 } from 'remotion'
+import { gradientCssFromSeed } from '../../components/remotion/gradients'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
 import {
   CompositionData,
@@ -33,18 +34,11 @@ export function CodeVideo({ options }: CodeVideoProps) {
     loadFonts()
   }, [])
 
-  const {
-    framesAtStart = 20,
-    framesAtEnd = 30,
-    framesBetweenSteps = 10,
-    markdown,
-    fontSize,
-    watermark = 'generated',
-  } = options
+  const { fontSize, watermark = 'generated' } = options
 
   const { metadata, sequences } = useMemo(
     () => getCompositionData(options),
-    [framesAtStart, framesAtEnd, framesBetweenSteps, markdown],
+    [options],
   )
 
   return (
@@ -54,6 +48,9 @@ export function CodeVideo({ options }: CodeVideoProps) {
       ) : (
         <link href={staticFile('themes/github.css')} rel="stylesheet" />
       )}
+      <style>{`.root { ${gradientCssFromSeed(
+        String(metadata.background),
+      )} }`}</style>
       <div className="code-wrapper">
         <div className="code">
           <div className="window-buttons">
