@@ -7,6 +7,7 @@ import {
   Sequence,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from 'remotion'
 import { gradientCssFromSeed } from '../../components/remotion/gradients'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
@@ -41,6 +42,9 @@ export function CodeVideo({ options }: CodeVideoProps) {
     [options],
   )
 
+  const currentFrame = useCurrentFrame()
+  const { durationInFrames } = useVideoConfig()
+
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
       {metadata.theme === 'dark' ? (
@@ -50,6 +54,8 @@ export function CodeVideo({ options }: CodeVideoProps) {
       )}
       <style>{`.root { ${gradientCssFromSeed(
         String(metadata.background),
+        currentFrame,
+        durationInFrames,
       )} }`}</style>
       <div className="code-wrapper">
         <div className="code">
