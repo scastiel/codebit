@@ -4,7 +4,9 @@ import { ImportFromUrl } from '@/components/import-from-url'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { githubDark, githubLight } from '@/lib/monaco-themes'
+import { SnippetParsingResult } from '@/lib/types'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { ExternalLink, Save } from 'lucide-react'
@@ -12,6 +14,7 @@ import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { WarningList } from './warning-list'
 
 type Props = {
   snippetId?: string
@@ -32,9 +35,13 @@ export function CodeEditor({
   const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
+  const [{ steps, metadata, warnings }, setParsingResult] =
+    useState<SnippetParsingResult>(parseSnippetMardown(markdown))
 
   const preview = () => {
-    setMarkdown(editorRef.current.getValue())
+    const markdown = editorRef.current.getValue()
+    setMarkdown(markdown)
+    setParsingResult(parseSnippetMardown(markdown))
   }
 
   useEffect(() => {
@@ -49,17 +56,29 @@ export function CodeEditor({
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
       <div
         ref={editorWrapperRef}
-        className="w-full lg:w-1/3 rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start"
+        className="w-full lg:w-1/3 flex flex-col gap-2"
       >
-        <div className="overflow-hidden rounded-[8px]">
-          {editorWidth > 0 && (
-            <SnippetPlayer
-              options={{ markdown, fontSize }}
-              width={editorWidth - 4}
-              height={Math.round((editorWidth * 9) / 16)}
-            />
-          )}
+        <div className="rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start">
+          <div className="overflow-hidden rounded-[8px]">
+            {editorWidth > 0 && (
+              <SnippetPlayer
+                options={{ markdown, fontSize }}
+                width={editorWidth - 4}
+                height={Math.round((editorWidth * 9) / 16)}
+              />
+            )}
+          </div>
         </div>
+        <WarningList
+          warnings={warnings}
+          goToLine={(line) => {
+            const editor = editorRef.current
+            if (!editor) return
+            editor.focus()
+            editor.setPosition({ column: 1, lineNumber: line })
+            editor.revealLine(line)
+          }}
+        />
       </div>
       <div className="flex flex-col gap-2 flex-1">
         {toolbarRef.current &&
@@ -111,7 +130,10 @@ export function CodeEditor({
               editorRef.current = editor
               preview()
             }}
-            options={{ lineNumbers: 'off', minimap: { enabled: false } }}
+            onChange={(code) => {
+              // updateMarkdown(code ?? '')
+            }}
+            options={{ minimap: { enabled: false } }}
           />
         </Card>
         <div className="flex-shrink-0">

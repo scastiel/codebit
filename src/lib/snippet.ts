@@ -1,4 +1,4 @@
-import { getCodeFragments } from '@/lib/code-steps-utils'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { getPrisma } from '@/lib/prisma'
 import { Snippet } from '@prisma/client'
 import { User } from 'next-auth'
@@ -6,7 +6,7 @@ import { User } from 'next-auth'
 export async function createSnippet(user: User): Promise<Snippet> {
   const content =
     '---\ntheme: dark\n---\n\n```ts\nconsole.log("Hello World!")\n```\n\n---\n\n```ts\nconsole.log("Hello Amazing World!")\n```\n'
-  const { steps } = getCodeFragments(content)
+  const { steps } = parseSnippetMardown(content)
   const lastStep = steps[steps.length - 1]
   return getPrisma().snippet.create({
     data: {

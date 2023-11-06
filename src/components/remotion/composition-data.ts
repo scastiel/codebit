@@ -2,7 +2,7 @@ import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { Change, diffChars } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 import randomSeed from 'random-seed'
-import { getCodeFragments } from '../../lib/code-steps-utils'
+import { parseSnippetMardown } from '../../lib/code-steps-utils'
 import { jitterFrame, noJitterFrame } from '../../utils/jitter'
 
 const splitter = new GraphemeSplitter()
@@ -13,7 +13,7 @@ export function getCompositionData({
   framesBetweenSteps = 10,
   markdown,
 }: CodeVideoOptions) {
-  const { steps, metadata } = getCodeFragments(markdown)
+  const { steps, metadata } = parseSnippetMardown(markdown)
   const rand = randomSeed.create(markdown)
 
   const sequences: {
@@ -27,11 +27,11 @@ export function getCompositionData({
     durationInFrames: framesAtStart,
     frames: Array.from(Array(framesAtStart)).map(() =>
       codeFromFrame(
-        diffCode(steps[0].code, steps[0].code),
+        diffCode(steps[0]?.code ?? '', steps[0]?.code ?? ''),
         noJitterFrame(framesAtStart)[0],
       ),
     ),
-    lang: steps[0].lang,
+    lang: steps[0]?.lang ?? '',
   })
 
   let from = framesAtStart
@@ -59,11 +59,14 @@ export function getCompositionData({
     from,
     frames: Array.from(Array(framesAtEnd)).map(() =>
       codeFromFrame(
-        diffCode(steps[steps.length - 1].code, steps[steps.length - 1].code),
+        diffCode(
+          steps[steps.length - 1]?.code ?? '',
+          steps[steps.length - 1]?.code ?? '',
+        ),
         noJitterFrame(framesAtStart)[0],
       ),
     ),
-    lang: steps[steps.length - 1].lang,
+    lang: steps[steps.length - 1]?.lang ?? '',
   })
 
   return { sequences, metadata }

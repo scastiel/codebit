@@ -1,15 +1,15 @@
 import { SnippetClientPage } from '@/app/my/snippets/[snippetId]/page-client'
-import { getCodeFragments } from '@/lib/code-steps-utils'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getLastRenderId } from '@/lib/render'
 import { getSnippet } from '@/lib/snippet'
 import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
-import { Metadata } from 'next'
+import { Metadata as NextMetadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import { notFound } from 'next/navigation'
 
-export const metadata: Metadata = {
+export const metadata: NextMetadata = {
   title: 'Edit snippet',
 }
 
@@ -35,7 +35,7 @@ export default async function SnippetPage({
     const user = await getCurrentUser()
     if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
 
-    const { steps } = getCodeFragments(snippet.content)
+    const { steps } = parseSnippetMardown(snippet.content)
     const lastStep = steps[steps.length - 1]
 
     await getPrisma().snippet.update({
