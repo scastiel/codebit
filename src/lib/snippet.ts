@@ -4,8 +4,8 @@ import { Snippet } from '@prisma/client'
 import { User } from 'next-auth'
 
 export async function createSnippet(user: User): Promise<Snippet> {
-  const content =
-    '---\ntheme: dark\n---\n\n```ts\nconsole.log("Hello World!")\n```\n\n---\n\n```ts\nconsole.log("Hello Amazing World!")\n```\n'
+  const background = Math.round(Math.random() * 100000)
+  const content = `---\ntheme: dark\nbackground: ${background}\n---\n\n\`\`\`ts\nconsole.log("Hello World!")\n\`\`\`\n\n---\n\n\`\`\`ts\nconsole.log("Hello Amazing World!")\n\`\`\`\n`
   const { steps } = parseSnippetMardown(content)
   const lastStep = steps[steps.length - 1]
   return getPrisma().snippet.create({

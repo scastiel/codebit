@@ -36,6 +36,7 @@ export function WarningList({
                   .with({ type: 'invalid-metadata' }, () => (
                     <>Invalid metadata</>
                   ))
+                  .with({ type: 'frontmatter-error' }, () => <>Syntax error</>)
                   .exhaustive()}
               </span>
               <span className="text-xs opacity-60">Line {warning.line}</span>
@@ -59,6 +60,9 @@ export function WarningList({
                     Invalid value for metadata <code>{property}</code>.{' '}
                     {message}.
                   </>
+                ))
+                .with({ type: 'frontmatter-error' }, () => (
+                  <>Check the syntax of the content.</>
                 ))
                 .exhaustive()}
             </AlertDescription>

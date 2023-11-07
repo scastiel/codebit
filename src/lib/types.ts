@@ -20,6 +20,7 @@ export type Warning =
       stepIndex: number
     }
   | { line: 1; type: 'invalid-metadata'; message: string; property: string }
+  | { line: 1; type: 'frontmatter-error' }
 
 export type SnippetParsingResult = {
   steps: Steps

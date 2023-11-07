@@ -9,22 +9,29 @@ import {
 } from '../lib/types'
 
 export function parseSnippetMardown(markdown: string): SnippetParsingResult {
-  const { attributes, body, bodyBegin } = fm(markdown)
-  const metadataParseResult = metadataSchema.safeParse(attributes)
-  const metadata: Metadata = metadataParseResult.success
-    ? metadataParseResult.data
-    : metadataSchema.parse({})
-  let metadataWarnings: Warning[] = []
-  if (!metadataParseResult.success) {
-    metadataWarnings = metadataParseResult.error.issues.map((issue) => ({
-      type: 'invalid-metadata',
-      line: 1,
-      property: issue.path.join('.'),
-      message: issue.message,
-    }))
+  try {
+    const { attributes, body, bodyBegin } = fm(markdown)
+    const metadataParseResult = metadataSchema.safeParse(attributes)
+    const metadata: Metadata = metadataParseResult.success
+      ? metadataParseResult.data
+      : metadataSchema.parse({})
+    let metadataWarnings: Warning[] = []
+    if (!metadataParseResult.success) {
+      metadataWarnings = metadataParseResult.error.issues.map((issue) => ({
+        type: 'invalid-metadata',
+        line: 1,
+        property: issue.path.join('.'),
+        message: issue.message,
+      }))
+    }
+    const { steps, warnings } = parseMarkdown(body, bodyBegin)
+    return { steps, warnings: [...metadataWarnings, ...warnings], metadata }
+  } catch (err) {
+    const warnings: Warning[] = [{ type: 'frontmatter-error', line: 1 }]
+    const metadata = metadataSchema.parse({})
+    const steps: Steps = []
+    return { warnings, steps, metadata }
   }
-  const { steps, warnings } = parseMarkdown(body, bodyBegin)
-  return { steps, warnings: [...metadataWarnings, ...warnings], metadata }
 }
 
 function parseMarkdown(markdown: string, firstLineIndex: number) {
