@@ -66,7 +66,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
               <circle cx="400" cy="50" r="50" fill="#27cd41" />
             </svg>
           </div>
-          <CodeSequences sequences={sequences} />
+          <CodeSequences sequences={sequences} speed={metadata.speed} />
         </div>
       </div>
       {watermark !== 'none' && (
@@ -91,22 +91,30 @@ export function CodeVideo({ options }: CodeVideoProps) {
 
 function CodeSequences({
   sequences: seqs,
+  speed,
 }: {
   sequences: CompositionData['sequences']
+  speed: number
 }) {
-  const sequences = seqs.map((seq, i) => (
-    <Sequence
-      durationInFrames={seq.durationInFrames}
-      from={seq.from}
-      layout="none"
-      key={i}
-    >
-      <CodeSequence
-        lang={seq.lang}
-        codeForFrame={(frame) => seq.frames[frame]}
-      />
-    </Sequence>
-  ))
+  const sequences = seqs.map((seq, i) => {
+    const durationInFrames =
+      i < seqs.length - 1
+        ? (seqs[i + 1].from ?? 0) - (seq.from ?? 0)
+        : seq.durationInFrames
+    return (
+      <Sequence
+        durationInFrames={durationInFrames / speed}
+        from={(seq.from ?? 0) / speed}
+        layout="none"
+        key={i}
+      >
+        <CodeSequence
+          lang={seq.lang}
+          codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
+        />
+      </Sequence>
+    )
+  })
 
   return <>{sequences}</>
 }

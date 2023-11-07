@@ -4,11 +4,8 @@ export type Steps = { lang: string; code: string }[]
 
 export const metadataSchema = z.object({
   theme: z.enum(['dark', 'light']).optional().default('dark'),
-  background: z
-    .number()
-    .min(0)
-    .optional()
-    .default(36263),
+  background: z.number().min(0).optional().default(36263),
+  speed: z.number().min(0.2).max(5).optional().default(1),
 })
 
 export type Metadata = z.infer<typeof metadataSchema>

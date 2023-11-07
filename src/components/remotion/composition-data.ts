@@ -149,5 +149,8 @@ export function compositionDurationInFrames(compositionData: CompositionData) {
   const sequences = compositionData.sequences
   if (sequences.length === 0) return 1
   const lastSequence = sequences[sequences.length - 1]
-  return lastSequence.from! + lastSequence.durationInFrames
+  return Math.floor(
+    (lastSequence.from! + lastSequence.durationInFrames) /
+      compositionData.metadata.speed,
+  )
 }
