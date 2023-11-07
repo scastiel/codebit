@@ -18,10 +18,21 @@ export default async function SnippetsPage() {
 
   return (
     <div className="p-4 flex flex-col gap-4 max-w-screen-lg mx-auto">
-      <form action={createSnippetAction}>
-        <Button type="submit">Create snippet</Button>
-      </form>
-      <SnippetList snippets={snippets} />
+      {snippets.length > 0 ? (
+        <>
+          <form action={createSnippetAction}>
+            <Button type="submit">Create snippet</Button>
+          </form>
+          <SnippetList snippets={snippets} />
+        </>
+      ) : (
+        <div className="text-center h-72 flex flex-col justify-center gap-8">
+          <p>You don’t have any snippet yet.</p>
+          <form action={createSnippetAction}>
+            <Button type="submit">Create your first one</Button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
