@@ -29,6 +29,12 @@ export async function getSnippets(
   })
 }
 
+export async function getSnippetById(
+  snippetId: Snippet['id'],
+): Promise<Snippet | null> {
+  return getPrisma().snippet.findFirst({ where: { id: snippetId } })
+}
+
 export async function getSnippetBySlug(
   snippetSlug: Snippet['slug'],
 ): Promise<Snippet | null> {

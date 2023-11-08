@@ -1,6 +1,6 @@
 import { PublicSnippetPageClient } from '@/app/[snippetSlug]/page-client'
-import { getSnippetBySlug } from '@/lib/snippet'
-import { notFound } from 'next/navigation'
+import { getSnippetById, getSnippetBySlug } from '@/lib/snippet'
+import { notFound, redirect } from 'next/navigation'
 
 export default async function PublicSnippetPage({
   params: { snippetSlug },
@@ -8,7 +8,16 @@ export default async function PublicSnippetPage({
   params: { snippetSlug: string }
 }) {
   const snippet = await getSnippetBySlug(snippetSlug)
-  if (!snippet) notFound()
+
+  if (!snippet) {
+    // legacy
+    const snippetById = await getSnippetById(snippetSlug)
+    if (snippetById) {
+      redirect(`/${snippetById.slug}`)
+    } else {
+      notFound()
+    }
+  }
 
   return <PublicSnippetPageClient snippet={snippet} />
 }

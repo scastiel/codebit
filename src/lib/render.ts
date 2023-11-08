@@ -20,10 +20,10 @@ export async function getRender(
 }
 
 export async function getLastRenderId(
-  snippetId: string,
+  snippetSlug: string,
 ): Promise<string | null> {
   const render = await getPrisma().render.findFirst({
-    where: { snippetId },
+    where: { snippet: { slug: snippetSlug } },
     orderBy: { id: 'desc' },
   })
   return render ? render.id : null
