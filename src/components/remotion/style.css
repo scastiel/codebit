@@ -5,6 +5,7 @@ pre {
 
 pre > code {
   font-family: 'GeistMono';
+  font-weight: 600;
   background-color: transparent !important;
 }
 
@@ -15,11 +16,13 @@ pre > code {
 }
 
 .root.light .code {
-  background-color: rgba(255, 255, 255, 60%);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 100%);
+  background-color: rgba(255, 255, 255, 70%);
 }
 
 .root.dark .code {
-  background-color: rgba(0, 0, 0, 60%);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 100%);
+  background-color: rgba(0, 0, 0, 70%);
 }
 
 .code-wrapper {
