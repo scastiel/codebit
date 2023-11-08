@@ -10,6 +10,7 @@ export async function createSnippet(user: User): Promise<Snippet> {
   const lastStep = steps[steps.length - 1]
   return getPrisma().snippet.create({
     data: {
+      slug: Math.random().toString(16).slice(2, 8),
       userId: user.id,
       content,
       preview: lastStep?.code,
@@ -20,16 +21,16 @@ export async function createSnippet(user: User): Promise<Snippet> {
 
 export async function getSnippets(
   user: User,
-): Promise<Pick<Snippet, 'id' | 'preview' | 'previewLang'>[]> {
+): Promise<Pick<Snippet, 'id' | 'slug' | 'preview' | 'previewLang'>[]> {
   return getPrisma().snippet.findMany({
     where: { userId: user.id },
     orderBy: { id: 'desc' },
-    select: { id: true, preview: true, previewLang: true },
+    select: { id: true, slug: true, preview: true, previewLang: true },
   })
 }
 
-export async function getSnippet(
-  snippetId: Snippet['id'],
+export async function getSnippetBySlug(
+  snippetSlug: Snippet['slug'],
 ): Promise<Snippet | null> {
-  return getPrisma().snippet.findFirst({ where: { id: snippetId } })
+  return getPrisma().snippet.findFirst({ where: { slug: snippetSlug } })
 }

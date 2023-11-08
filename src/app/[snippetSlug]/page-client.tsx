@@ -23,7 +23,7 @@ export function PublicSnippetPageClient({ snippet }: Props) {
       options={{
         markdown: snippet.content,
         fontSize,
-        watermark: 'get-your-own',
+        watermark: { type: 'get-your-own' },
       }}
       width={width}
       height={height}

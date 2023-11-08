@@ -4,7 +4,7 @@ import {
 } from '@/components/remotion/code-composition'
 import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
-import { getSnippet } from '@/lib/snippet'
+import { getSnippetBySlug } from '@/lib/snippet'
 import { getCurrentUser } from '@/lib/user'
 import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
@@ -17,11 +17,11 @@ export async function POST(req: Request) {
   const user = await getCurrentUser() // first thing: check that user is authenticated
 
   const { searchParams } = new URL(req.url)
-  const snippetId = searchParams.get('snippetId')
-  if (!snippetId)
-    return NextResponse.json({ error: 'Missing snippet ID' }, { status: 422 })
+  const snippetSlug = searchParams.get('snippetSlug')
+  if (!snippetSlug)
+    return NextResponse.json({ error: 'Missing snippet slug' }, { status: 422 })
 
-  const snippet = await getSnippet(snippetId)
+  const snippet = await getSnippetBySlug(snippetSlug)
   if (!snippet)
     return NextResponse.json({ error: 'Snippet not found' }, { status: 422 })
   if (user.id !== snippet.userId)
@@ -45,7 +45,7 @@ async function triggerRender(snippet: Snippet) {
   const options: CodeVideoOptions = {
     markdown: snippet.content,
     fontSize: 24,
-    watermark: 'generated',
+    watermark: { type: 'url', slug: snippet.slug },
   }
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,

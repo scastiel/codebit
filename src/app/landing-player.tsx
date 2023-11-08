@@ -16,7 +16,7 @@ export function LandingPlayer() {
   const options: CodeVideoOptions = {
     markdown: landingPageSnippet,
     fontSize,
-    watermark: 'none',
+    watermark: { type: 'none' },
   }
 
   return (

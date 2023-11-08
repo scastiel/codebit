@@ -1,4 +1,3 @@
-import { Code2 } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import Highlight from 'react-highlight'
 import {
@@ -18,6 +17,12 @@ import {
 } from './composition-data'
 import { loadFonts } from './load-fonts'
 import './style.css'
+import { WatermarkText } from './watermark-text'
+
+export type Watermark =
+  | { type: 'get-your-own' }
+  | { type: 'url'; slug: string }
+  | { type: 'none' }
 
 export type CodeVideoOptions = {
   framesBetweenSteps?: number
@@ -25,7 +30,7 @@ export type CodeVideoOptions = {
   framesAtEnd?: number
   markdown: string
   fontSize: number
-  watermark?: 'generated' | 'get-your-own' | 'none'
+  watermark: Watermark
 }
 
 export type CodeVideoProps = { options: CodeVideoOptions }
@@ -35,7 +40,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
     loadFonts()
   }, [])
 
-  const { fontSize, watermark = 'generated' } = options
+  const { fontSize, watermark } = options
 
   const { metadata, sequences } = useMemo(
     () => getCompositionData(options),
@@ -69,22 +74,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
           <CodeSequences sequences={sequences} speed={metadata.speed} />
         </div>
       </div>
-      {watermark !== 'none' && (
-        <p className="watermark">
-          {watermark === 'generated' ? (
-            <>Generated with</>
-          ) : watermark === 'get-your-own' ? (
-            <>Create your code animation at</>
-          ) : null}
-          <a
-            href={process.env.NEXT_PUBLIC_BASE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Code2 /> <strong>CodeBit.xyz</strong>
-          </a>
-        </p>
-      )}
+      <WatermarkText watermark={watermark} />
     </AbsoluteFill>
   )
 }
@@ -135,7 +125,7 @@ export function CodeComposition() {
   const options: CodeVideoOptions = {
     fontSize: 24,
     markdown: landingPageSnippet,
-    watermark: 'generated',
+    watermark: { type: 'get-your-own' },
   }
   return (
     <Composition

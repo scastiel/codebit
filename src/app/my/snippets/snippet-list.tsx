@@ -6,7 +6,7 @@ import { Snippet } from '@prisma/client'
 import { useTheme } from 'next-themes'
 
 type Props = {
-  snippets: Pick<Snippet, 'id' | 'preview' | 'previewLang'>[]
+  snippets: Pick<Snippet, 'id' | 'slug' | 'preview' | 'previewLang'>[]
 }
 
 export function SnippetList({ snippets }: Props) {

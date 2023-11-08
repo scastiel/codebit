@@ -8,7 +8,7 @@ import { z } from 'zod'
 
 type Props = {
   initialRenderId: string | null
-  snippetId: string
+  snippetSlug: string
 }
 
 type Status =
@@ -31,7 +31,7 @@ function getStatus(isLoading: boolean, error: boolean, data: any): Status {
 
 export function GenerateButton({
   initialRenderId,
-  snippetId,
+  snippetSlug,
 }: Props): JSX.Element {
   const [renderId, setRenderId] = useState(initialRenderId)
 
@@ -54,7 +54,7 @@ export function GenerateButton({
       variant="secondary"
       onClick={async () => {
         setStatus('starting')
-        fetch(`/api/renders?snippetId=${snippetId}`, { method: 'POST' })
+        fetch(`/api/renders?snippetSlug=${snippetSlug}`, { method: 'POST' })
           .then((res) => res.json())
           .then((res) => {
             const { renderId } = z.object({ renderId: z.string() }).parse(res)

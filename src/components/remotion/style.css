@@ -37,12 +37,15 @@ pre > code {
 }
 
 .watermark {
-  font-size: 1em;
+  font-size: 1.1em;
   margin-top: 0.5em;
   opacity: 50%;
   display: flex;
-  gap: 0.4em;
   font-family: Geist;
+}
+
+.watermark code {
+  font-family: 'GeistMono';
 }
 
 .root.light .watermark {

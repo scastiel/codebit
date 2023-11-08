@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Snippet } from '@prisma/client'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 export function SnippetClientPage({
   snippet,
@@ -16,10 +16,6 @@ export function SnippetClientPage({
   saveSnippetAction: (content: string) => Promise<void>
 }) {
   const toolbarRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    console.log('toolbarRef.current', toolbarRef.current)
-  }, [toolbarRef])
 
   return (
     <div className="flex flex-col">
@@ -33,7 +29,7 @@ export function SnippetClientPage({
       </div>
       <div className="flex-1 flex [&>div]:w-full">
         <CodeEditor
-          snippetId={snippet.id}
+          snippetSlug={snippet.slug}
           initialContent={snippet.content}
           saveSnippetAction={saveSnippetAction}
           lastRenderId={lastRenderId}

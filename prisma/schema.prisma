@@ -60,6 +60,7 @@ model VerificationToken {
 
 model Snippet {
   id          String   @id @default(cuid())
+  slug        String   @unique
   user        User     @relation(fields: [userId], references: [id])
   content     String
   preview     String?

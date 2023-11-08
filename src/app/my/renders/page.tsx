@@ -42,7 +42,9 @@ export default async function SnippetsPage() {
             <TableRow key={render.id}>
               <TableCell>{render.id}</TableCell>
               <TableCell>
-                <Link href={`/my/snippets/${render.snippetId}`}>Snippet</Link>
+                <Link href={`/my/snippets/${render.snippet.slug}`}>
+                  Snippet
+                </Link>
               </TableCell>
               <TableCell>
                 {render.error ? (

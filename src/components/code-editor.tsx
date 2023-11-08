@@ -17,7 +17,7 @@ import { createPortal } from 'react-dom'
 import { WarningList } from './warning-list'
 
 type Props = {
-  snippetId?: string
+  snippetSlug: string
   initialContent: string
   saveSnippetAction?: (code: string) => Promise<void>
   lastRenderId?: string | null
@@ -25,7 +25,7 @@ type Props = {
 }
 
 export function CodeEditor({
-  snippetId,
+  snippetSlug,
   initialContent,
   saveSnippetAction,
   lastRenderId,
@@ -62,7 +62,11 @@ export function CodeEditor({
           <div className="overflow-hidden rounded-[8px]">
             {editorWidth > 0 && (
               <SnippetPlayer
-                options={{ markdown, fontSize }}
+                options={{
+                  markdown,
+                  fontSize,
+                  watermark: { type: 'url', slug: snippetSlug },
+                }}
                 width={editorWidth - 4}
                 height={Math.round((editorWidth * 9) / 16)}
               />
@@ -96,11 +100,11 @@ export function CodeEditor({
                   Save
                 </Button>
               )}
-              {snippetId && (
+              {snippetSlug && (
                 <>
                   <Button variant="secondary" asChild>
                     <Link
-                      href={`/${snippetId}`}
+                      href={`/${snippetSlug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -110,7 +114,7 @@ export function CodeEditor({
                   </Button>
                   <GenerateButton
                     initialRenderId={lastRenderId ?? null}
-                    snippetId={snippetId}
+                    snippetSlug={snippetSlug}
                   />
                 </>
               )}

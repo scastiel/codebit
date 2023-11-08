@@ -41,5 +41,5 @@ async function createSnippetAction() {
   'use server'
   const user = await getCurrentUser()
   const snippet = await createSnippet(user)
-  redirect(`/my/snippets/${snippet.id}`)
+  redirect(`/my/snippets/${snippet.slug}`)
 }

@@ -7,13 +7,13 @@ import Highlight from 'react-highlight'
 export function SnippetListItem({
   snippet,
 }: {
-  snippet: Pick<Snippet, 'id' | 'preview' | 'previewLang'>
+  snippet: Pick<Snippet, 'id' | 'slug' | 'preview' | 'previewLang'>
 }) {
   const createdAt = new Date(parseInt(snippet.id.slice(1, 9), 36))
 
   return (
     <Link
-      href={`/my/snippets/${snippet.id}`}
+      href={`/my/snippets/${snippet.slug}`}
       className="flex flex-col justify-end gap-1 border rounded-lg overflow-hidden group dark:bg-black"
     >
       <div className="h-32 overflow-hidden relative">
