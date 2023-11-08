@@ -27,8 +27,8 @@ pre > code {
 
 .code-wrapper {
   width: min(50em, 100%);
-  overflow: hidden;
   display: flex;
+  position: relative;
 }
 
 .code {
@@ -40,6 +40,10 @@ pre > code {
 }
 
 .watermark {
+  position: absolute;
+  width: 100%;
+  bottom: -2em;
+  justify-content: center;
   font-size: 1.1em;
   margin-top: 0.5em;
   opacity: 50%;

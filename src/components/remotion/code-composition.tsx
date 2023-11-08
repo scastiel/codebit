@@ -73,8 +73,8 @@ export function CodeVideo({ options }: CodeVideoProps) {
           </div>
           <CodeSequences sequences={sequences} speed={metadata.speed} />
         </div>
+        <WatermarkText watermark={watermark} />
       </div>
-      <WatermarkText watermark={watermark} />
     </AbsoluteFill>
   )
 }
