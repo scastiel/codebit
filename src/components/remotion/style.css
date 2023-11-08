@@ -57,12 +57,12 @@ pre > code {
 
 .root.light .watermark {
   color: black;
-  filter: drop-shadow(0 0 2px #fff);
+  filter: drop-shadow(0 0 5px white);
 }
 
 .root.dark .watermark {
   color: white;
-  filter: drop-shadow(0 0 2px #222);
+  filter: drop-shadow(0 0 5px black);
 }
 
 .watermark a {
