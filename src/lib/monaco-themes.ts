@@ -335,7 +335,7 @@ export const githubDark = {
   ],
   colors: {
     'editor.foreground': '#f6f8fa',
-    'editor.background': '#24292e',
+    'editor.background': '#050a17', //'#24292e',
     'editor.selectionBackground': '#4c2889',
     'editor.inactiveSelectionBackground': '#444d56',
     'editor.lineHighlightBackground': '#444d56',

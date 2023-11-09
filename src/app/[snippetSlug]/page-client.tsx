@@ -1,5 +1,6 @@
 'use client'
 import { SnippetPlayer } from '@/components/snippet-player'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { useIsBrowser } from '@/lib/hooks'
 import { Plan } from '@/lib/plans'
 import { Snippet } from '@prisma/client'
@@ -20,12 +21,18 @@ export function PublicSnippetPageClient({ snippet, plan }: Props) {
     Math.max(8, Math.min(0.02 * width, 16)),
     Math.max(8, Math.min(0.03 * height, 16)),
   )
+
+  const { metadata } = parseSnippetMardown(snippet.content)
+
   return (
     <SnippetPlayer
       options={{
         markdown: snippet.content,
         fontSize,
-        watermark: { type: 'get-your-own' },
+        watermark:
+          plan.watermark || metadata.watermark
+            ? { type: 'get-your-own' }
+            : { type: 'none' },
         maxDurationInSeconds: plan.maxVideoDurationInSeconds,
       }}
       width={width}

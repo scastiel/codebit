@@ -5,6 +5,7 @@ import {
   compositionDurationInFrames,
   getCompositionData,
 } from '../components/remotion/composition-data'
+import { Plan } from '../lib/plans'
 import {
   Metadata,
   SnippetParsingResult,
@@ -39,10 +40,16 @@ export function parseSnippetMardown(markdown: string): SnippetParsingResult {
   }
 }
 
-export function getPlanWarnings(options: CodeVideoOptions): Warning[] {
+export function getPlanWarnings(
+  options: CodeVideoOptions,
+  plan: Plan,
+): Warning[] {
   const warnings: Warning[] = []
   const compositionData = getCompositionData(options)
   const durationInFrames = compositionDurationInFrames(compositionData)
+  if (options.watermark.type === 'none' && plan.watermark === true) {
+    warnings.push({ type: 'required-watermark' })
+  }
   if (
     options.maxDurationInSeconds &&
     durationInFrames > 30 * options.maxDurationInSeconds

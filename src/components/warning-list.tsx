@@ -38,6 +38,9 @@ export function WarningList({
                   ))
                   .with({ type: 'frontmatter-error' }, () => <>Syntax error</>)
                   .with({ type: 'too-long-video' }, () => <>Too long video</>)
+                  .with({ type: 'required-watermark' }, () => (
+                    <>Required watermark</>
+                  ))
                   .exhaustive()}
               </span>
               {'line' in warning && (
@@ -78,6 +81,9 @@ export function WarningList({
                     </>
                   ),
                 )
+                .with({ type: 'required-watermark' }, () => (
+                  <>Your plan doesn’t allow you to remove the watermark.</>
+                ))
                 .exhaustive()}
             </AlertDescription>
           </Alert>

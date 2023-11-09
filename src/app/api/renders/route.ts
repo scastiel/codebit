@@ -2,6 +2,7 @@ import {
   CodeVideoOptions,
   CodeVideoProps,
 } from '@/components/remotion/code-composition'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { env } from '@/lib/env'
 import { getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
@@ -44,10 +45,14 @@ export async function POST(req: Request) {
 
 async function triggerRender(snippet: Snippet) {
   const plan = getPlan(await getUserPlanId(snippet.userId))
+  const { metadata } = parseSnippetMardown(snippet.content)
   const options: CodeVideoOptions = {
     markdown: snippet.content,
     fontSize: 24,
-    watermark: { type: 'url', slug: snippet.slug },
+    watermark:
+      plan.watermark || metadata.watermark
+        ? { type: 'url', slug: snippet.slug }
+        : { type: 'none' },
     maxDurationInSeconds: plan.maxVideoDurationInSeconds,
   }
   const { bucketName, renderId } = await renderMediaOnLambda({

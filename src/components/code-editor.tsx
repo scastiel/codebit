@@ -46,22 +46,33 @@ export function CodeEditor({
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
 
-  const options: CodeVideoOptions = useMemo(
-    () => ({
-      markdown,
-      fontSize,
-      watermark: { type: 'url', slug: snippetSlug },
-      maxDurationInSeconds: plan.maxVideoDurationInSeconds,
-    }),
-    [fontSize, markdown, plan.maxVideoDurationInSeconds, snippetSlug],
-  )
-
   const { steps, metadata, warnings } = useMemo(
     () => parseSnippetMardown(markdown),
     [markdown],
   )
 
-  const planWarnings = useMemo(() => getPlanWarnings(options), [options])
+  const options = useMemo<CodeVideoOptions>(
+    () => ({
+      markdown,
+      fontSize,
+      watermark: metadata.watermark
+        ? { type: 'url', slug: snippetSlug }
+        : { type: 'none' },
+      maxDurationInSeconds: plan.maxVideoDurationInSeconds,
+    }),
+    [
+      fontSize,
+      markdown,
+      metadata.watermark,
+      plan.maxVideoDurationInSeconds,
+      snippetSlug,
+    ],
+  )
+
+  const planWarnings = useMemo(
+    () => getPlanWarnings(options, plan),
+    [options, plan],
+  )
 
   useEffect(() => {
     editorRef.current?.layout({ width: 0, height: 0 })
@@ -80,7 +91,12 @@ export function CodeEditor({
           <div className="overflow-hidden rounded-[8px]">
             {editorWidth > 0 && (
               <SnippetPlayer
-                options={options}
+                options={{
+                  ...options,
+                  watermark: plan.watermark
+                    ? { type: 'url', slug: snippetSlug }
+                    : options.watermark,
+                }}
                 width={editorWidth - 4}
                 height={Math.round((editorWidth * 9) / 16)}
               />
