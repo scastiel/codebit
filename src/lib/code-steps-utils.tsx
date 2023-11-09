@@ -1,5 +1,10 @@
 import fm from 'front-matter'
 import { lexer } from 'marked'
+import { CodeVideoOptions } from '../components/remotion/code-composition'
+import {
+  compositionDurationInFrames,
+  getCompositionData,
+} from '../components/remotion/composition-data'
 import {
   Metadata,
   SnippetParsingResult,
@@ -32,6 +37,23 @@ export function parseSnippetMardown(markdown: string): SnippetParsingResult {
     const steps: Steps = []
     return { warnings, steps, metadata }
   }
+}
+
+export function getPlanWarnings(options: CodeVideoOptions): Warning[] {
+  const warnings: Warning[] = []
+  const compositionData = getCompositionData(options)
+  const durationInFrames = compositionDurationInFrames(compositionData)
+  if (
+    options.maxDurationInSeconds &&
+    durationInFrames > 30 * options.maxDurationInSeconds
+  ) {
+    warnings.push({
+      type: 'too-long-video',
+      durationInSeconds: durationInFrames / 30,
+      maxDurationInSeconds: options.maxDurationInSeconds,
+    })
+  }
+  return warnings
 }
 
 function parseMarkdown(markdown: string, firstLineIndex: number) {

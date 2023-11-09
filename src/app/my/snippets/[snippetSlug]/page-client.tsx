@@ -1,6 +1,7 @@
 'use client'
 import { CodeEditor } from '@/components/code-editor'
 import { Button } from '@/components/ui/button'
+import { getPlan } from '@/lib/plans'
 import { Snippet } from '@prisma/client'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -10,12 +11,15 @@ export function SnippetClientPage({
   snippet,
   lastRenderId,
   saveSnippetAction,
+  planId,
 }: {
   snippet: Snippet
   lastRenderId: string | null
   saveSnippetAction: (content: string) => Promise<void>
+  planId: string
 }) {
   const toolbarRef = useRef<HTMLDivElement | null>(null)
+  const plan = getPlan(planId)
 
   return (
     <div className="flex flex-col">
@@ -34,6 +38,7 @@ export function SnippetClientPage({
           saveSnippetAction={saveSnippetAction}
           lastRenderId={lastRenderId}
           toolbarRef={toolbarRef}
+          plan={plan}
         />
       </div>
     </div>

@@ -32,6 +32,7 @@ export type CodeVideoOptions = {
   markdown: string
   fontSize: number
   watermark: Watermark
+  maxDurationInSeconds?: number
 }
 
 export type CodeVideoProps = { options: CodeVideoOptions }
@@ -64,7 +65,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
         currentFrame,
         durationInFrames,
       )} }`}</style>
-      <div className="code-wrapper" style={{transform: `scale(${scale}%)`}}>
+      <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
         <div className="code">
           <div className="window-buttons">
             <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">

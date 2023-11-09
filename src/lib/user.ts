@@ -30,3 +30,8 @@ export async function getCurrentUserOrRedirect(url: string) {
   }
   return user
 }
+
+export async function getUserPlanId(userId: User['id']): Promise<string> {
+  // TODO
+  return 'premium'
+}

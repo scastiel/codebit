@@ -1,18 +1,19 @@
 'use client'
 import { GenerateButton } from '@/components/generate-button'
 import { ImportFromUrl } from '@/components/import-from-url'
+import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { parseSnippetMardown } from '@/lib/code-steps-utils'
+import { getPlanWarnings, parseSnippetMardown } from '@/lib/code-steps-utils'
 import { githubDark, githubLight } from '@/lib/monaco-themes'
-import { SnippetParsingResult } from '@/lib/types'
+import { Plan } from '@/lib/plans'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { ExternalLink, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { WarningList } from './warning-list'
 
@@ -22,6 +23,7 @@ type Props = {
   saveSnippetAction?: (code: string) => Promise<void>
   lastRenderId?: string | null
   toolbarRef: MutableRefObject<HTMLDivElement | null>
+  plan: Plan
 }
 
 export function CodeEditor({
@@ -30,19 +32,36 @@ export function CodeEditor({
   saveSnippetAction,
   lastRenderId,
   toolbarRef,
+  plan,
 }: Props) {
   const editorRef = useRef<any>(null)
   const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
-  const [{ steps, metadata, warnings }, setParsingResult] =
-    useState<SnippetParsingResult>(parseSnippetMardown(markdown))
 
   const preview = () => {
     const markdown = editorRef.current.getValue()
     setMarkdown(markdown)
-    setParsingResult(parseSnippetMardown(markdown))
   }
+
+  const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
+
+  const options: CodeVideoOptions = useMemo(
+    () => ({
+      markdown,
+      fontSize,
+      watermark: { type: 'url', slug: snippetSlug },
+      maxDurationInSeconds: plan.maxVideoDurationInSeconds,
+    }),
+    [fontSize, markdown, plan.maxVideoDurationInSeconds, snippetSlug],
+  )
+
+  const { steps, metadata, warnings } = useMemo(
+    () => parseSnippetMardown(markdown),
+    [markdown],
+  )
+
+  const planWarnings = useMemo(() => getPlanWarnings(options), [options])
 
   useEffect(() => {
     editorRef.current?.layout({ width: 0, height: 0 })
@@ -50,7 +69,6 @@ export function CodeEditor({
   }, [editorHeight])
 
   const { theme: appTheme } = useTheme()
-  const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
@@ -62,11 +80,7 @@ export function CodeEditor({
           <div className="overflow-hidden rounded-[8px]">
             {editorWidth > 0 && (
               <SnippetPlayer
-                options={{
-                  markdown,
-                  fontSize,
-                  watermark: { type: 'url', slug: snippetSlug },
-                }}
+                options={options}
                 width={editorWidth - 4}
                 height={Math.round((editorWidth * 9) / 16)}
               />
@@ -74,7 +88,7 @@ export function CodeEditor({
           </div>
         </div>
         <WarningList
-          warnings={warnings}
+          warnings={[...planWarnings, ...warnings]}
           goToLine={(line) => {
             const editor = editorRef.current
             if (!editor) return

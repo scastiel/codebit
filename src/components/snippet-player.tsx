@@ -25,14 +25,19 @@ export function SnippetPlayer({
   controls?: boolean
 }) {
   const compositionData = getCompositionData(options)
+  const fps = 30
+  const durationInFrames = Math.min(
+    (options.maxDurationInSeconds ?? Infinity) * fps,
+    compositionDurationInFrames(compositionData),
+  )
   return (
     <Player
       component={CodeVideo}
       inputProps={{ options }}
-      durationInFrames={compositionDurationInFrames(compositionData)}
+      durationInFrames={durationInFrames}
       compositionWidth={width}
       compositionHeight={height}
-      fps={30}
+      fps={fps}
       style={{ width, height }}
       loop={loop}
       clickToPlay={false}

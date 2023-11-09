@@ -18,7 +18,7 @@ export default async function Home() {
   return (
     <div className="flex-1 flex flex-col">
       <header>
-        <UserMenu user={null} />
+        <UserMenu user={null} planId={null} />
       </header>
       <main className="flex-1 flex flex-col items-center py-8 px-2 sm:px-4">
         <LandingPlayer />

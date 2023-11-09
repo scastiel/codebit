@@ -1,14 +1,16 @@
 'use client'
+import { SnippetPlayer } from '@/components/snippet-player'
 import { useIsBrowser } from '@/lib/hooks'
+import { Plan } from '@/lib/plans'
 import { Snippet } from '@prisma/client'
 import { useWindowSize } from '@react-hook/window-size'
-import { SnippetPlayer } from '../../components/snippet-player'
 
 type Props = {
   snippet: Snippet
+  plan: Plan
 }
 
-export function PublicSnippetPageClient({ snippet }: Props) {
+export function PublicSnippetPageClient({ snippet, plan }: Props) {
   const [width, height] = useWindowSize()
   const browser = useIsBrowser()
 
@@ -24,6 +26,7 @@ export function PublicSnippetPageClient({ snippet }: Props) {
         markdown: snippet.content,
         fontSize,
         watermark: { type: 'get-your-own' },
+        maxDurationInSeconds: plan.maxVideoDurationInSeconds,
       }}
       width={width}
       height={height}

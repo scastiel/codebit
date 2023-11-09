@@ -18,7 +18,7 @@ export function WarningList({
           <Alert
             role="button"
             className="hover:bg-slate-800"
-            onClick={() => goToLine(warning.line)}
+            onClick={() => 'line' in warning && goToLine(warning.line)}
           >
             <AlertCircle className="w-3.5 h-3.5 mt-1" />
             <AlertTitle className="flex justify-between text-sm">
@@ -37,9 +37,12 @@ export function WarningList({
                     <>Invalid metadata</>
                   ))
                   .with({ type: 'frontmatter-error' }, () => <>Syntax error</>)
+                  .with({ type: 'too-long-video' }, () => <>Too long video</>)
                   .exhaustive()}
               </span>
-              <span className="text-xs opacity-60">Line {warning.line}</span>
+              {'line' in warning && (
+                <span className="text-xs opacity-60">Line {warning.line}</span>
+              )}
             </AlertTitle>
             <AlertDescription className="text-xs">
               {match(warning)
@@ -64,6 +67,17 @@ export function WarningList({
                 .with({ type: 'frontmatter-error' }, () => (
                   <>Check the syntax of the content.</>
                 ))
+                .with(
+                  { type: 'too-long-video' },
+                  ({ durationInSeconds, maxDurationInSeconds }) => (
+                    <>
+                      Video is <strong>{durationInSeconds.toFixed(1)}</strong>{' '}
+                      seconds-long, but your plan allows for{' '}
+                      <strong>{maxDurationInSeconds.toFixed(0)}</strong> seconds
+                      max. The video will be truncated.
+                    </>
+                  ),
+                )
                 .exhaustive()}
             </AlertDescription>
           </Alert>

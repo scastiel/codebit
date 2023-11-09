@@ -3,7 +3,11 @@ import { env } from '@/lib/env'
 import { getPrisma } from '@/lib/prisma'
 import { getLastRenderId } from '@/lib/render'
 import { getSnippetBySlug } from '@/lib/snippet'
-import { getCurrentUser, getCurrentUserOrRedirect } from '@/lib/user'
+import {
+  getCurrentUser,
+  getCurrentUserOrRedirect,
+  getUserPlanId,
+} from '@/lib/user'
 import { Metadata as NextMetadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import { notFound } from 'next/navigation'
@@ -27,13 +31,14 @@ export default async function SnippetPage({
     return <p>You are not authorized to edit this snippet.</p>
   }
   const lastRenderId = await getLastRenderId(snippetSlug)
+  const planId = await getUserPlanId(user.id)
 
   async function saveSnippetAction(content: string) {
     'use server'
     const snippet = await getSnippetBySlug(snippetSlug)
     if (!snippet) throw new Error('Missing snippet')
     const user = await getCurrentUser()
-    if (!user || user.id !== snippet.userId) throw new Error('Unauthorized')
+    if (user.id !== snippet.userId) throw new Error('Unauthorized')
 
     const { steps } = parseSnippetMardown(snippet.content)
     const lastStep = steps[steps.length - 1]
@@ -51,6 +56,7 @@ export default async function SnippetPage({
       snippet={snippet}
       lastRenderId={lastRenderId}
       saveSnippetAction={saveSnippetAction}
+      planId={planId}
     />
   )
 }

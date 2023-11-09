@@ -1,5 +1,7 @@
 import { SigninButton } from '@/components/signin-button'
 import { SignoutButton } from '@/components/signout-button'
+import { Badge } from '@/components/ui/badge'
+import { getPlan } from '@/lib/plans'
 import { User } from '@prisma/client'
 import { Code2 } from 'lucide-react'
 import Image from 'next/image'
@@ -7,9 +9,11 @@ import Link from 'next/link'
 
 type Props = {
   user: User | null
+  planId: string | null
 }
 
-export async function UserMenu({ user }: Props) {
+export async function UserMenu({ user, planId }: Props) {
+  const plan = planId ? getPlan(planId) : null
   return (
     <div className="flex items-center p-4 h-14 gap-2">
       <h1 className="drop-shadow-md font-semibold">
@@ -31,6 +35,7 @@ export async function UserMenu({ user }: Props) {
             />
           )}
           <span>{user.name ?? user.email}</span>
+          {plan && <Badge>{plan.name}</Badge>}
           <Link href="/my/snippets">My snippets</Link>
           <Link href="/my/renders">My renders</Link>
           <SignoutButton />

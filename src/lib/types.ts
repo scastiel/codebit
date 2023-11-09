@@ -21,6 +21,11 @@ export type Warning =
     }
   | { line: 1; type: 'invalid-metadata'; message: string; property: string }
   | { line: 1; type: 'frontmatter-error' }
+  | {
+      type: 'too-long-video'
+      durationInSeconds: number
+      maxDurationInSeconds: number
+    }
 
 export type SnippetParsingResult = {
   steps: Steps

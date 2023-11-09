@@ -3,9 +3,10 @@ import {
   CodeVideoProps,
 } from '@/components/remotion/code-composition'
 import { env } from '@/lib/env'
+import { getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippetBySlug } from '@/lib/snippet'
-import { getCurrentUser } from '@/lib/user'
+import { getCurrentUser, getUserPlanId } from '@/lib/user'
 import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
 import { NextResponse } from 'next/server'
@@ -42,10 +43,12 @@ export async function POST(req: Request) {
 }
 
 async function triggerRender(snippet: Snippet) {
+  const plan = getPlan(await getUserPlanId(snippet.userId))
   const options: CodeVideoOptions = {
     markdown: snippet.content,
     fontSize: 24,
     watermark: { type: 'url', slug: snippet.slug },
+    maxDurationInSeconds: plan.maxVideoDurationInSeconds,
   }
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,
