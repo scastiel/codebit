@@ -4,6 +4,7 @@ import {
   AbsoluteFill,
   Composition,
   Sequence,
+  interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -50,6 +51,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
   const currentFrame = useCurrentFrame()
   const { durationInFrames } = useVideoConfig()
 
+  const scale = interpolate(currentFrame, [0, durationInFrames], [93, 103])
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
       {metadata.theme === 'dark' ? (
@@ -62,7 +64,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
         currentFrame,
         durationInFrames,
       )} }`}</style>
-      <div className="code-wrapper">
+      <div className="code-wrapper" style={{transform: `scale(${scale}%)`}}>
         <div className="code">
           <div className="window-buttons">
             <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
