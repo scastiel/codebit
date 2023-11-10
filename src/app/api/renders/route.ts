@@ -7,7 +7,7 @@ import { env } from '@/lib/env'
 import { getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippetBySlug } from '@/lib/snippet'
-import { getCurrentUser, getUserPlanId } from '@/lib/user'
+import { getCurrentUser, getUserPlanId, hasRemainingCredits } from '@/lib/user'
 import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
 import { NextResponse } from 'next/server'
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     env.RATE_LIMIT_RENDER_REQUEST_PER_MINUTE,
     `${user.id}-render`,
   )
-  if (isRateLimited)
+  if (isRateLimited || !hasRemainingCredits(user))
     return NextResponse.json(
       { error: 'Rate limit exceeded' },
       { status: 429, headers },
@@ -66,6 +66,10 @@ async function triggerRender(snippet: Snippet) {
       url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,
       secret: null,
     },
+  })
+  await getPrisma().user.update({
+    where: { id: snippet.userId },
+    data: { monthlyRemainingCredits: { decrement: 1 } },
   })
   const snippetId = snippet.id
   const userId = snippet.userId
