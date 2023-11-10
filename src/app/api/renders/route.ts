@@ -66,6 +66,7 @@ async function triggerRender(snippet: Snippet) {
       url: `${env.REMOTION_WEBHOOK_URL}/api/remotion-webhook`,
       secret: null,
     },
+    muted: true,
   })
   const snippetId = snippet.id
   const userId = snippet.userId
