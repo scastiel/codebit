@@ -19,6 +19,9 @@ const envSchema = z.object({
   RATE_LIMIT_MAX_ITEMS_IN_CACHE: z.coerce.number(),
   RATE_LIMIT_CACHE_ITEM_TTL_IN_MS: z.coerce.number(),
   RATE_LIMIT_RENDER_REQUEST_PER_MINUTE: z.coerce.number(),
+  STRIPE_PUBLIC_KEY: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().min(1),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
 })
 
 export const env = envSchema.parse(process.env)

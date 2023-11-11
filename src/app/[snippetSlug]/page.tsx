@@ -1,7 +1,7 @@
 import { PublicSnippetPageClient } from '@/app/[snippetSlug]/page-client'
 import { getPlan } from '@/lib/plans'
 import { getSnippetById, getSnippetBySlug } from '@/lib/snippet'
-import { getUserPlanId } from '@/lib/user'
+import { getActiveUserPlanId } from '@/lib/user'
 import { notFound, redirect } from 'next/navigation'
 
 export default async function PublicSnippetPage({
@@ -21,7 +21,7 @@ export default async function PublicSnippetPage({
     }
   }
 
-  const userPlan = getPlan(await getUserPlanId(snippet.userId))
+  const userPlan = getPlan(await getActiveUserPlanId(snippet.userId))
 
   return <PublicSnippetPageClient snippet={snippet} plan={userPlan} />
 }

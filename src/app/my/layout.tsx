@@ -1,10 +1,10 @@
 import { UserMenu } from '@/components/user-menu'
-import { getCurrentUserSafe, getUserPlanId } from '@/lib/user'
+import { getCurrentUserSafe, getActiveUserPlanId } from '@/lib/user'
 import { ReactNode } from 'react'
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const user = await getCurrentUserSafe()
-  const userPlanId = user && await getUserPlanId(user.id)
+  const userPlanId = user && await getActiveUserPlanId(user.id)
   return (
     <>
       <header>

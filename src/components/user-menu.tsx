@@ -35,7 +35,11 @@ export async function UserMenu({ user, planId }: Props) {
             />
           )}
           <span>{user.name ?? user.email}</span>
-          {plan && <Badge>{plan.name}</Badge>}
+          {plan && (
+            <Link href="/my/plan">
+              <Badge>{plan.name}</Badge>
+            </Link>
+          )}
           <Link href="/my/snippets">My snippets</Link>
           <Link href="/my/renders">My renders</Link>
           <SignoutButton />
