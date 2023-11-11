@@ -1,13 +1,34 @@
 import { ThemeProvider } from '@/components/theme-provider'
+import { env } from '@/lib/env'
 import type { Metadata } from 'next'
 import PlausibleProvider from 'next-plausible'
-import './globals.css'
 import Script from 'next/script'
+import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
   title: {
-    default: 'Share animated code snippets with your community – CodeBit',
+    default: 'Tell a story with your code – CodeBit',
     template: '%s – CodeBit',
+  },
+  description:
+    'Create animations from code snippets, and export them as videos to share with your community.',
+  openGraph: {
+    title: 'Tell a story with your code – CodeBit',
+    description:
+      'Create animations from code snippets, and export them as videos to share with your community.',
+    images: `/banner.png`,
+    type: 'website',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@scastiel',
+    site: '@codebitxyz',
+    images: `/banner.png`,
+    title: 'Tell a story with your code – CodeBit',
+    description:
+      'Create animations from code snippets, and export them as videos to share with your community.',
   },
 }
 
@@ -19,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Script id="datadog-rum">
-           {`
+        {`
              (function(h,o,u,n,d) {
                h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
                d=o.createElement(u);d.async=1;d.src=n
