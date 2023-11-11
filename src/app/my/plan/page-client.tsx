@@ -2,11 +2,11 @@
 import { goToPortal } from '@/app/my/plan/actions'
 import { ImprovedButton } from '@/app/my/plan/improved-button'
 import PlansTable from '@/app/my/plan/plans-table'
+import { useUserSubscriptionInfo } from '@/lib/hooks'
 import { getPlan } from '@/lib/plans'
 import { delay } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import useSwr from 'swr'
 
 type Props = {
   userId: string
@@ -16,14 +16,11 @@ export function MyPlanPageClient({ userId }: Props) {
   const router = useRouter()
   const [refresh, setRefresh] = useState(0)
 
-  const { data, isLoading, error } = useSwr(
-    [`plan-${userId}`, refresh],
-    fetcher,
-  )
+  const { data, isLoading, error } = useUserSubscriptionInfo(userId, refresh)
 
   if (isLoading) return <p>Loading your plan information…</p>
 
-  if (error)
+  if (error || !data)
     return <p>An error occurred while getting your plan information.</p>
 
   const {
@@ -32,13 +29,7 @@ export function MyPlanPageClient({ userId }: Props) {
     subscriptionId,
     subscriptionEndDate,
     subscriptionInterval,
-  } = data as {
-    stripeCustomerId: string
-    currentPlanId: string
-    subscriptionId: string | null
-    subscriptionEndDate: Date | null
-    subscriptionInterval: 'month' | 'year' | null
-  }
+  } = data
 
   const currentPlan = getPlan(currentPlanId)
 
@@ -78,6 +69,3 @@ export function MyPlanPageClient({ userId }: Props) {
     </div>
   )
 }
-
-const fetcher = ([tag, _]: [string, number]) =>
-  fetch('/my/plan/info', { next: { tags: [tag] } }).then((res) => res.json())

@@ -183,7 +183,7 @@ function PlanButtons({
     <>
       {isCurrentPlan ? (
         <>
-          <Badge variant="outline" className="bg-pink-700 text-white">
+          <Badge variant="outline" className="bg-pink-700 text-white mt-2">
             Current plan
           </Badge>
           {subscriptionId && subscriptionEndDate ? (
