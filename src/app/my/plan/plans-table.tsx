@@ -1,5 +1,16 @@
 import { cancel, changePlan, subscribe, uncancel } from '@/app/my/plan/actions'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plan, plans } from '@/lib/plans'
@@ -195,56 +206,154 @@ function PlanButtons({
                 })}
                 .
               </small>
-              <ImprovedButton
-                action={async () => {
-                  await uncancel()
-                  await delay(2000)
-                  refresh()
-                }}
-                variant="link"
-                className="text-pink-500"
-              >
-                Resubscribe
-              </ImprovedButton>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="text-pink-600">
+                    Resubscribe
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Resubscribe</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to reactivate your subscription?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <p>
+                    Your subscription will continue after the end of the current
+                    billing period, and you will keep access to the plan’s
+                    features.
+                  </p>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="ghost">Cancel</Button>
+                    </DialogClose>
+                    <ImprovedButton
+                      action={async () => {
+                        await uncancel()
+                        await delay(2000)
+                        refresh()
+                      }}
+                    >
+                      Resubscribe
+                    </ImprovedButton>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </>
           ) : (
             subscriptionId && (
-              <ImprovedButton
-                action={async () => {
-                  await cancel()
-                  await delay(2000)
-                  refresh()
-                }}
-                variant="link"
-                className="text-pink-500"
-              >
-                Cancel
-              </ImprovedButton>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="text-pink-600">
+                    Cancel
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Cancel subscription</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to cancel your subscription?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <p>
+                    By cancelling your subscription, you won’t have access to
+                    the plan’s features after the end of your current billing
+                    period.
+                  </p>
+                  <DialogFooter>
+                    <ImprovedButton
+                      action={async () => {
+                        await cancel()
+                        await delay(2000)
+                        refresh()
+                      }}
+                    >
+                      Cancel subscription
+                    </ImprovedButton>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )
           )}
         </>
       ) : (
         plan.monthlyPriceCents > 0 &&
         (subscriptionId ? (
-          <ImprovedButton
-            action={async () => {
-              await changePlan(plan.id, interval)
-              await delay(2000)
-              refresh()
-            }}
-          >
-            Change to this plan
-          </ImprovedButton>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Change to this plan</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Subscribe to plan <strong>{plan.name}</strong>
+                </DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to change your subscription?
+                </DialogDescription>
+              </DialogHeader>
+              <p>
+                Your subscription will change immediately, and you will be
+                billed accordingly, depending on how many days remain in the
+                current billing period.
+              </p>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="ghost">Cancel</Button>
+                </DialogClose>
+                <ImprovedButton
+                  action={async () => {
+                    await changePlan(plan.id, interval)
+                    await delay(2000)
+                    refresh()
+                  }}
+                >
+                  Change subscription
+                </ImprovedButton>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         ) : (
-          <ImprovedButton
-            action={async () => {
-              const url = await subscribe(plan.id, interval)
-              router.push(url)
-              await delay(2000)
-            }}
-          >
-            Subscribe
-          </ImprovedButton>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Subscribe</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Subscribe to plan <strong>{plan.name}</strong>
+                </DialogTitle>
+                <DialogDescription>
+                  You will be charged $
+                  {(
+                    (interval === 'month'
+                      ? plan.monthlyPriceCents
+                      : plan.yearlyPriceCents) / 100
+                  ).toFixed(2)}{' '}
+                  immediately for the first billing period.
+                </DialogDescription>
+              </DialogHeader>
+              <p>
+                We will redirected you to <strong>Stripe</strong> for payment.
+                Taxes will be included in the next step.
+              </p>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="ghost">Cancel</Button>
+                </DialogClose>
+                <ImprovedButton
+                  action={async () => {
+                    const url = await subscribe(plan.id, interval)
+                    router.push(url)
+                    await delay(2000)
+                  }}
+                >
+                  Subscribe
+                </ImprovedButton>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         ))
       )}
     </>
