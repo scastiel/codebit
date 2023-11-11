@@ -10,7 +10,7 @@ import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Plan } from '@/lib/plans'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
-import { ExternalLink, Save } from 'lucide-react'
+import { ExternalLink, HelpCircle, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
@@ -102,6 +102,14 @@ export function CodeEditor({
               />
             )}
           </div>
+        </div>
+        <div className="flex justify-center">
+          <Button asChild variant="ghost">
+            <Link href="/help" target="_blank" rel="noopener noreferrer">
+              <HelpCircle className="w-4 h-4 mr-2" />
+              Help
+            </Link>
+          </Button>
         </div>
         <WarningList
           warnings={[...planWarnings, ...warnings]}
