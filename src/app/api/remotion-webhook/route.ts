@@ -10,10 +10,25 @@ export async function POST(req: Request) {
   }
 
   const payload = (await req.json()) as WebhookPayload
+
   if (payload.type !== 'success') {
     console.warn(
       `Rendering ${payload.bucketName}/${payload.renderId} failed (${payload.type}).`,
     )
+
+    const user = await getPrisma().render.findUnique({
+      where: { renderId: payload.renderId },
+    })
+
+    if (user) {
+      await getPrisma().user.update({
+        where: { id: user.userId },
+        data: { monthlyRemainingCredits: { increment: 1 } },
+      })
+    } else {
+      // should not happen, adding a log to make sure of it :)
+      console.error("Couldn't find user for render", payload.renderId)
+    }
   }
 
   const render = await getPrisma().render.update({

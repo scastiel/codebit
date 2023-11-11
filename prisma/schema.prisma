@@ -48,6 +48,7 @@ model User {
   sessions      Session[]
   Snippet       Snippet[]
   Render        Render[]
+  monthlyRemainingCredits Int @default(10)
 }
 
 model VerificationToken {
@@ -76,7 +77,7 @@ model Render {
   snippet    Snippet   @relation(fields: [snippetId], references: [id])
   snippetId  String
   bucketName String
-  renderId   String
+  renderId   String    @unique
   user       User      @relation(fields: [userId], references: [id])
   userId     String
   progress   Float     @default(0)

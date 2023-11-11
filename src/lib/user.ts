@@ -35,3 +35,7 @@ export async function getUserPlanId(userId: User['id']): Promise<string> {
   // TODO
   return 'premium'
 }
+
+export function hasRemainingCredits(user: User) {
+  return user.monthlyRemainingCredits > 0
+}
