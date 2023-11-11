@@ -6,7 +6,7 @@ import { getSnippetBySlug } from '@/lib/snippet'
 import {
   getCurrentUser,
   getCurrentUserOrRedirect,
-  getUserPlanId,
+  getActiveUserPlanId,
 } from '@/lib/user'
 import { Metadata as NextMetadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -31,7 +31,7 @@ export default async function SnippetPage({
     return <p>You are not authorized to edit this snippet.</p>
   }
   const lastRenderId = await getLastRenderId(snippetSlug)
-  const planId = await getUserPlanId(user.id)
+  const planId = await getActiveUserPlanId(user.id)
 
   async function saveSnippetAction(content: string) {
     'use server'

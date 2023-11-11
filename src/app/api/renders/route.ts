@@ -7,7 +7,11 @@ import { env } from '@/lib/env'
 import { getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
 import { getSnippetBySlug } from '@/lib/snippet'
-import { getCurrentUser, getUserPlanId, hasRemainingCredits } from '@/lib/user'
+import {
+  getActiveUserPlanId,
+  getCurrentUser,
+  hasRemainingCredits,
+} from '@/lib/user'
 import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
 import { NextResponse } from 'next/server'
@@ -44,7 +48,7 @@ export async function POST(req: Request) {
 }
 
 async function triggerRender(snippet: Snippet) {
-  const plan = getPlan(await getUserPlanId(snippet.userId))
+  const plan = getPlan(await getActiveUserPlanId(snippet.userId))
   const { metadata } = parseSnippetMardown(snippet.content)
   const options: CodeVideoOptions = {
     markdown: snippet.content,

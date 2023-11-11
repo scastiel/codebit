@@ -1,6 +1,6 @@
+import { PlanBadge } from '@/components/plan-badge'
 import { SigninButton } from '@/components/signin-button'
 import { SignoutButton } from '@/components/signout-button'
-import { Badge } from '@/components/ui/badge'
 import { getPlan } from '@/lib/plans'
 import { User } from '@prisma/client'
 import { Code2 } from 'lucide-react'
@@ -35,7 +35,11 @@ export async function UserMenu({ user, planId }: Props) {
             />
           )}
           <span>{user.name ?? user.email}</span>
-          {plan && <Badge>{plan.name}</Badge>}
+          {plan && (
+            <Link href="/my/plan">
+              <PlanBadge userId={user.id} />
+            </Link>
+          )}
           <Link href="/my/snippets">My snippets</Link>
           <Link href="/my/renders">My renders</Link>
           <SignoutButton />
