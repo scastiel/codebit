@@ -12,11 +12,13 @@ export function SnippetClientPage({
   lastRenderId,
   saveSnippetAction,
   planId,
+  userId,
 }: {
   snippet: Snippet
   lastRenderId: string | null
   saveSnippetAction: (content: string) => Promise<void>
   planId: string
+  userId: string
 }) {
   const toolbarRef = useRef<HTMLDivElement | null>(null)
   const plan = getPlan(planId)
@@ -39,6 +41,7 @@ export function SnippetClientPage({
           lastRenderId={lastRenderId}
           toolbarRef={toolbarRef}
           plan={plan}
+          userId={userId}
         />
       </div>
     </div>

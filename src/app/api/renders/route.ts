@@ -14,6 +14,7 @@ import {
 } from '@/lib/user'
 import { Snippet } from '@prisma/client'
 import { renderMediaOnLambda } from '@remotion/lambda/client'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 import rateLimiter from '../../../utils/rate-limiter'
 
@@ -72,15 +73,20 @@ async function triggerRender(snippet: Snippet) {
     },
     muted: true,
   })
+
   await getPrisma().user.update({
     where: { id: snippet.userId },
     data: { monthlyRemainingCredits: { decrement: 1 } },
   })
+
   const snippetId = snippet.id
   const userId = snippet.userId
   const { id } = await getPrisma().render.create({
     data: { bucketName, renderId, snippetId, userId },
     select: { id: true },
   })
+
+  revalidateTag(`credits-${userId}`)
+
   return id
 }

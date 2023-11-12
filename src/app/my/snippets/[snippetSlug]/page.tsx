@@ -4,9 +4,9 @@ import { getPrisma } from '@/lib/prisma'
 import { getLastRenderId } from '@/lib/render'
 import { getSnippetBySlug } from '@/lib/snippet'
 import {
+  getActiveUserPlanId,
   getCurrentUser,
   getCurrentUserOrRedirect,
-  getActiveUserPlanId,
 } from '@/lib/user'
 import { Metadata as NextMetadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -57,6 +57,7 @@ export default async function SnippetPage({
       lastRenderId={lastRenderId}
       saveSnippetAction={saveSnippetAction}
       planId={planId}
+      userId={user.id}
     />
   )
 }

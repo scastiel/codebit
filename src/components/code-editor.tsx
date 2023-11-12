@@ -24,6 +24,7 @@ type Props = {
   lastRenderId?: string | null
   toolbarRef: MutableRefObject<HTMLDivElement | null>
   plan: Plan
+  userId: string
 }
 
 export function CodeEditor({
@@ -33,6 +34,7 @@ export function CodeEditor({
   lastRenderId,
   toolbarRef,
   plan,
+  userId,
 }: Props) {
   const editorRef = useRef<any>(null)
   const [markdown, setMarkdown] = useState(initialContent)
@@ -151,6 +153,7 @@ export function CodeEditor({
                     </Link>
                   </Button>
                   <GenerateButton
+                    userId={userId}
                     initialRenderId={lastRenderId ?? null}
                     snippetSlug={snippetSlug}
                   />
