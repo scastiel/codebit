@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    creator: '@scastiel',
+    creator: '@codebitxyz',
     site: '@codebitxyz',
     images: `/banner.png`,
     title: 'Tell a story with your code – CodeBit',
