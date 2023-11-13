@@ -1,157 +1,155 @@
 export const landingPageSnippet = `
 ---
 theme: dark
-background: 3223
+background: 94261
 ---
 
-\`\`\`ts
-console.log("Hi there 👋")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is a video?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-
+\`\`\`ts filename="src/app/layout.tsx"
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-  console.log("")
+\`\`\`ts filename="src/app/layout.tsx"
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from ''
 
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-  console.log("Enter your email to know when we launch!")
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from 'next-plausible'
 
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-  console.log("Enter your email to know when we launch!")
-  // 👇
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from 'next-plausible'
 
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-  console.log("Enter your email to know when we launch!")
-  // 👇👇
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <PlausibleProvider domain="codebit.xyz" />
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from 'next-plausible'
 
-console.log("Did you notice that this is *not* a video? 🤯")
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <PlausibleProvider domain="codebit.xyz" />
+      <body>{children}</body>
+    </html>
+  )
+}
+\`\`\`
 
-if (interested) {
-  console.log("Enter your email to know when we launch!")
-  // 👇👇👇
+---
+
+\`\`\`js filename="next.config.js"
+module.exports = { /* your Next.js config */ }
+\`\`\`
+
+---
+
+\`\`\`js filename="next.config.js"
+
+
+module.exports = { /* your Next.js config */ }
+\`\`\`
+
+---
+
+\`\`\`js filename="next.config.js"
+const { withPlausibleProxy } = require('')
+
+module.exports = { /* your Next.js config */ }
+\`\`\`
+
+---
+
+\`\`\`js filename="next.config.js"
+const { withPlausibleProxy } = require('next-plausible')
+
+module.exports = { /* your Next.js config */ }
+\`\`\`
+
+---
+
+\`\`\`js filename="next.config.js"
+const { withPlausibleProxy } = require('next-plausible')
+
+module.exports = withPlausibleProxy()({ /* your Next.js config */ })
+\`\`\`
+
+---
+
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from 'next-plausible'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <PlausibleProvider domain="codebit.xyz" />
+      <body>{children}</body>
+    </html>
+  )
+}
+\`\`\`
+
+---
+
+\`\`\`ts filename="src/app/layout.tsx"
+import PlausibleProvider from 'next-plausible'
+// Just to test the return to a previous file :)
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <PlausibleProvider domain="codebit.xyz" />
+      <body>{children}</body>
+    </html>
+  )
 }
 \`\`\`
 `.trim()

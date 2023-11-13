@@ -18,6 +18,8 @@ export function getCompositionData({
 
   const sequences: {
     durationInFrames: number
+    isTransition?: boolean
+    transition?: string
     from?: number
     frames: string[]
     lang: string
@@ -36,9 +38,14 @@ export function getCompositionData({
     filename: steps[0].filename,
   })
 
+  const filenames: string[] = []
+
   let from = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
-    if (steps[i].filename && steps[i].filename !== steps[i + 1].filename) {
+    const prevFilename = steps[i].filename
+    const filename = steps[i + 1].filename
+    if (filename && !filenames.includes(filename)) filenames.push(filename)
+    if (prevFilename && filename && prevFilename !== filename) {
       sequences.push({
         durationInFrames: framesAtEnd,
         from,
@@ -52,6 +59,24 @@ export function getCompositionData({
         filename: steps[i].filename,
       })
       from += framesAtEnd
+      sequences.push({
+        durationInFrames: 20,
+        isTransition: true,
+        transition:
+          filenames.indexOf(prevFilename) < filenames.indexOf(filename)
+            ? 'from-right'
+            : 'from-left',
+        from,
+        frames: Array.from(Array(20)).map(() =>
+          codeFromFrame(
+            diffCode(steps[i + 1]?.code ?? '', steps[i + 1]?.code ?? ''),
+            noJitterFrame(20)[0],
+          ),
+        ),
+        lang: steps[i + 1]?.lang ?? '',
+        filename: steps[i + 1].filename,
+      })
+      from += 20
       sequences.push({
         durationInFrames: framesAtStart,
         from,
@@ -177,12 +202,10 @@ function durationInFramesForDiff(diff: Change[]) {
     .reduce((a, b) => a + b, 0)
 }
 
-export function compositionDurationInFrames(compositionData: CompositionData) {
-  const sequences = compositionData.sequences
+export function compositionDurationInFrames({ sequences }: CompositionData) {
   if (sequences.length === 0) return 1
-  const lastSequence = sequences[sequences.length - 1]
-  return Math.floor(
-    (lastSequence.from! + lastSequence.durationInFrames) /
-      compositionData.metadata.speed,
+  return sequences.reduce(
+    (sum, seq) => sum + (seq.isTransition ? 0 : seq.durationInFrames),
+    0,
   )
 }

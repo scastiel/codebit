@@ -26,7 +26,7 @@ pre > code {
 }
 
 .code-wrapper {
-  width: min(50em, 100%);
+  width: min(50em, 90%);
   display: flex;
   position: relative;
 }
@@ -37,6 +37,11 @@ pre > code {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.root > div {
+  align-items: center;
+  justify-content: center;
 }
 
 .watermark {
@@ -96,18 +101,42 @@ pre > code {
 }
 
 .window-buttons {
-  padding: 0.5em 1em;
-  background-color: rgba(255, 255, 255, 5%);
+  padding: 0 1em;
   display: flex;
   align-items: center;
+  height: 2em;
 }
 
-.window-buttons .filename {
+.window-buttons .tabs {
   flex: 1;
-  text-align: center;
   margin-right: 3em;
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.window-buttons .tab {
   font-size: 1em;
   font-family: Geist;
+  display: block;
+  opacity: 0.3;
+}
+.window-buttons .tab {
+  border-radius: 1em;
+  font-size: 0.8em;
+  padding: 0 0.7em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.root.dark .window-buttons .tab {
+  background-color: rgba(255, 255, 255, 10%);
+}
+.root.light .window-buttons .tab {
+  background-color: rgba(0, 0, 0, 8%);
+}
+
+.window-buttons .tab-active {
+  opacity: 1;
 }
 
 .window-buttons svg {

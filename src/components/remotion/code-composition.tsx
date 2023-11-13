@@ -1,16 +1,19 @@
-import { useEffect, useMemo } from 'react'
+import { TransitionSeries, linearTiming } from '@remotion/transitions'
+import { slide } from '@remotion/transitions/slide'
+import { Fragment, useEffect, useMemo } from 'react'
 import Highlight from 'react-highlight'
 import {
   AbsoluteFill,
   Composition,
-  Sequence,
   interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion'
 import { gradientCssFromSeed } from '../../components/remotion/gradients'
+import { WatermarkText } from '../../components/remotion/watermark-text'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
+import { cn } from '../../lib/utils'
 import {
   CompositionData,
   compositionDurationInFrames,
@@ -18,7 +21,6 @@ import {
 } from './composition-data'
 import { loadFonts } from './load-fonts'
 import './style.css'
-import { WatermarkText } from './watermark-text'
 
 export type Watermark =
   | { type: 'get-your-own' }
@@ -65,17 +67,24 @@ export function CodeVideo({ options }: CodeVideoProps) {
         currentFrame,
         durationInFrames,
       )} }`}</style>
-      <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
-        <div className="code">
-          <CodeSequences sequences={sequences} speed={metadata.speed} />
-        </div>
-        <WatermarkText watermark={watermark} />
-      </div>
+
+      <CodeSequences
+        sequences={sequences}
+        speed={metadata.speed}
+        watermark={watermark}
+        scale={scale}
+      />
     </AbsoluteFill>
   )
 }
 
-function WindowHeader({ filename }: { filename: string | undefined }) {
+function WindowHeader({
+  filename,
+  filenames,
+}: {
+  filename: string | undefined
+  filenames: string[]
+}) {
   return (
     <div className="window-buttons">
       <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +92,16 @@ function WindowHeader({ filename }: { filename: string | undefined }) {
         <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
         <circle cx="400" cy="50" r="50" fill="#27cd41" />
       </svg>
-      <span className="filename">{filename}</span>
+      <div className="tabs">
+        {filenames.map((f, index) => (
+          <span
+            key={index}
+            className={cn('tab', f === filename && 'tab-active')}
+          >
+            {f}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
@@ -91,50 +109,78 @@ function WindowHeader({ filename }: { filename: string | undefined }) {
 function CodeSequences({
   sequences: seqs,
   speed,
+  watermark,
+  scale,
 }: {
   sequences: CompositionData['sequences']
   speed: number
+  watermark: Watermark
+  scale: number
 }) {
+  const filenames = Array.from(
+    new Set(seqs.map((seq) => seq.filename).filter(Boolean)).values(),
+  )
   const sequences = seqs.map((seq, i) => {
-    const durationInFrames =
-      i < seqs.length - 1
-        ? (seqs[i + 1].from ?? 0) - (seq.from ?? 0)
-        : seq.durationInFrames
     return (
-      <Sequence
-        durationInFrames={durationInFrames / speed}
-        from={(seq.from ?? 0) / speed}
-        layout="none"
-        key={i}
-      >
-        <CodeSequence
-          lang={seq.lang}
-          filename={seq.filename}
-          codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
-        />
-      </Sequence>
+      <Fragment key={i}>
+        {seq.isTransition && (
+          <TransitionSeries.Transition
+            presentation={slide({
+              direction:
+                seq.transition === 'from-left' ? 'from-left' : 'from-right',
+            })}
+            timing={linearTiming({ durationInFrames: seq.durationInFrames })}
+            key={`trans-${i}`}
+          />
+        )}
+        <TransitionSeries.Sequence
+          durationInFrames={seq.durationInFrames}
+          layout="none"
+          key={`seq-${i}`}
+        >
+          <CodeSequence
+            lang={seq.lang}
+            filename={seq.filename}
+            filenames={filenames}
+            codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
+            watermark={watermark}
+            scale={scale}
+          />
+        </TransitionSeries.Sequence>
+      </Fragment>
     )
   })
 
-  return <>{sequences}</>
+  return <TransitionSeries>{sequences}</TransitionSeries>
 }
 
 function CodeSequence({
   lang,
   codeForFrame,
   filename,
+  filenames,
+  watermark,
+  scale,
 }: {
   lang: string
   filename?: string
+  filenames: string[]
   codeForFrame: (frame: number) => string
+  watermark: Watermark
+  scale: number
 }) {
   const frame = useCurrentFrame()
   const code = codeForFrame(frame)
   return (
-    <>
-      <WindowHeader filename={filename} />
-      <Highlight className={`language-${lang}`}>{code}</Highlight>
-    </>
+    <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
+      <div className="code">
+        <WindowHeader filename={filename} filenames={filenames} />
+        <div>
+          <Highlight className={`language-${lang}`}>{code}</Highlight>
+        </div>
+      </div>
+      <WatermarkText watermark={watermark} />
+    </div>
   )
 }
 
