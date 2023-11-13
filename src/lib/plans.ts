@@ -7,6 +7,7 @@ export type Plan = {
   monthlyPriceCents: number
   yearlyPriceCents: number
   prioritySupport: boolean
+  multiFile: boolean
 }
 
 export const plans: Plan[] = [
@@ -19,6 +20,7 @@ export const plans: Plan[] = [
     prioritySupport: false,
     monthlyPriceCents: 0,
     yearlyPriceCents: 0,
+    multiFile: false,
   },
   {
     id: 'premium',
@@ -29,6 +31,7 @@ export const plans: Plan[] = [
     prioritySupport: true,
     monthlyPriceCents: 999,
     yearlyPriceCents: 9999,
+    multiFile: false,
   },
   {
     id: 'pro',
@@ -39,6 +42,7 @@ export const plans: Plan[] = [
     prioritySupport: true,
     monthlyPriceCents: 1999,
     yearlyPriceCents: 19999,
+    multiFile: true,
   },
 ]
 

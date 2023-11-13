@@ -17,6 +17,7 @@ export function LandingPlayer() {
     markdown: landingPageSnippet,
     fontSize,
     watermark: { type: 'none' },
+    multiFile: true,
   }
 
   return (

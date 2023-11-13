@@ -45,7 +45,19 @@ export function getPlanWarnings(
   plan: Plan,
 ): Warning[] {
   const warnings: Warning[] = []
-  const compositionData = getCompositionData(options)
+  const compositionData = getCompositionData({ ...options, multiFile: true })
+
+  if (!plan.multiFile) {
+    const filenames = new Set(
+      compositionData.sequences.map((seq) => seq.filename).filter(Boolean),
+    )
+    if (filenames.size > 1)
+      warnings.push({
+        type: 'forbidden-multifile',
+        filenames: Array.from(filenames),
+      })
+  }
+
   const durationInFrames = compositionDurationInFrames(compositionData)
   if (options.watermark.type === 'none' && plan.watermark === true) {
     warnings.push({ type: 'required-watermark' })

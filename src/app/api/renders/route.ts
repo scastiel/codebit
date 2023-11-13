@@ -59,6 +59,7 @@ async function triggerRender(snippet: Snippet) {
         ? { type: 'url', slug: snippet.slug }
         : { type: 'none' },
     maxDurationInSeconds: plan.maxVideoDurationInSeconds,
+    multiFile: plan.multiFile,
   }
   const { bucketName, renderId } = await renderMediaOnLambda({
     region: env.REMOTION_AWS_REGION as any,

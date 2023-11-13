@@ -28,6 +28,7 @@ export type Warning =
       maxDurationInSeconds: number
     }
   | { type: 'required-watermark' }
+  | { type: 'forbidden-multifile'; filenames: string[] }
 
 export type SnippetParsingResult = {
   steps: Steps

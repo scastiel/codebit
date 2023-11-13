@@ -139,6 +139,21 @@ function Table({
               )}
             </li>
             <li className="flex items-center space-x-2">
+              {plan.multiFile ? (
+                <>
+                  <Check className="w-5 h-5 text-green-600" />{' '}
+                  <p>Multi-file animations</p>
+                </>
+              ) : (
+                <>
+                  <X className="w-5 h-5 text-red-600" />
+                  <p>
+                    <del>Multi-file animations</del>
+                  </p>
+                </>
+              )}
+            </li>
+            <li className="flex items-center space-x-2">
               {plan.prioritySupport ? (
                 <>
                   <Check className="w-5 h-5 text-green-600" />{' '}

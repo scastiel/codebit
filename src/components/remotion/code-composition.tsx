@@ -35,6 +35,7 @@ export type CodeVideoOptions = {
   fontSize: number
   watermark: Watermark
   maxDurationInSeconds?: number
+  multiFile: boolean
 }
 
 export type CodeVideoProps = { options: CodeVideoOptions }
@@ -189,6 +190,7 @@ export function CodeComposition() {
     fontSize: 24,
     markdown: landingPageSnippet,
     watermark: { type: 'get-your-own' },
+    multiFile: true,
   }
   return (
     <Composition

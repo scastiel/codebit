@@ -61,12 +61,14 @@ export function CodeEditor({
         ? { type: 'url', slug: snippetSlug }
         : { type: 'none' },
       maxDurationInSeconds: plan.maxVideoDurationInSeconds,
+      multiFile: plan.multiFile,
     }),
     [
       fontSize,
       markdown,
       metadata.watermark,
       plan.maxVideoDurationInSeconds,
+      plan.multiFile,
       snippetSlug,
     ],
   )

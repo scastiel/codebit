@@ -41,6 +41,9 @@ export function WarningList({
                   .with({ type: 'required-watermark' }, () => (
                     <>Required watermark</>
                   ))
+                  .with({ type: 'forbidden-multifile' }, () => (
+                    <>Several files detected</>
+                  ))
                   .exhaustive()}
               </span>
               {'line' in warning && (
@@ -83,6 +86,13 @@ export function WarningList({
                 )
                 .with({ type: 'required-watermark' }, () => (
                   <>Your plan doesn’t allow you to remove the watermark.</>
+                ))
+                .with({ type: 'forbidden-multifile' }, ({ filenames }) => (
+                  <>
+                    Your plan doesn’t allow you to have several files in your
+                    snippet. Only the first one <em>({filenames[0]})</em> will
+                    be used.
+                  </>
                 ))
                 .exhaustive()}
             </AlertDescription>
