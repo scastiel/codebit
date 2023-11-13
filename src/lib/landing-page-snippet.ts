@@ -1,28 +1,129 @@
 export const landingPageSnippet = `
 ---
 theme: dark
-background: 3223
+background: 86602
 ---
 
-\`\`\`ts
-console.log("Hi there 👋")
+\`\`\`ts filename="hello.ts"
+console.log("Hello World!")
 \`\`\`
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("")
 \`\`\`
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
 \`\`\`
 
 ---
 
-\`\`\`ts
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("Even with several files?");
+}
+\`\`\`
+
+---
+
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("Even with several ");
+}
+\`\`\`
+
+---
+
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("Even with several languages?");
+}
+\`\`\`
+
+---
+
+\`\`\`java filename="Hello.java"
+class HelloWorldApp {
+    public static void main(String[] args) {
+        System.out.println("And more languages!");
+    }
+}
+\`\`\`
+
+---
+
+\`\`\`java filename="Hello.java"
+class HelloWorldApp {
+    public static void main(String[] args) {
+        System.out.println("And more languages!");
+    }
+}
+\`\`\`
+
+---
+
+\`\`\`java filename="Hello.java"
+class HelloWorldApp {
+    public static void main(String[] args) {
+        System.out.println("And more languages!");
+        
+    }
+}
+\`\`\`
+
+---
+
+\`\`\`java filename="Hello.java"
+class HelloWorldApp {
+    public static void main(String[] args) {
+        System.out.println("And more languages!");
+        System.out.println("");
+    }
+}
+\`\`\`
+
+---
+
+\`\`\`java filename="Hello.java"
+class HelloWorldApp {
+    public static void main(String[] args) {
+        System.out.println("And more languages!");
+        System.out.println("Even your favorite one!");
+    }
+}
+\`\`\`
+
+---
+
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("Even with several languages?");
+}
+\`\`\`
+
+---
+
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("");
+}
+\`\`\`
+
+---
+
+\`\`\`rust filename="hello.rs"
+fn main() {
+    println!("Sounds too good to be true?");
+}
+\`\`\`
+
+---
+
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
 
 
@@ -30,86 +131,26 @@ console.log("Ready to tell a story with your code? 🎞️")
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is a video?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video?")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
 
 if (interested) {}
 \`\`\`
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
 
-console.log("Did you notice that this is *not* a video? 🤯")
-
 if (interested) {
-
+  
 }
 \`\`\`
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
-
-if (interested) {
-  console.log("")
-}
-\`\`\`
-
----
-
-\`\`\`ts
-console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
 
 if (interested) {
   console.log("Enter your email to know when we launch!")
@@ -118,10 +159,19 @@ if (interested) {
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
 
-console.log("Did you notice that this is *not* a video? 🤯")
+if (interested) {
+  console.log("Enter your email to know when we launch!")
+  // 
+}
+\`\`\`
+
+---
+
+\`\`\`ts filename="hello.ts"
+console.log("Ready to tell a story with your code? 🎞️")
 
 if (interested) {
   console.log("Enter your email to know when we launch!")
@@ -131,10 +181,8 @@ if (interested) {
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
 
 if (interested) {
   console.log("Enter your email to know when we launch!")
@@ -144,10 +192,8 @@ if (interested) {
 
 ---
 
-\`\`\`ts
+\`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-console.log("Did you notice that this is *not* a video? 🤯")
 
 if (interested) {
   console.log("Enter your email to know when we launch!")
