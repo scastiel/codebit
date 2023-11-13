@@ -10,7 +10,7 @@ import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Plan } from '@/lib/plans'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
-import { ExternalLink, HelpCircle, Save } from 'lucide-react'
+import { ExternalLink, HelpCircle, Loader2, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
@@ -85,6 +85,22 @@ export function CodeEditor({
 
   const { theme: appTheme } = useTheme()
 
+  const [saved, setSaved] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  const save = async () => {
+    setSaved(true)
+    setSaving(true)
+    try {
+      await saveSnippetAction?.(editorRef.current.getValue())
+    } catch (err) {
+      console.error(err)
+      setSaved(false)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
       <div
@@ -133,13 +149,22 @@ export function CodeEditor({
               {saveSnippetAction && (
                 <Button
                   onClick={async () => {
-                    await saveSnippetAction(editorRef.current.getValue())
+                    await save()
                     preview()
                   }}
                   variant="secondary"
+                  disabled={saving}
                 >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save
+                  {saving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      {saved ? 'Saved' : 'Save'}
+                    </>
+                  )}
                 </Button>
               )}
               {snippetSlug && (
@@ -159,7 +184,7 @@ export function CodeEditor({
                     initialRenderId={lastRenderId ?? null}
                     snippetSlug={snippetSlug}
                     save={async () => {
-                      await saveSnippetAction?.(editorRef.current.getValue())
+                      await save()
                       preview()
                     }}
                   />
@@ -181,8 +206,8 @@ export function CodeEditor({
               editorRef.current = editor
               preview()
             }}
-            onChange={(code) => {
-              // updateMarkdown(code ?? '')
+            onChange={() => {
+              setSaved(false)
             }}
             options={{ minimap: { enabled: false } }}
           />
@@ -191,7 +216,7 @@ export function CodeEditor({
           <ImportFromUrl
             onCodeFetched={async (code) => {
               editorRef.current?.setValue(code)
-              if (saveSnippetAction) await saveSnippetAction(code)
+              save()
               preview()
             }}
           />
