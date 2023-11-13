@@ -1,6 +1,7 @@
 import { PlanBadge } from '@/components/plan-badge'
 import { SigninButton } from '@/components/signin-button'
 import { SignoutButton } from '@/components/signout-button'
+import { Button } from '@/components/ui/button'
 import { getPlan } from '@/lib/plans'
 import { User } from '@prisma/client'
 import { Code2 } from 'lucide-react'
@@ -24,24 +25,30 @@ export async function UserMenu({ user, planId }: Props) {
       </h1>
       <div className="flex-1"></div>
       {user ? (
-        <div className="text-sm flex gap-3 items-center">
-          {user?.image && (
-            <Image
-              className="rounded-full"
-              src={user.image}
-              alt=""
-              width={24}
-              height={24}
-            />
-          )}
-          <span>{user.name ?? user.email}</span>
+        <div className="text-sm flex gap-1 items-center">
           {plan && (
-            <Link href="/my/plan">
-              <PlanBadge userId={user.id} />
-            </Link>
+            <Button asChild variant="ghost">
+              <Link href="/my/plan" className="flex gap-2">
+                {user?.image && (
+                  <Image
+                    className="rounded-full"
+                    src={user.image}
+                    alt=""
+                    width={24}
+                    height={24}
+                  />
+                )}
+                <span>{user.name ?? user.email}</span>{' '}
+                <PlanBadge userId={user.id} />
+              </Link>
+            </Button>
           )}
-          <Link href="/my/snippets">My snippets</Link>
-          <Link href="/my/renders">My renders</Link>
+          <Button asChild variant="ghost">
+            <Link href="/my/snippets">My snippets</Link>
+          </Button>
+          <Button asChild variant="ghost">
+            <Link href="/my/renders">My renders</Link>
+          </Button>
           <SignoutButton />
         </div>
       ) : (

@@ -7,5 +7,9 @@ export function PlanBadge({ userId }: { userId: string }) {
   const { isLoading, error, data } = useUserSubscriptionInfo(userId)
   if (isLoading || error || !data) return null
   const plan = getPlan(data.currentPlanId)
-  return <Badge>{plan.name}</Badge>
+  return (
+    <Badge variant="outline" className="bg-slate-500">
+      {plan.name}
+    </Badge>
+  )
 }

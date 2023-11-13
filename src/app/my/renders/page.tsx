@@ -10,7 +10,7 @@ import {
 import { env } from '@/lib/env'
 import { getRendersForUser } from '@/lib/render'
 import { getCurrentUserOrRedirect } from '@/lib/user'
-import { Bug, ExternalLink, Loader2 } from 'lucide-react'
+import { Bug, Download, Loader2 } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -54,12 +54,12 @@ export default async function SnippetsPage() {
                   </Badge>
                 ) : render.done ? (
                   <Link
-                    href={render.videoUrl!}
+                    href={`/my/renders/${render.id}/download`}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
                     <Badge className="bg-green-300">
-                      <ExternalLink className="w-3 h-3 mr-1" />
+                      <Download className="w-3 h-3 mr-1" />
                       Finished
                     </Badge>
                   </Link>
