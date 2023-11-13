@@ -1,5 +1,12 @@
 export const invitedUsers = [
   'sebastien@castiel.me',
+  'scastiel@pm.me',
   'got2bex@gmail.com',
   'nicolascarlo.espeon@gmail.com',
+  'mikrethor@gmail.com',
+  'jjprevite@gmail.com',
+  'lorber.sebastien@gmail.com',
+  'martinratinaud@gmail.com',
+  'anthony.dahanne@gmail.com',
+  'lucianomammino@gmail.com',
 ]

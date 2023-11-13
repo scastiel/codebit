@@ -103,7 +103,7 @@ async function createPrice({
 async function createProduct(plan: Plan) {
   const product = await stripe.products.create({
     name: plan.name,
-    tax_code: 'txcd_10103001',
+    tax_code: 'txcd_10103000',
     statement_descriptor: `CODEBIT ${plan.name}`,
     metadata: { plan_id: plan.id },
   })
