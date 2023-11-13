@@ -88,14 +88,26 @@ pre > code {
 
 .root.dark .window-buttons {
   background-color: rgba(255, 255, 255, 5%);
+  color: rgba(255, 255, 255, 0.7);
 }
 .root.light .window-buttons {
   background-color: rgba(255, 255, 255, 40%);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .window-buttons {
   padding: 0.5em 1em;
   background-color: rgba(255, 255, 255, 5%);
+  display: flex;
+  align-items: center;
+}
+
+.window-buttons .filename {
+  flex: 1;
+  text-align: center;
+  margin-right: 3em;
+  font-size: 1em;
+  font-family: Geist;
 }
 
 .window-buttons svg {

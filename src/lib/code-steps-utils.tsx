@@ -81,7 +81,19 @@ function parseMarkdown(markdown: string, firstLineIndex: number) {
             stepIndex: currentStep,
           })
         } else {
-          steps[currentStep] = { code: token.text, lang: token.lang }
+          const [lang, ...codeMeta] =
+            (token.lang as string | undefined)?.split(/\s+/) ?? []
+          const meta = Object.fromEntries(
+            codeMeta.map((meta) => {
+              const [key, value] = meta.split('=')
+              return [key, value.replace(/^"(.*)"$/, '$1')]
+            }),
+          )
+          steps[currentStep] = {
+            code: token.text,
+            lang,
+            filename: meta.filename,
+          }
         }
         break
       case 'hr':

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export type Steps = { lang: string; code: string }[]
+export type Steps = { lang: string; code: string; filename?: string }[]
 
 export const metadataSchema = z.object({
   theme: z.enum(['dark', 'light']).optional().default('dark'),

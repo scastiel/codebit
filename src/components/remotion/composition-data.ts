@@ -21,6 +21,7 @@ export function getCompositionData({
     from?: number
     frames: string[]
     lang: string
+    filename?: string
   }[] = []
 
   sequences.push({
@@ -32,26 +33,56 @@ export function getCompositionData({
       ),
     ),
     lang: steps[0]?.lang ?? '',
+    filename: steps[0].filename,
   })
 
   let from = framesAtStart
-
   for (let i = 0; i < steps.length - 1; i++) {
-    const diff = diffCode(steps[i].code, steps[i + 1].code)
-    const nbRealFrame = durationInFramesForDiff(diff)
-    const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
-    const duration = jitteredFrame.length
+    if (steps[i].filename && steps[i].filename !== steps[i + 1].filename) {
+      sequences.push({
+        durationInFrames: framesAtEnd,
+        from,
+        frames: Array.from(Array(framesAtEnd)).map(() =>
+          codeFromFrame(
+            diffCode(steps[i]?.code ?? '', steps[i]?.code ?? ''),
+            noJitterFrame(framesAtEnd)[0],
+          ),
+        ),
+        lang: steps[i]?.lang ?? '',
+        filename: steps[i].filename,
+      })
+      from += framesAtEnd
+      sequences.push({
+        durationInFrames: framesAtStart,
+        from,
+        frames: Array.from(Array(framesAtStart)).map(() =>
+          codeFromFrame(
+            diffCode(steps[i + 1]?.code ?? '', steps[i + 1]?.code ?? ''),
+            noJitterFrame(framesAtStart)[0],
+          ),
+        ),
+        lang: steps[i + 1]?.lang ?? '',
+        filename: steps[i + 1].filename,
+      })
+      from += framesAtStart
+    } else {
+      const diff = diffCode(steps[i].code, steps[i + 1].code)
+      const nbRealFrame = durationInFramesForDiff(diff)
+      const jitteredFrame = jitterFrame(nbRealFrame, framesBetweenSteps, rand)
+      const duration = jitteredFrame.length
 
-    sequences.push({
-      durationInFrames: duration,
-      from,
-      frames: Array.from(Array(duration)).map((_, frame) =>
-        codeFromFrame(diff, jitteredFrame[frame]),
-      ),
-      lang: steps[i].lang,
-    })
+      sequences.push({
+        durationInFrames: duration,
+        from,
+        frames: Array.from(Array(duration)).map((_, frame) =>
+          codeFromFrame(diff, jitteredFrame[frame]),
+        ),
+        lang: steps[i].lang,
+        filename: steps[i].filename,
+      })
 
-    from += duration
+      from += duration
+    }
   }
 
   sequences.push({
@@ -63,10 +94,11 @@ export function getCompositionData({
           steps[steps.length - 1]?.code ?? '',
           steps[steps.length - 1]?.code ?? '',
         ),
-        noJitterFrame(framesAtStart)[0],
+        noJitterFrame(framesAtEnd)[0],
       ),
     ),
     lang: steps[steps.length - 1]?.lang ?? '',
+    filename: steps[steps.length - 1].filename,
   })
 
   return { sequences, metadata }

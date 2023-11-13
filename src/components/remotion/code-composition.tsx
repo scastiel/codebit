@@ -67,18 +67,24 @@ export function CodeVideo({ options }: CodeVideoProps) {
       )} }`}</style>
       <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
         <div className="code">
-          <div className="window-buttons">
-            <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="50" fill="#fe5f57" />
-              <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
-              <circle cx="400" cy="50" r="50" fill="#27cd41" />
-            </svg>
-          </div>
           <CodeSequences sequences={sequences} speed={metadata.speed} />
         </div>
         <WatermarkText watermark={watermark} />
       </div>
     </AbsoluteFill>
+  )
+}
+
+function WindowHeader({ filename }: { filename: string | undefined }) {
+  return (
+    <div className="window-buttons">
+      <svg viewBox="0 0 450 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="50" fill="#fe5f57" />
+        <circle cx="225" cy="50" r="50" fill="#ffbc2e" />
+        <circle cx="400" cy="50" r="50" fill="#27cd41" />
+      </svg>
+      <span className="filename">{filename}</span>
+    </div>
   )
 }
 
@@ -103,6 +109,7 @@ function CodeSequences({
       >
         <CodeSequence
           lang={seq.lang}
+          filename={seq.filename}
           codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
         />
       </Sequence>
@@ -115,13 +122,20 @@ function CodeSequences({
 function CodeSequence({
   lang,
   codeForFrame,
+  filename,
 }: {
   lang: string
+  filename?: string
   codeForFrame: (frame: number) => string
 }) {
   const frame = useCurrentFrame()
   const code = codeForFrame(frame)
-  return <Highlight className={`language-${lang}`}>{code}</Highlight>
+  return (
+    <>
+      <WindowHeader filename={filename} />
+      <Highlight className={`language-${lang}`}>{code}</Highlight>
+    </>
+  )
 }
 
 export function CodeComposition() {
