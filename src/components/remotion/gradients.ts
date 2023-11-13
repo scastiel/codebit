@@ -20,7 +20,7 @@ export function gradientCssFromSeed(
       const h = rand.intBetween(0, 360)
       const s = rand.intBetween(85, 95)
       const l = rand.intBetween(50, 70)
-      return `radial-gradient(in oklch at ${x}% ${y}%, hsla(${h}, ${s}%, ${l}%, 1) 0, hsla(${h}, ${s}%, ${l}%, 0) 50%)`
+      return `radial-gradient(at ${x}% ${y}%, hsla(${h}, ${s}%, ${l}%, 1) 0, hsla(${h}, ${s}%, ${l}%, 0) 50%)`
     })
     .join(',')
   const r = rand.intBetween(0, 255)

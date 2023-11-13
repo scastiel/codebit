@@ -20,6 +20,7 @@ type Props = {
   initialRenderId: string | null
   snippetSlug: string
   userId: string
+  save: () => Promise<void>
 }
 
 type Status =
@@ -44,6 +45,7 @@ export function GenerateButton({
   initialRenderId,
   snippetSlug,
   userId,
+  save,
 }: Props): JSX.Element {
   const [renderId, setRenderId] = useState(initialRenderId)
   const [refreshTokenCredits, setRefreshTokenCredits] = useState(0)
@@ -120,7 +122,12 @@ export function GenerateButton({
         variant="secondary"
         onClick={async () => {
           setStatus('starting')
-          fetch(`/api/renders?snippetSlug=${snippetSlug}`, { method: 'POST' })
+          save()
+            .then(() =>
+              fetch(`/api/renders?snippetSlug=${snippetSlug}`, {
+                method: 'POST',
+              }),
+            )
             .then((res) => res.json())
             .then((res) => {
               const { renderId } = z.object({ renderId: z.string() }).parse(res)

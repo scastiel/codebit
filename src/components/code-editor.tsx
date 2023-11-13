@@ -158,6 +158,10 @@ export function CodeEditor({
                     userId={userId}
                     initialRenderId={lastRenderId ?? null}
                     snippetSlug={snippetSlug}
+                    save={async () => {
+                      await saveSnippetAction?.(editorRef.current.getValue())
+                      preview()
+                    }}
                   />
                 </>
               )}
