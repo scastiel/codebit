@@ -36,6 +36,14 @@ Notice that:
 2. It includes some configuration in the _frontmatter_ (the part between `---` in the header)
 3. Each step is a code block delimited by `` ```ts `` (`ts` is for TypeScript; feel free to try different languages) and separated with `---`.
 
+You can specify a file name on each code block, that will be displayed at top. If the feature is available with the plan you subscribed to, you can define several files in your snippets, creating an animation when switching from one file to another.
+
+`````md
+```ts filename="hello.ts"
+console.log("Hello World!")
+```
+`````
+
 ## Configuration options
 
 - `theme` can be either `light` or `dark` (default)
