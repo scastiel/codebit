@@ -34,6 +34,7 @@ export function PublicSnippetPageClient({ snippet, plan }: Props) {
             ? { type: 'get-your-own' }
             : { type: 'none' },
         maxDurationInSeconds: plan.maxVideoDurationInSeconds,
+        multiFile: plan.multiFile,
       }}
       width={width}
       height={height}
