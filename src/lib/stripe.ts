@@ -2,24 +2,23 @@ import { env } from '@/lib/env'
 import { Plan, getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
 import { getActiveUserSubscription, getCurrentUser } from '@/lib/user'
+import { User } from '@prisma/client'
 import Stripe from 'stripe'
 
 export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
 })
 
-export async function createCustomer(userId: string) {
-  const prisma = getPrisma()
-  const user = await prisma.user.findUnique({ where: { id: userId } })
-  if (!user) throw new Error('Invalid user ID')
+export async function createCustomer(user: User) {
   if (user.stripeCustomerId) return user.stripeCustomerId
   const customer = await stripe.customers.create({
     email: user.email ?? undefined,
     name: user.name ?? undefined,
     metadata: { userId: user.id },
   })
+  const prisma = getPrisma()
   await prisma.user.update({
-    where: { id: userId },
+    where: { id: user.id },
     data: { stripeCustomerId: customer.id },
   })
   return customer.id
@@ -122,7 +121,7 @@ export async function createCheckoutSession(
   interval: 'month' | 'year',
 ) {
   const user = await getCurrentUser()
-  if (!user.stripeCustomerId) throw new Error('Missing Stripe customer ID')
+  const stripeCustomerId = await createCustomer(user)
 
   const plan = getPlan(planId)
   const { monthlyPriceId, yearlyPriceId } = await getProductForPlan(plan)
@@ -132,7 +131,7 @@ export async function createCheckoutSession(
     cancel_url: `${env.NEXT_PUBLIC_BASE_URL}/my/plan?cancelled`,
     mode: 'subscription',
     client_reference_id: user.id,
-    customer: user.stripeCustomerId,
+    customer: stripeCustomerId,
     customer_update: { address: 'auto' },
     automatic_tax: { enabled: true },
     allow_promotion_codes: true,
@@ -148,10 +147,10 @@ export async function getProductById(productId: string) {
 
 export async function createPortalSession() {
   const user = await getCurrentUser()
-  if (!user.stripeCustomerId) throw new Error('Missing Stripe customer ID')
+  const stripeCustomerId = await createCustomer(user)
 
   const { url } = await stripe.billingPortal.sessions.create({
-    customer: user.stripeCustomerId,
+    customer: stripeCustomerId,
     return_url: `${env.NEXT_PUBLIC_BASE_URL}/my/plan`,
   })
   return url
@@ -162,7 +161,7 @@ export async function changeSubscription(
   interval: 'month' | 'year',
 ) {
   const user = await getCurrentUser()
-  if (!user.stripeCustomerId) throw new Error('Missing Stripe customer ID')
+  await createCustomer(user)
 
   const subscription = await getActiveUserSubscription(user.id)
   if (!subscription) throw new Error('Missing subscription')
@@ -186,7 +185,7 @@ export async function changeSubscription(
 
 export async function cancelSubscription() {
   const user = await getCurrentUser()
-  if (!user.stripeCustomerId) throw new Error('Missing Stripe customer ID')
+  await createCustomer(user)
 
   const subscription = await getActiveUserSubscription(user.id)
   if (!subscription) throw new Error('Missing subscription')
@@ -198,7 +197,7 @@ export async function cancelSubscription() {
 
 export async function reactivateSubscription() {
   const user = await getCurrentUser()
-  if (!user.stripeCustomerId) throw new Error('Missing Stripe customer ID')
+  await createCustomer(user)
 
   const subscription = await getActiveUserSubscription(user.id)
   if (!subscription) throw new Error('Missing subscription')

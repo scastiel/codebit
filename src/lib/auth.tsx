@@ -2,7 +2,6 @@ import { SigninEmailTemplate } from '@/components/signin-email-template'
 import { invitedUsers } from '@/invited-users'
 import { getPrisma } from '@/lib/prisma'
 import { getResend } from '@/lib/resend'
-import { createCustomer } from '@/lib/stripe'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { AuthOptions } from 'next-auth'
 import EmailProvider from 'next-auth/providers/email'
@@ -17,12 +16,14 @@ export const authOptions: AuthOptions = {
       from: 'Sebastien Castiel <no-reply@scastiel.dev>',
       async sendVerificationRequest(params) {
         try {
-          await getResend().emails.send({
+          console.log('params.identifier:', params.identifier)
+          const res = await getResend().emails.send({
             from: 'no-reply@scastiel.dev',
             to: params.identifier,
             subject: 'Sign in to CodeBit',
             react: <SigninEmailTemplate url={params.url} />,
           })
+          console.log(res)
         } catch (error) {
           console.log({ error })
         }
@@ -34,7 +35,6 @@ export const authOptions: AuthOptions = {
       if (!user.email || !invitedUsers.includes(user.email)) {
         return `${process.env.NEXTAUTH_URL}/?not-invited`
       }
-      await createCustomer(user.id)
       return true
     },
   },
