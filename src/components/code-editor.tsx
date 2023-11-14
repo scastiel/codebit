@@ -1,6 +1,5 @@
 'use client'
 import { GenerateButton } from '@/components/generate-button'
-import { ImportFromUrl } from '@/components/import-from-url'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
@@ -212,7 +211,7 @@ export function CodeEditor({
             options={{ minimap: { enabled: false } }}
           />
         </Card>
-        <div className="flex-shrink-0">
+        {/* <div className="flex-shrink-0">
           <ImportFromUrl
             onCodeFetched={async (code) => {
               editorRef.current?.setValue(code)
@@ -220,7 +219,7 @@ export function CodeEditor({
               preview()
             }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   )
