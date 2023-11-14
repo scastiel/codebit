@@ -24,6 +24,7 @@ export function useUserSubscriptionInfo(userId: string, refreshToken: any = 0) {
           subscriptionId: string | null
           subscriptionEndDate: Date | null
           subscriptionInterval: 'month' | 'year'
+          monthlyRemainingCredits: number
         }
       | undefined,
     isLoading,

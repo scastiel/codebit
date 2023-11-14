@@ -1,8 +1,8 @@
 'use client'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { useToast } from '@/components/ui/use-toast'
 import { Download, FileVideo, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, useEffect, useState } from 'react'
@@ -76,6 +77,8 @@ export function GenerateButton({
     setStatus(getStatus(isLoading, error, data))
   }, [isLoading, error, data])
 
+  const { toast } = useToast()
+
   const GenerateButton = ({ children }: { children: ReactNode }) => {
     if (remainingCredits === 0) {
       return (
@@ -84,14 +87,14 @@ export function GenerateButton({
             <Button variant="secondary">
               <FileVideo className="mr-2 h-4 w-4" />
               {children}
-              {remainingCredits !== undefined && (
+              {/* {remainingCredits !== undefined && (
                 <Badge
                   variant="outline"
                   className="bg-slate-400 text-black ml-2"
                 >
                   {remainingCredits} credits
                 </Badge>
-              )}
+              )} */}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -118,32 +121,65 @@ export function GenerateButton({
     }
 
     return (
-      <Button
-        variant="secondary"
-        onClick={async () => {
-          setStatus('starting')
-          save()
-            .then(() =>
-              fetch(`/api/renders?snippetSlug=${snippetSlug}`, {
-                method: 'POST',
-              }),
-            )
-            .then((res) => res.json())
-            .then((res) => {
-              const { renderId } = z.object({ renderId: z.string() }).parse(res)
-              setRenderId(renderId)
-              setRefreshTokenCredits((t) => t + 1)
-            })
-        }}
-      >
-        <FileVideo className="mr-2 h-4 w-4" />
-        {children}
-        {remainingCredits !== undefined && (
-          <Badge variant="outline" className="bg-slate-400 text-black ml-2">
-            {remainingCredits} credits
-          </Badge>
-        )}
-      </Button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="secondary">
+            <FileVideo className="mr-2 h-4 w-4" />
+            {children}
+            {/* {remainingCredits !== undefined && (
+              <Badge variant="outline" className="bg-slate-400 text-black ml-2">
+                {remainingCredits} credits
+              </Badge>
+            )} */}
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate video</DialogTitle>
+            <DialogDescription>
+              You currently have {remainingCredits} credit(s) available.
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <p>
+              Generating the video will consume <strong>1 credit</strong> from
+              your balance.
+            </p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="ghost">Cancel</Button>
+            </DialogClose>
+            <Button
+              onClick={() => {
+                setStatus('starting')
+                save()
+                  .then(() =>
+                    fetch(`/api/renders?snippetSlug=${snippetSlug}`, {
+                      method: 'POST',
+                    }),
+                  )
+                  .then((res) => res.json())
+                  .then((res) => {
+                    const { renderId } = z
+                      .object({ renderId: z.string() })
+                      .parse(res)
+                    setRenderId(renderId)
+                    setRefreshTokenCredits((t) => t + 1)
+
+                    toast({
+                      title: 'Your video generation has started',
+                      description:
+                        'It can take a minute, but you can safely leave the page and come back to get the video when ready.',
+                    })
+                  })
+              }}
+            >
+              Generate the video
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     )
   }
 

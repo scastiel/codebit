@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
 import { env } from '@/lib/env'
 import type { Metadata } from 'next'
 import PlausibleProvider from 'next-plausible'
@@ -73,6 +74,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

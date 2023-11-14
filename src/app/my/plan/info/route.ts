@@ -12,5 +12,6 @@ export async function GET() {
     subscriptionId: subscription?.id ?? null,
     subscriptionEndDate: subscription?.endDate?.toISOString() ?? null,
     subscriptionInterval: subscription?.interval.toLowerCase(),
+    monthlyRemainingCredits: user.monthlyRemainingCredits,
   })
 }
