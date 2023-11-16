@@ -197,6 +197,7 @@ export function CodeEditor({
             defaultLanguage="markdown"
             defaultValue={initialContent ?? ''}
             onMount={(editor, monaco) => {
+              editor.getModel()?.updateOptions({ indentSize: 2 })
               monaco.editor.defineTheme('github', githubLight as any)
               monaco.editor.defineTheme('github-dark', githubDark as any)
               monaco.editor.setTheme(
