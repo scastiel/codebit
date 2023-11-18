@@ -1,4 +1,5 @@
 import { env } from '@/lib/env'
+import { getPlan } from '@/lib/plans'
 import { getPrisma } from '@/lib/prisma'
 import { getProductById, stripe } from '@/lib/stripe'
 import { getUserByStripeCustomerId } from '@/lib/user'
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
         warning: 'Invalid plan ID. Ignoring',
       })
     }
+    const plan = getPlan(planId)
 
     const data = {
       planId,
@@ -58,6 +60,10 @@ export async function POST(req: Request) {
       where: { stripeSubscriptionId: subscription.id },
       create: data,
       update: data,
+    })
+    await getPrisma().user.update({
+      where: { id: userId },
+      data: { monthlyRemainingCredits: { increment: plan.maxVideoRenders } },
     })
     revalidateTag(`plan-${userId}`)
   } else if (event.type === 'customer.subscription.updated') {
