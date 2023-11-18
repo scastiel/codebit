@@ -39,6 +39,7 @@ export function CodeEditor({
   const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
+  const [playerKey, setPlayerKey] = useState(0)
 
   const preview = () => {
     const markdown = editorRef.current.getValue()
@@ -93,6 +94,7 @@ export function CodeEditor({
     try {
       await saveSnippetAction?.(editorRef.current.getValue())
       setSaving(false)
+      setPlayerKey((k) => k + 1)
     } catch (err) {
       console.error(err)
       setSaving(false)
@@ -110,6 +112,7 @@ export function CodeEditor({
           <div className="overflow-hidden rounded-[8px]">
             {editorWidth > 0 && (
               <SnippetPlayer
+                key={playerKey}
                 options={{
                   ...options,
                   watermark: plan.watermark
