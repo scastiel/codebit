@@ -67,7 +67,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
       )}
       <style>{`.root { ${gradientCssFromSeed(
         String(metadata.background),
-        currentFrame,
+        metadata.animatedBackground ? currentFrame : 1,
         durationInFrames,
       )} }`}</style>
 
