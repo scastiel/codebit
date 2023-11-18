@@ -7,6 +7,7 @@ export const metadataSchema = z.object({
   background: z.number().min(0).optional().default(36263),
   speed: z.number().min(0.2).max(5).optional().default(1),
   watermark: z.boolean().optional().default(true),
+  zooming: z.boolean().optional().default(true),
 })
 
 export type Metadata = z.infer<typeof metadataSchema>

@@ -55,7 +55,9 @@ export function CodeVideo({ options }: CodeVideoProps) {
   const currentFrame = useCurrentFrame()
   const { durationInFrames } = useVideoConfig()
 
-  const scale = interpolate(currentFrame, [0, durationInFrames], [93, 103])
+  const scale = metadata.zooming
+    ? interpolate(currentFrame, [0, durationInFrames], [93, 103])
+    : 100
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
       {metadata.theme === 'dark' ? (
