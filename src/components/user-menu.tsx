@@ -52,7 +52,12 @@ export async function UserMenu({ user, planId }: Props) {
           <SignoutButton />
         </div>
       ) : (
-        <SigninButton />
+        <div>
+          <span className="text-xs text-slate-400 mr-1 animate-bounce">
+            Have you been invited? →
+          </span>
+          <SigninButton />
+        </div>
       )}
     </div>
   )
