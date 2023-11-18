@@ -52,8 +52,8 @@ export async function UserMenu({ user, planId }: Props) {
           <SignoutButton />
         </div>
       ) : (
-        <div>
-          <span className="text-xs text-slate-400 mr-1 animate-bounce">
+        <div className="flex items-baseline gap-1">
+          <span className="block text-xs text-slate-400 animate-bounce-right">
             Have you been invited? →
           </span>
           <SigninButton />
