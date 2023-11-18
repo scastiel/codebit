@@ -92,11 +92,11 @@ export function CodeEditor({
     setSaving(true)
     try {
       await saveSnippetAction?.(editorRef.current.getValue())
+      setSaving(false)
     } catch (err) {
       console.error(err)
-      setSaved(false)
-    } finally {
       setSaving(false)
+      setSaved(false)
     }
   }
 
