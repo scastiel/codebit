@@ -1,5 +1,6 @@
 import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { getPrisma } from '@/lib/prisma'
+import { tutorialSnippet } from '@/lib/tutorial-snippet'
 import { Snippet } from '@prisma/client'
 import { User } from 'next-auth'
 
@@ -39,4 +40,19 @@ export async function getSnippetBySlug(
   snippetSlug: Snippet['slug'],
 ): Promise<Snippet | null> {
   return getPrisma().snippet.findFirst({ where: { slug: snippetSlug } })
+}
+
+export async function createTutorialSnippet(user: User) {
+  const content = tutorialSnippet
+  const { steps } = parseSnippetMardown(content)
+  const lastStep = steps[steps.length - 1]
+  return getPrisma().snippet.create({
+    data: {
+      slug: Math.random().toString(16).slice(2, 8),
+      userId: user.id,
+      content,
+      preview: lastStep?.code,
+      previewLang: lastStep?.lang,
+    },
+  })
 }

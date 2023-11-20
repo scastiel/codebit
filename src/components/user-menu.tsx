@@ -46,9 +46,10 @@ export async function UserMenu({ user, planId }: Props) {
           <Button asChild variant="ghost">
             <Link href="/my/snippets">My snippets</Link>
           </Button>
-          <Button asChild variant="ghost">
+          {/* TODO: Reactivate when the page is less confusing. */}
+          {/* <Button asChild variant="ghost">
             <Link href="/my/renders">My renders</Link>
-          </Button>
+          </Button> */}
           <SignoutButton />
         </div>
       ) : (

@@ -155,7 +155,7 @@ export function CodeEditor({
                     preview()
                   }}
                   variant="secondary"
-                  disabled={saving}
+                  // disabled={saving} FIXME: button is stuck on Saving sometimes
                 >
                   {saving ? (
                     <>

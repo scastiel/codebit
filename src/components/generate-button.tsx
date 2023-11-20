@@ -87,14 +87,6 @@ export function GenerateButton({
             <Button variant="secondary">
               <FileVideo className="mr-2 h-4 w-4" />
               {children}
-              {/* {remainingCredits !== undefined && (
-                <Badge
-                  variant="outline"
-                  className="bg-slate-400 text-black ml-2"
-                >
-                  {remainingCredits} credits
-                </Badge>
-              )} */}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -126,11 +118,6 @@ export function GenerateButton({
           <Button variant="secondary">
             <FileVideo className="mr-2 h-4 w-4" />
             {children}
-            {/* {remainingCredits !== undefined && (
-              <Badge variant="outline" className="bg-slate-400 text-black ml-2">
-                {remainingCredits} credits
-              </Badge>
-            )} */}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -140,10 +127,17 @@ export function GenerateButton({
               You currently have {remainingCredits} credit(s) available.
             </DialogDescription>
           </DialogHeader>
-          <div>
+          <div className="prose prose-invert">
             <p>
               Generating the video will consume <strong>1 credit</strong> from
-              your balance.
+              your balance. You will be able to download your video as MP4 in ~1
+              minute.
+            </p>
+            <p>
+              <em>
+                Note that <strong>you don’t need</strong> to generate the video
+                to update the preview on the right.
+              </em>
             </p>
           </div>
           <DialogFooter>
@@ -187,27 +181,27 @@ export function GenerateButton({
     case 'getting-status':
       return <LoadingButton>Getting generation status…</LoadingButton>
     case 'no-render':
-      return <GenerateButton>Generate video</GenerateButton>
+      return <GenerateButton>Generate MP4 video</GenerateButton>
     case 'starting':
       return <LoadingButton>Starting generation…</LoadingButton>
     case 'error-getting-status':
       return (
         <>
-          <GenerateButton>Generate video</GenerateButton>
+          <GenerateButton>Generate MP4 video</GenerateButton>
           <p>Error getting generation status.</p>
         </>
       )
     case 'generation-error':
       return (
         <>
-          <GenerateButton>Generate video</GenerateButton>
+          <GenerateButton>Generate MP4 video</GenerateButton>
           <p>Error generating video.</p>
         </>
       )
     case 'generation-done':
       return (
         <>
-          <GenerateButton>Regenerate video</GenerateButton>
+          <GenerateButton>Regenerate MP4 video</GenerateButton>
           <Button asChild variant="secondary">
             <Link
               href={`/my/renders/${renderId}/download`}
