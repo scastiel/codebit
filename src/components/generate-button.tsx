@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
 import { Download, FileVideo, Loader2 } from 'lucide-react'
+import { usePlausible } from 'next-plausible'
 import Link from 'next/link'
 import { ReactNode, useEffect, useState } from 'react'
 import useSWR from 'swr'
@@ -78,6 +79,7 @@ export function GenerateButton({
   }, [isLoading, error, data])
 
   const { toast } = useToast()
+  const plausible = usePlausible()
 
   const GenerateButton = ({ children }: { children: ReactNode }) => {
     if (remainingCredits === 0) {
@@ -147,6 +149,7 @@ export function GenerateButton({
             <Button
               onClick={() => {
                 setStatus('starting')
+                plausible('Snippet: Generate video', { props: { userId } })
                 save()
                   .then(() =>
                     fetch(`/api/renders?snippetSlug=${snippetSlug}`, {
