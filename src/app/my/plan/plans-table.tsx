@@ -121,7 +121,10 @@ function Table({
             </li>
             <li className="flex items-center space-x-2">
               <Check className="w-5 h-5 text-green-600" />
-              <p>{plan.maxVideoRenders} video render credits / month</p>
+              <p>
+                {plan.maxVideoRenders} video render credits{' '}
+                {plan.monthlyPriceCents === 0 ? <>once</> : <>/ month</>}
+              </p>
             </li>
             <li className="flex items-center space-x-2">
               {plan.watermark ? (

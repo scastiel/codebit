@@ -50,7 +50,7 @@ model User {
   Snippet                 Snippet[]
   Render                  Render[]
   Subscription            Subscription[]
-  monthlyRemainingCredits Int            @default(10)
+  monthlyRemainingCredits Int            @default(5)
 
   @@index([stripeCustomerId])
 }
