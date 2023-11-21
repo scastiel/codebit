@@ -5,15 +5,14 @@ import { SnippetPlayer } from '@/components/snippet-player'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getPlanWarnings, parseSnippetMardown } from '@/lib/code-steps-utils'
-import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Plan } from '@/lib/plans'
-import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import { ExternalLink, HelpCircle, Loader2, Save } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { MarkdownEditor } from './markdown-editor'
 import { WarningList } from './warning-list'
 
 type Props = {
@@ -196,23 +195,12 @@ export function CodeEditor({
             toolbarRef.current,
           )}
         <Card className="flex-1 overflow-hidden">
-          <Editor
-            defaultLanguage="markdown"
-            defaultValue={initialContent ?? ''}
-            onMount={(editor, monaco) => {
-              editor.getModel()?.updateOptions({ indentSize: 2 })
-              monaco.editor.defineTheme('github', githubLight as any)
-              monaco.editor.defineTheme('github-dark', githubDark as any)
-              monaco.editor.setTheme(
-                appTheme === 'dark' ? 'github-dark' : 'github',
-              )
-              editorRef.current = editor
-              preview()
-            }}
-            onChange={() => {
-              setSaved(false)
-            }}
-            options={{ minimap: { enabled: false } }}
+          <MarkdownEditor
+            initialContent={initialContent}
+            appTheme={appTheme}
+            editorRef={editorRef}
+            preview={preview}
+            setSaved={setSaved}
           />
         </Card>
         {/* <div className="flex-shrink-0">
