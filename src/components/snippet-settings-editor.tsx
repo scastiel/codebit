@@ -1,11 +1,24 @@
 import { gradientStyleFromSeed } from '@/components/remotion/gradients'
+import { themes } from '@/components/remotion/themes'
 import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command'
 import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Metadata } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { Moon, Shuffle, Sun } from 'lucide-react'
+import { Check, ChevronsUpDown, Shuffle } from 'lucide-react'
+import { useState } from 'react'
 
 const backgroundSeedsCount = 7
 
@@ -26,21 +39,12 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <Label>Theme</Label>
-        <Tabs
-          value={metadata.theme}
-          onValueChange={(theme: string) =>
-            setMetadata({ ...metadata, theme: theme as 'light' | 'dark' })
+        <ThemeSelector
+          value={metadata.highlightTheme}
+          setValue={(highlightTheme) =>
+            setMetadata({ ...metadata, highlightTheme })
           }
-        >
-          <TabsList>
-            <TabsTrigger value="light">
-              <Sun />
-            </TabsTrigger>
-            <TabsTrigger value="dark">
-              <Moon />
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -114,4 +118,63 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
       </div>
     </div>
   )
+}
+
+function ThemeSelector({
+  value,
+  setValue,
+}: {
+  value: string
+  setValue: (value: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="min-w-[200px] w-fit justify-between"
+        >
+          {value ? getThemeLabel(value) : 'Select theme...'}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search theme..." />
+          <CommandEmpty>No theme found.</CommandEmpty>
+          <CommandGroup className="max-h-[50vh] overflow-y-auto">
+            {themes.map((theme) => (
+              <CommandItem
+                key={theme}
+                value={theme}
+                onSelect={(currentValue) => {
+                  setValue(currentValue === value ? '' : currentValue)
+                  setOpen(false)
+                }}
+              >
+                <Check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    value === theme ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
+                {getThemeLabel(theme)}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function getThemeLabel(theme: string) {
+  return theme
+    .split('-')
+    .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
+    .join(' ')
 }

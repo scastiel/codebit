@@ -1,28 +1,19 @@
 pre {
-  padding: 0 1em;
   overflow: auto;
+  margin-top: -2em;
 }
 
 pre > code {
   font-family: 'GeistMono';
   font-weight: 600;
-  background-color: transparent !important;
+  padding-top: 3em !important;
+  opacity: 80%;
 }
 
 .root {
   padding: 1em 1em;
   justify-content: center;
   align-items: center;
-}
-
-.root.light .code {
-  text-shadow: 0 0 5px rgba(255, 255, 255, 100%);
-  background-color: rgba(255, 255, 255, 70%);
-}
-
-.root.dark .code {
-  text-shadow: 0 0 5px rgba(0, 0, 0, 100%);
-  background-color: rgba(0, 0, 0, 70%);
 }
 
 .code-wrapper {
@@ -54,20 +45,12 @@ pre > code {
   opacity: 50%;
   display: flex;
   font-family: Geist;
+  color: white;
+  filter: drop-shadow(0 0 5px black);
 }
 
 .watermark code {
   font-family: 'GeistMono';
-}
-
-.root.light .watermark {
-  color: black;
-  filter: drop-shadow(0 0 5px white);
-}
-
-.root.dark .watermark {
-  color: white;
-  filter: drop-shadow(0 0 5px black);
 }
 
 .watermark a {
@@ -91,13 +74,9 @@ pre > code {
   font-weight: 600;
 }
 
-.root.dark .window-buttons {
-  background-color: rgba(255, 255, 255, 5%);
+.window-buttons {
+  background-color: rgba(128, 128, 128, 15%);
   color: rgba(255, 255, 255, 0.7);
-}
-.root.light .window-buttons {
-  background-color: rgba(255, 255, 255, 40%);
-  color: rgba(0, 0, 0, 0.7);
 }
 
 .window-buttons {
@@ -105,6 +84,9 @@ pre > code {
   display: flex;
   align-items: center;
   height: 2em;
+  z-index: 10;
+  background-color: rgba(128, 128, 128, 15%);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .window-buttons .tabs {
@@ -127,12 +109,7 @@ pre > code {
   padding: 0 0.7em;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-}
-.root.dark .window-buttons .tab {
-  background-color: rgba(255, 255, 255, 10%);
-}
-.root.light .window-buttons .tab {
-  background-color: rgba(0, 0, 0, 8%);
+  background-color: rgba(128, 128, 128, 100%);
 }
 
 .window-buttons .tab-active {

@@ -60,11 +60,10 @@ export function CodeVideo({ options }: CodeVideoProps) {
     : 100
   return (
     <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
-      {metadata.theme === 'dark' ? (
-        <link href={staticFile('themes/github-dark.css')} rel="stylesheet" />
-      ) : (
-        <link href={staticFile('themes/github.css')} rel="stylesheet" />
-      )}
+      <link
+        href={staticFile(`themes/${metadata.highlightTheme}.min.css`)}
+        rel="stylesheet"
+      />
       <style>{`.root { ${gradientCssFromSeed(
         metadata.background,
         metadata.animatedBackground ? currentFrame : 1,
@@ -178,9 +177,7 @@ function CodeSequence({
     <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
       <div className="code">
         <WindowHeader filename={filename} filenames={filenames} />
-        <div>
-          <Highlight className={`language-${lang}`}>{code}</Highlight>
-        </div>
+        <Highlight className={`language-${lang}`}>{code}</Highlight>
       </div>
       <WatermarkText watermark={watermark} />
     </div>
