@@ -20,7 +20,7 @@ export async function UserMenu({ user, planId }: Props) {
       <h1 className="drop-shadow-md font-semibold">
         <Link href="/" className="flex gap-2">
           <Code2 />
-          <span>CodeBit</span>
+          <span className="hidden sm:block">CodeBit</span>
         </Link>
       </h1>
       <div className="flex-1"></div>
@@ -38,7 +38,9 @@ export async function UserMenu({ user, planId }: Props) {
                     height={24}
                   />
                 )}
-                <span>{user.name ?? user.email}</span>{' '}
+                <span className="hidden sm:block">
+                  {user.name ?? user.email}
+                </span>{' '}
                 <PlanBadge userId={user.id} />
               </Link>
             </Button>

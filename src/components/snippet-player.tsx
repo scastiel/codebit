@@ -7,7 +7,8 @@ import {
   compositionDurationInFrames,
   getCompositionData,
 } from '@/components/remotion/composition-data'
-import { Player } from '@remotion/player'
+import { Player, PlayerRef } from '@remotion/player'
+import { useRef } from 'react'
 
 export function SnippetPlayer({
   options,
@@ -30,8 +31,15 @@ export function SnippetPlayer({
     (options.maxDurationInSeconds ?? Infinity) * fps,
     compositionDurationInFrames(compositionData),
   )
+  const playerRef = useRef<PlayerRef>(null)
+
+  // useEffect(() => {
+  //   playerRef.current?.seekTo(0)
+  // }, [options])
+
   return (
     <Player
+      ref={playerRef}
       component={CodeVideo}
       inputProps={{ options }}
       durationInFrames={durationInFrames}

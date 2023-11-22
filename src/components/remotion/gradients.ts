@@ -1,19 +1,33 @@
 import randomSeed from 'random-seed'
+import { CSSProperties } from 'react'
 import { interpolate } from 'remotion'
 
 export function gradientCssFromSeed(
-  seed: string,
-  frame: number,
-  durationInFrames: number,
+  seed: number,
+  frame = 0,
+  durationInFrames = 1,
 ) {
-  const rand = randomSeed.create(seed)
+  const { backgroundColor, backgroundImage } = gradientStyleFromSeed(
+    seed,
+    frame,
+    durationInFrames,
+  )
+  return `background-color: ${backgroundColor}; background-image: ${backgroundImage};`
+}
+
+export function gradientStyleFromSeed(
+  seed: number,
+  frame = 0,
+  durationInFrames = 1,
+): CSSProperties {
+  const rand = randomSeed.create(String(seed))
   const inter = (value: number, direction: number) =>
     interpolate(
       frame,
-      [0, durationInFrames],
+      [0, Math.max(durationInFrames, 30 * 15)],
       direction === 0 ? [value - 50, value + 50] : [value + 50, value - 50],
     )
-  const grad = Array.from(Array(rand.intBetween(4, 10)))
+  const backgroundImage = Array.from(Array(rand.intBetween(4, 10)))
     .map((_, index) => {
       const x = inter(rand.intBetween(0, 100), index % 2)
       const y = inter(rand.intBetween(0, 100), index % 2)
@@ -26,7 +40,6 @@ export function gradientCssFromSeed(
   const r = rand.intBetween(0, 255)
   const g = rand.intBetween(0, 255)
   const b = rand.intBetween(0, 255)
-  const bgColor = `rgb(${r}, ${g}, ${b})`
-  const css = `background-color: ${bgColor}; background-image: ${grad};`
-  return css
+  const backgroundColor = `rgb(${r}, ${g}, ${b})`
+  return { backgroundColor, backgroundImage }
 }

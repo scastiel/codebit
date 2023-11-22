@@ -2,16 +2,21 @@
 import { GenerateButton } from '@/components/generate-button'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
+import { SnippetSettingsEditor } from '@/components/snippet-settings-editor'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getPlanWarnings, parseSnippetMardown } from '@/lib/code-steps-utils'
+import { githubDark, githubLight } from '@/lib/monaco-themes'
 import { Plan } from '@/lib/plans'
+import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
-import { ExternalLink, HelpCircle, Loader2, Save } from 'lucide-react'
+import debouncePromise from 'debounce-promise'
+import fm from 'front-matter'
+import { Dot, ExternalLink, HelpCircle } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import yaml from 'yaml'
 import { MarkdownEditor } from './markdown-editor'
 import { WarningList } from './warning-list'
 
@@ -20,7 +25,6 @@ type Props = {
   initialContent: string
   saveSnippetAction?: (code: string) => Promise<void>
   lastRenderId?: string | null
-  toolbarRef: MutableRefObject<HTMLDivElement | null>
   plan: Plan
   userId: string
 }
@@ -30,7 +34,6 @@ export function CodeEditor({
   initialContent,
   saveSnippetAction,
   lastRenderId,
-  toolbarRef,
   plan,
   userId,
 }: Props) {
@@ -38,11 +41,11 @@ export function CodeEditor({
   const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
-  const [playerKey, setPlayerKey] = useState(0)
+  const toolbarRef = useRef<HTMLDivElement | null>(null)
 
   const preview = () => {
     const markdown = editorRef.current.getValue()
-    setMarkdown(markdown)
+    if (markdown) setMarkdown(markdown)
   }
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
@@ -87,19 +90,18 @@ export function CodeEditor({
   const [saved, setSaved] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  const save = async () => {
+  const save = debouncePromise(async (code: string) => {
     setSaved(true)
     setSaving(true)
     try {
-      await saveSnippetAction?.(editorRef.current.getValue())
+      await saveSnippetAction?.(code)
       setSaving(false)
-      setPlayerKey((k) => k + 1)
     } catch (err) {
       console.error(err)
       setSaving(false)
       setSaved(false)
     }
-  }
+  }, 1000)
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
@@ -111,7 +113,6 @@ export function CodeEditor({
           <div className="overflow-hidden rounded-[8px]">
             {editorWidth > 0 && (
               <SnippetPlayer
-                key={playerKey}
                 options={{
                   ...options,
                   watermark: plan.watermark
@@ -144,30 +145,66 @@ export function CodeEditor({
         />
       </div>
       <div className="flex flex-col gap-2 flex-1">
-        {toolbarRef.current &&
-          createPortal(
+        <MarkdownEditor
+          editorContent={
+            <Card className="h-full w-full overflow-hidden">
+              <Editor
+                defaultLanguage="markdown"
+                defaultValue={initialContent ?? ''}
+                onMount={(editor, monaco) => {
+                  editor.getModel()?.updateOptions({ indentSize: 2 })
+                  monaco.editor.defineTheme('github', githubLight as any)
+                  monaco.editor.defineTheme('github-dark', githubDark as any)
+                  monaco.editor.setTheme(
+                    appTheme === 'dark' ? 'github-dark' : 'github',
+                  )
+                  editorRef.current = editor
+                  preview()
+                }}
+                onChange={async () => {
+                  setSaved(false)
+                  await save(editorRef.current?.getValue() || markdown)
+                  preview()
+                }}
+                options={{ minimap: { enabled: false } }}
+              />
+            </Card>
+          }
+          settingsContent={
+            <Card className="h-full w-full overflow-hidden p-4">
+              <SnippetSettingsEditor
+                metadata={metadata}
+                setMetadata={(metadata) => {
+                  const { body } = fm(markdown)
+                  const { speed, ...metadataWithoutSpeed } = metadata
+                  const frontmatter = yaml.stringify(metadataWithoutSpeed)
+                  const code = `---\n${frontmatter}---\n\n${body}`
+                  save(code)
+                  setMarkdown(code)
+                }}
+              />
+            </Card>
+          }
+          toolbarContent={
             <>
-              {saveSnippetAction && (
-                <Button
-                  onClick={async () => {
-                    await save()
-                    preview()
-                  }}
-                  variant="secondary"
-                  // disabled={saving} FIXME: button is stuck on Saving sometimes
-                >
-                  {saving ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      {saved ? 'Saved' : 'Save'}
-                    </>
-                  )}
-                </Button>
-              )}
+              <span className="text-sm flex items-center mr-2">
+                {saving ? (
+                  <>
+                    <Dot color="green" className="w-8 h-8" />
+                    Saving…
+                  </>
+                ) : saved ? (
+                  <>
+                    <Dot color="green" className="w-8 h-8" />
+                    Saved
+                  </>
+                ) : (
+                  <>
+                    <Dot color="orange" className="w-8 h-8" />
+                    Unsaved
+                  </>
+                )}
+              </span>
               {snippetSlug && (
                 <>
                   <Button variant="secondary" asChild>
@@ -185,33 +222,15 @@ export function CodeEditor({
                     initialRenderId={lastRenderId ?? null}
                     snippetSlug={snippetSlug}
                     save={async () => {
-                      await save()
+                      await save(editorRef.current.getValue() || markdown)
                       preview()
                     }}
                   />
                 </>
               )}
-            </>,
-            toolbarRef.current,
-          )}
-        <Card className="flex-1 overflow-hidden">
-          <MarkdownEditor
-            initialContent={initialContent}
-            appTheme={appTheme}
-            editorRef={editorRef}
-            preview={preview}
-            setSaved={setSaved}
-          />
-        </Card>
-        {/* <div className="flex-shrink-0">
-          <ImportFromUrl
-            onCodeFetched={async (code) => {
-              editorRef.current?.setValue(code)
-              save()
-              preview()
-            }}
-          />
-        </div> */}
+            </>
+          }
+        />
       </div>
     </div>
   )

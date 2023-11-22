@@ -36,7 +36,7 @@ export function getCompositionData({
       ),
     ),
     lang: steps[0]?.lang ?? '',
-    filename: steps[0].filename,
+    filename: steps[0]?.filename,
   })
 
   const filenames: string[] = []
@@ -128,7 +128,7 @@ export function getCompositionData({
       ),
     ),
     lang: steps[steps.length - 1]?.lang ?? '',
-    filename: steps[steps.length - 1].filename,
+    filename: steps[steps.length - 1]?.filename,
   })
 
   return { sequences, metadata }

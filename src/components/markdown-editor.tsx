@@ -1,37 +1,36 @@
 'use client'
-import { githubDark, githubLight } from '@/lib/monaco-themes'
-import { Editor } from '@monaco-editor/react'
-import { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ReactNode } from 'react'
 
 type Props = {
-  initialContent: string
-  appTheme: string | undefined
-  editorRef: MutableRefObject<any>
-  preview: () => void
-  setSaved: Dispatch<SetStateAction<boolean>>
+  editorContent: ReactNode
+  settingsContent: ReactNode
+  toolbarContent: ReactNode
 }
 
 export function MarkdownEditor({
-  initialContent,
-  appTheme,
-  editorRef,
-  preview,
-  setSaved,
+  editorContent,
+  settingsContent,
+  toolbarContent,
 }: Props) {
   return (
-    <Editor
-      defaultLanguage="markdown"
-      defaultValue={initialContent ?? ''}
-      onMount={(editor, monaco) => {
-        editor.getModel()?.updateOptions({ indentSize: 2 })
-        monaco.editor.defineTheme('github', githubLight as any)
-        monaco.editor.defineTheme('github-dark', githubDark as any)
-        monaco.editor.setTheme(appTheme === 'dark' ? 'github-dark' : 'github')
-        editorRef.current = editor
-        preview()
-      }}
-      onChange={() => setSaved(false)}
-      options={{ minimap: { enabled: false } }}
-    />
+    <Tabs defaultValue="steps" className="w-full h-full flex flex-col">
+      <div className="flex flex-col-reverse gap-2 md:flex-row justify-between">
+        <TabsList>
+          <TabsTrigger value="steps">Steps</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+
+        <div className="flex gap-2 flex-wrap items-center">
+          {toolbarContent}
+        </div>
+      </div>
+      <TabsContent value="steps" className="flex-1">
+        {editorContent}
+      </TabsContent>
+      <TabsContent value="settings" className="flex-1">
+        {settingsContent}
+      </TabsContent>
+    </Tabs>
   )
 }

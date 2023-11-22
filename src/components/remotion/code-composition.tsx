@@ -66,7 +66,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
         <link href={staticFile('themes/github.css')} rel="stylesheet" />
       )}
       <style>{`.root { ${gradientCssFromSeed(
-        String(metadata.background),
+        metadata.background,
         metadata.animatedBackground ? currentFrame : 1,
         durationInFrames,
       )} }`}</style>
