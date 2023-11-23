@@ -1,5 +1,5 @@
 import { gradientStyleFromSeed } from '@/components/remotion/gradients'
-import { themes } from '@/components/remotion/themes'
+import { fonts, themes } from '@/components/remotion/themes'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -44,6 +44,17 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
           setValue={(highlightTheme) =>
             setMetadata({ ...metadata, highlightTheme })
           }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label>Font</Label>
+        <FontSelector
+          value={metadata.font}
+          setValue={(font) => {
+            const f = Object.keys(fonts).find((f) => f.toLowerCase() === font)
+            if (f) setMetadata({ ...metadata, font: f })
+          }}
         />
       </div>
 
@@ -120,6 +131,58 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
   )
 }
 
+function FontSelector({
+  value,
+  setValue,
+}: {
+  value: string
+  setValue: (value: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="min-w-[200px] w-fit justify-between"
+        >
+          {value ?? 'Select font...'}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search font..." />
+          <CommandEmpty>No theme found.</CommandEmpty>
+          <CommandGroup className="max-h-[50vh] overflow-y-auto">
+            {Object.keys(fonts).map((font) => (
+              <CommandItem
+                key={font}
+                value={font}
+                onSelect={(value) => {
+                  setValue(value)
+                  setOpen(false)
+                }}
+              >
+                <Check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    value === font ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
+                <span className={`font-${font}`}>{font}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 function ThemeSelector({
   value,
   setValue,
@@ -151,8 +214,8 @@ function ThemeSelector({
               <CommandItem
                 key={theme}
                 value={theme}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue)
+                onSelect={(value) => {
+                  setValue(value)
                   setOpen(false)
                 }}
               >

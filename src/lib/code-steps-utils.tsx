@@ -5,6 +5,7 @@ import {
   compositionDurationInFrames,
   getCompositionData,
 } from '../components/remotion/composition-data'
+import { fonts, themes } from '../components/remotion/themes'
 import { Plan } from '../lib/plans'
 import {
   Metadata,
@@ -21,14 +22,30 @@ export function parseSnippetMardown(markdown: string): SnippetParsingResult {
     const metadata: Metadata = metadataParseResult.success
       ? metadataParseResult.data
       : metadataSchema.parse({})
-    let metadataWarnings: Warning[] = []
+    const metadataWarnings: Warning[] = []
     if (!metadataParseResult.success) {
-      metadataWarnings = metadataParseResult.error.issues.map((issue) => ({
-        type: 'invalid-metadata',
-        line: 1,
-        property: issue.path.join('.'),
-        message: issue.message,
-      }))
+      metadataWarnings.push(
+        ...metadataParseResult.error.issues.map((issue) => ({
+          type: 'invalid-metadata' as const,
+          line: 1 as const,
+          property: issue.path.join('.'),
+          message: issue.message,
+        })),
+      )
+    }
+    if (!themes.includes(metadata.highlightTheme)) {
+      metadataWarnings.push({
+        type: 'invalid-theme',
+        theme: metadata.highlightTheme,
+      })
+      metadata.highlightTheme = 'github-dark'
+    }
+    if (!Object.keys(fonts).includes(metadata.font)) {
+      metadataWarnings.push({
+        type: 'invalid-font',
+        font: metadata.font,
+      })
+      metadata.font = 'GeistMono'
     }
     const { steps, warnings } = parseMarkdown(body, bodyBegin)
     return { steps, warnings: [...metadataWarnings, ...warnings], metadata }

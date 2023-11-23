@@ -1,12 +1,16 @@
+import { fonts } from '@/components/remotion/themes'
 import { continueRender, delayRender, staticFile } from 'remotion'
 
 export async function loadFonts() {
   const waitForFont = delayRender()
 
-  const fonts = [
-    new FontFace(
-      `GeistMono`,
-      `url('${staticFile('fonts/GeistMono-Regular.woff2')}') format('woff2')`,
+  const fontFaces = [
+    ...Object.entries(fonts).map(
+      ([fontName, filename]) =>
+        new FontFace(
+          fontName,
+          `url('${staticFile(filename)}') format('woff2')`,
+        ),
     ),
     new FontFace(
       `Geist`,
@@ -20,7 +24,7 @@ export async function loadFonts() {
   ]
 
   try {
-    for (const font of fonts) {
+    for (const font of fontFaces) {
       await font.load()
       document.fonts.add(font)
     }

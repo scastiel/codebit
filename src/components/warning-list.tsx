@@ -44,6 +44,8 @@ export function WarningList({
                   .with({ type: 'forbidden-multifile' }, () => (
                     <>Several files detected</>
                   ))
+                  .with({ type: 'invalid-theme' }, () => <>Invalid theme</>)
+                  .with({ type: 'invalid-font' }, () => <>Invalid font</>)
                   .exhaustive()}
               </span>
               {'line' in warning && (
@@ -92,6 +94,16 @@ export function WarningList({
                     Your plan doesn’t allow you to have several files in your
                     snippet. Only the first one <em>({filenames[0]})</em> will
                     be used.
+                  </>
+                ))
+                .with({ type: 'invalid-theme' }, ({ theme }) => (
+                  <>
+                    The color theme <em>{theme}</em> is not available.
+                  </>
+                ))
+                .with({ type: 'invalid-font' }, ({ font }) => (
+                  <>
+                    The font <em>{font}</em> is not available.
                   </>
                 ))
                 .exhaustive()}

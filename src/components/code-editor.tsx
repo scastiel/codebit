@@ -179,6 +179,7 @@ export function CodeEditor({
                   const { speed, ...metadataWithoutSpeed } = metadata
                   const frontmatter = yaml.stringify(metadataWithoutSpeed)
                   const code = `---\n${frontmatter}---\n\n${body}`
+                  setSaved(false)
                   save(code)
                   setMarkdown(code)
                 }}

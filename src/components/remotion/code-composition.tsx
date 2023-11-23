@@ -11,6 +11,7 @@ import {
   useVideoConfig,
 } from 'remotion'
 import { gradientCssFromSeed } from '../../components/remotion/gradients'
+import { fonts } from '../../components/remotion/themes'
 import { WatermarkText } from '../../components/remotion/watermark-text'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
 import { cn } from '../../lib/utils'
@@ -70,11 +71,18 @@ export function CodeVideo({ options }: CodeVideoProps) {
         durationInFrames,
       )} }`}</style>
 
+      <style>{`
+        ${Object.keys(fonts)
+          .map((fontName) => `.font-${fontName} { font-family: '${fontName}' }`)
+          .join('\n')}
+      `}</style>
+
       <CodeSequences
         sequences={sequences}
         speed={metadata.speed}
         watermark={watermark}
         scale={scale}
+        font={metadata.font}
       />
     </AbsoluteFill>
   )
@@ -113,11 +121,13 @@ function CodeSequences({
   speed,
   watermark,
   scale,
+  font,
 }: {
   sequences: CompositionData['sequences']
   speed: number
   watermark: Watermark
   scale: number
+  font: string
 }) {
   const filenames = Array.from(
     new Set(seqs.map((seq) => seq.filename).filter(Boolean)).values(),
@@ -147,6 +157,7 @@ function CodeSequences({
             codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
             watermark={watermark}
             scale={scale}
+            font={font}
           />
         </TransitionSeries.Sequence>
       </Fragment>
@@ -163,6 +174,7 @@ function CodeSequence({
   filenames,
   watermark,
   scale,
+  font,
 }: {
   lang: string
   filename?: string
@@ -170,6 +182,7 @@ function CodeSequence({
   codeForFrame: (frame: number) => string
   watermark: Watermark
   scale: number
+  font: string
 }) {
   const frame = useCurrentFrame()
   const code = codeForFrame(frame)
@@ -177,7 +190,9 @@ function CodeSequence({
     <div className="code-wrapper" style={{ transform: `scale(${scale}%)` }}>
       <div className="code">
         <WindowHeader filename={filename} filenames={filenames} />
-        <Highlight className={`language-${lang}`}>{code}</Highlight>
+        <Highlight className={`language-${lang} font-${font}`}>
+          {code}
+        </Highlight>
       </div>
       <WatermarkText watermark={watermark} />
     </div>

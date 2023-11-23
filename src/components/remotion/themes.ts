@@ -1,3 +1,11 @@
+export const fonts = {
+  JetBrainsMono: 'fonts/JetBrainsMono-Regular.woff2',
+  VictorMono: 'fonts/VictorMono-Regular.woff2',
+  GeistMono: 'fonts/GeistMono-Regular.woff2',
+  FiraCode: 'fonts/FiraCode-Regular.woff2',
+  RobotoMono: 'fonts/RobotoMono-Regular.ttf',
+}
+
 export const themes = [
   '3024',
   'a11y-dark',
@@ -243,4 +251,4 @@ export const themes = [
   'xcode',
   'xt256',
   'zenburn',
-]
+] as const

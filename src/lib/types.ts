@@ -10,6 +10,7 @@ export const metadataSchema = z.object({
   watermark: z.boolean().optional().default(true),
   zooming: z.boolean().optional().default(true),
   highlightTheme: z.string().optional().default('github-dark'),
+  font: z.string().optional().default('GeistMono'),
 })
 
 export type Metadata = z.infer<typeof metadataSchema>
@@ -32,6 +33,8 @@ export type Warning =
     }
   | { type: 'required-watermark' }
   | { type: 'forbidden-multifile'; filenames: string[] }
+  | { type: 'invalid-theme'; theme: string }
+  | { type: 'invalid-font'; font: string }
 
 export type SnippetParsingResult = {
   steps: Steps
