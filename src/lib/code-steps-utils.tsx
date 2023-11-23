@@ -137,6 +137,7 @@ function parseMarkdown(markdown: string, firstLineIndex: number) {
         }
         break
       default:
+        if (token.type === 'html' && token.raw.startsWith('<!--')) break // noop
         warnings.push({
           line: currentLine,
           type: 'unsupported-content',

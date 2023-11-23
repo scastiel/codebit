@@ -1,99 +1,35 @@
 export const tutorialSnippet = `
----
-theme: dark
-background: 1972
----
+<!--
+  ☝️ The section at the top contains settings for the snippet.
+  You can change them either manually, or with the selectors
+  above the video preview.
+-->
+
+<!-- A snippet is a plain Markdown file! -->
+
+<!--
+  Each step of the animation is a code block delimited with: \`\`\`
+  and separated from the others with: ---
+-->
 
 \`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
+console.log('This is a TypeScript snippet!')
 \`\`\`
 
 ---
 
 \`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Notice that you can specify the language of your code')
-console.log('This one has "ts" for TypeScript')
+console.log('This is a TypeScript snippet!')
+console.log('The language is specified in the code block header')
 \`\`\`
 
 ---
 
 \`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-
+console.log('This is a TypeScript snippet!')
+console.log('The language is specified in the code block header')
+console.log('Try to change it: \`\`\`rust for instance :)')
 \`\`\`
 
----
-
-\`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Codebit does its best to animate the steps...')
-\`\`\`
-
----
-
-\`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Codebit does its best to animate the steps...')
-console.log('')
-\`\`\`
-
----
-
-\`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Codebit does its best to animate the steps...')
-console.log('But sometimes it works best when you guide it...')
-\`\`\`
-
----
-
-\`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Codebit does its best to animate the steps...')
-console.log('But sometimes it works best when you guide it...')
-console.log('')
-\`\`\`
-
----
-
-\`\`\`ts
-console.log(\`
-  A snippet consists in a plain Markdown file.
-  Each step of your video is a code block such as this one,
-  separated from the others by: ---
-\`)
-console.log('Codebit does its best to animate the steps...')
-console.log('But sometimes it works best when you guide it...')
-console.log('by creating intermediate steps.')
-\`\`\`
 
 `.trim()

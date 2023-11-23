@@ -3,6 +3,7 @@ import { getPrisma } from '@/lib/prisma'
 import { tutorialSnippet } from '@/lib/tutorial-snippet'
 import { Snippet } from '@prisma/client'
 import { User } from 'next-auth'
+import yaml from 'yaml'
 
 export async function createSnippet(user: User): Promise<Snippet> {
   const background = Math.round(Math.random() * 100000)
@@ -44,13 +45,17 @@ export async function getSnippetBySlug(
 
 export async function createTutorialSnippet(user: User) {
   const content = tutorialSnippet
-  const { steps } = parseSnippetMardown(content)
+  const { steps, metadata } = parseSnippetMardown(content)
+  const { speed, background, ...metadataSubset } = metadata
   const lastStep = steps[steps.length - 1]
   return getPrisma().snippet.create({
     data: {
       slug: Math.random().toString(16).slice(2, 8),
       userId: user.id,
-      content,
+      content: `---\n${yaml.stringify({
+        ...metadataSubset,
+        background: Math.round(Math.random() * 100000),
+      })}---\n\n${content}`,
       preview: lastStep?.code,
       previewLang: lastStep?.lang,
     },
