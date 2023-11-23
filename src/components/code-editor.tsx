@@ -90,7 +90,7 @@ export function CodeEditor({
   const [saved, setSaved] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  const save = debouncePromise(async (code: string) => {
+  const save = async (code: string) => {
     setSaved(true)
     setSaving(true)
     try {
@@ -101,7 +101,9 @@ export function CodeEditor({
       setSaving(false)
       setSaved(false)
     }
-  }, 1000)
+  }
+
+  const debouncedSave = debouncePromise(save, 1000)
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
@@ -150,7 +152,7 @@ export function CodeEditor({
             <Card className="h-full w-full overflow-hidden">
               <Editor
                 defaultLanguage="markdown"
-                defaultValue={initialContent ?? ''}
+                defaultValue={markdown ?? ''}
                 onMount={(editor, monaco) => {
                   editor.getModel()?.updateOptions({ indentSize: 2 })
                   monaco.editor.defineTheme('github', githubLight as any)
@@ -163,7 +165,7 @@ export function CodeEditor({
                 }}
                 onChange={async () => {
                   setSaved(false)
-                  await save(editorRef.current?.getValue() || markdown)
+                  await debouncedSave(editorRef.current?.getValue() || markdown)
                   preview()
                 }}
                 options={{ minimap: { enabled: false } }}
@@ -174,14 +176,13 @@ export function CodeEditor({
             <Card className="h-full w-full overflow-hidden p-4">
               <SnippetSettingsEditor
                 metadata={metadata}
-                setMetadata={(metadata) => {
+                setMetadata={async (metadata) => {
                   const { body } = fm(markdown)
                   const { speed, ...metadataWithoutSpeed } = metadata
                   const frontmatter = yaml.stringify(metadataWithoutSpeed)
                   const code = `---\n${frontmatter}---\n\n${body}`
-                  setSaved(false)
-                  save(code)
                   setMarkdown(code)
+                  editorRef.current?.setValue(code)
                 }}
               />
             </Card>
@@ -223,7 +224,9 @@ export function CodeEditor({
                     initialRenderId={lastRenderId ?? null}
                     snippetSlug={snippetSlug}
                     save={async () => {
-                      await save(editorRef.current.getValue() || markdown)
+                      await debouncedSave(
+                        editorRef.current.getValue() || markdown,
+                      )
                       preview()
                     }}
                   />
