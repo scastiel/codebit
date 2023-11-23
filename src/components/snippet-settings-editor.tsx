@@ -17,10 +17,10 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Metadata } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { Check, ChevronsUpDown, Shuffle } from 'lucide-react'
+import { Check, ChevronsUpDown, Paintbrush, Shuffle, Type } from 'lucide-react'
 import { useState } from 'react'
 
-const backgroundSeedsCount = 7
+const backgroundSeedsCount = 17
 
 type Props = {
   metadata: Metadata
@@ -28,13 +28,6 @@ type Props = {
 }
 
 export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
-  const backgroundSeeds = Array.from(Array(backgroundSeedsCount)).map(
-    (_, i) =>
-      Math.floor(metadata.background / backgroundSeedsCount) *
-        backgroundSeedsCount +
-      i,
-  )
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -60,45 +53,18 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
 
       <div className="flex flex-col gap-2">
         <Label>Background</Label>
-        <div className="grid grid-cols-4 lg:grid-cols-8 gap-2">
-          {backgroundSeeds.map((seed) => (
-            <Button
-              key={seed}
-              className={cn(
-                'border rounded-lg aspect-video h-full',
-                seed === metadata.background && 'ring',
-              )}
-              style={gradientStyleFromSeed(seed)}
-              onClick={() => setMetadata({ ...metadata, background: seed })}
-            />
-          ))}
-          <Button
-            variant="secondary"
-            className="border rounded-lg aspect-video h-full"
-            onClick={() =>
-              setMetadata({
-                ...metadata,
-                background: Math.round(Math.random() * 100_000),
-              })
-            }
-          >
-            <Shuffle />
-          </Button>
-        </div>
+        <BackgroundSelector
+          background={metadata.background}
+          setBackground={(background) =>
+            setMetadata({ ...metadata, background })
+          }
+          animatedBackground={metadata.animatedBackground}
+          setAnimatedBackground={(animatedBackground) =>
+            setMetadata({ ...metadata, animatedBackground })
+          }
+        />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="animated-background"
-            checked={metadata.animatedBackground}
-            onCheckedChange={(checked) =>
-              setMetadata({ ...metadata, animatedBackground: checked })
-            }
-          />
-          <Label htmlFor="animated-background">Animate the background</Label>
-        </div>
-      </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center space-x-2">
           <Switch
@@ -131,6 +97,70 @@ export function SnippetSettingsEditor({ metadata, setMetadata }: Props) {
   )
 }
 
+function BackgroundSelector({
+  background,
+  setBackground,
+  animatedBackground,
+  setAnimatedBackground,
+}: {
+  background: number
+  setBackground: (background: number) => void
+  animatedBackground: boolean
+  setAnimatedBackground: (animatedBackground: boolean) => void
+}) {
+  const backgroundSeeds = Array.from(Array(backgroundSeedsCount)).map(
+    (_, i) =>
+      Math.floor(background / backgroundSeedsCount) * backgroundSeedsCount + i,
+  )
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button role="combobox" className="w-12 flex p-1" variant="outline">
+          <div
+            className="w-full h-full rounded-[2px]"
+            style={gradientStyleFromSeed(background)}
+          ></div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="flex flex-col gap-4">
+        <div className="grid grid-cols-6 gap-1">
+          {backgroundSeeds.map((seed) => (
+            <Button
+              key={seed}
+              className={cn(
+                'border rounded-lg w-full h-8',
+                seed === background && 'ring',
+              )}
+              style={gradientStyleFromSeed(seed)}
+              onClick={() => {
+                setBackground(seed)
+              }}
+            />
+          ))}
+          <Button
+            variant="secondary"
+            className="border rounded-lg w-full h-8 p-1"
+            onClick={() => {
+              setBackground(Math.round(Math.random() * 100000))
+            }}
+          >
+            <Shuffle className="w-3 h-3" />
+          </Button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="animated-background"
+            checked={animatedBackground}
+            onCheckedChange={setAnimatedBackground}
+          />
+          <Label htmlFor="animated-background">Animate the background</Label>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 function FontSelector({
   value,
   setValue,
@@ -147,9 +177,10 @@ function FontSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-[200px] w-fit justify-between"
+          className="flex text-left min-w-[200px] w-fit "
         >
-          {value ?? 'Select font...'}
+          <Type className="w-4 h-4 mr-2" />
+          <span className="flex-1">{value ?? 'Select font...'}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -199,9 +230,12 @@ function ThemeSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-[200px] w-fit justify-between"
+          className="min-w-[200px] w-fit"
         >
-          {value ? getThemeLabel(value) : 'Select theme...'}
+          <Paintbrush className="w-4 h-4 mr-2" />
+          <span className="flex-1 text-left">
+            {value ? getThemeLabel(value) : 'Select theme...'}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

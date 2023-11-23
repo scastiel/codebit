@@ -1,5 +1,5 @@
-import { fonts } from '@/components/remotion/themes'
 import { continueRender, delayRender, staticFile } from 'remotion'
+import { fonts } from '../../components/remotion/themes'
 
 export async function loadFonts() {
   const waitForFont = delayRender()
