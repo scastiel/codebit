@@ -60,7 +60,7 @@ export function CodeVideo({ options }: CodeVideoProps) {
     ? interpolate(currentFrame, [0, durationInFrames], [93, 103])
     : 100
   return (
-    <AbsoluteFill className={`root ${metadata.theme}`} style={{ fontSize }}>
+    <AbsoluteFill className="root" style={{ fontSize }}>
       <link
         href={staticFile(`themes/${metadata.highlightTheme}.min.css`)}
         rel="stylesheet"

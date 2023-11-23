@@ -3,7 +3,6 @@ import { z } from 'zod'
 export type Steps = { lang: string; code: string; filename?: string }[]
 
 export const metadataSchema = z.object({
-  theme: z.enum(['dark', 'light']).optional().default('dark'),
   background: z.number().min(0).optional().default(36263),
   animatedBackground: z.boolean().optional().default(true),
   speed: z.number().min(0.2).max(5).optional().default(1),
