@@ -37,3 +37,4 @@ export const DialogItem = forwardRef<HTMLDivElement | null, Props>(
     )
   },
 )
+DialogItem.displayName = 'DialogItem'
