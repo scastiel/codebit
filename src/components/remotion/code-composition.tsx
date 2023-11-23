@@ -29,6 +29,7 @@ export type Watermark =
   | { type: 'none' }
 
 export type CodeVideoOptions = {
+  seed?: string
   framesBetweenSteps?: number
   framesAtStart?: number
   framesAtEnd?: number

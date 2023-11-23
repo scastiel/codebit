@@ -27,6 +27,7 @@ export function PublicSnippetPageClient({ snippet, plan }: Props) {
   return (
     <SnippetPlayer
       options={{
+        seed: snippet.slug,
         markdown: snippet.content,
         fontSize,
         watermark:

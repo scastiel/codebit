@@ -1,8 +1,10 @@
 'use client'
+import { ExportMenu } from '@/components/export-menu'
 import { GenerateButton } from '@/components/generate-button'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { SnippetSettingsEditor } from '@/components/snippet-settings-editor'
+import { SnippetSettingsToolbar } from '@/components/snippet-settings-toolbar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getPlanWarnings, parseSnippetMardown } from '@/lib/code-steps-utils'
@@ -57,6 +59,7 @@ export function CodeEditor({
 
   const options = useMemo<CodeVideoOptions>(
     () => ({
+      seed: snippetSlug,
       markdown,
       fontSize,
       watermark: metadata.watermark
@@ -109,11 +112,33 @@ export function CodeEditor({
     <div className="flex flex-col gap-4 p-4 lg:flex-row-reverse">
       <div
         ref={editorWrapperRef}
-        className="w-full lg:w-1/3 flex flex-col gap-2"
+        className="w-full lg:w-[600px] lg:max-w-[60%] flex flex-col gap-2"
       >
-        <div className="rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start">
-          <div className="overflow-hidden rounded-[8px]">
-            {editorWidth > 0 && (
+        <SnippetSettingsToolbar
+          metadata={metadata}
+          setMetadata={async (metadata) => {
+            const { body } = fm(markdown)
+            const { speed, ...metadataWithoutSpeed } = metadata
+            const frontmatter = yaml.stringify(metadataWithoutSpeed)
+            const code = `---\n${frontmatter}---\n\n${body}`
+            setMarkdown(code)
+            editorRef.current?.setValue(code)
+          }}
+          exportButton={
+            <ExportMenu
+              userId={userId}
+              initialRenderId={lastRenderId ?? null}
+              snippetSlug={snippetSlug}
+              save={async () => {
+                await debouncedSave(editorRef.current.getValue() || markdown)
+                preview()
+              }}
+            />
+          }
+        />
+        {editorWidth > 0 && (
+          <div className="rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start mx-[2px]">
+            <div className="overflow-hidden rounded-[8px]">
               <SnippetPlayer
                 options={{
                   ...options,
@@ -124,9 +149,9 @@ export function CodeEditor({
                 width={editorWidth - 4}
                 height={Math.round((editorWidth * 9) / 16)}
               />
-            )}
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex justify-center">
           <Button asChild variant="ghost">
             <Link href="/help" target="_blank" rel="noopener noreferrer">

@@ -8,6 +8,7 @@ import { jitterFrame, noJitterFrame } from '../../utils/jitter'
 const splitter = new GraphemeSplitter()
 
 export function getCompositionData({
+  seed,
   framesAtStart = 20,
   framesAtEnd = 30,
   framesBetweenSteps = 10,
@@ -15,7 +16,7 @@ export function getCompositionData({
   multiFile,
 }: CodeVideoOptions) {
   const { steps, metadata } = parseSnippetMardown(markdown)
-  const rand = randomSeed.create(markdown)
+  const rand = randomSeed.create(String(seed))
 
   const sequences: {
     durationInFrames: number

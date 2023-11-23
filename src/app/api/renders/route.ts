@@ -52,6 +52,7 @@ async function triggerRender(snippet: Snippet) {
   const plan = getPlan(await getActiveUserPlanId(snippet.userId))
   const { metadata } = parseSnippetMardown(snippet.content)
   const options: CodeVideoOptions = {
+    seed: snippet.slug,
     markdown: snippet.content,
     fontSize: 24,
     watermark:
