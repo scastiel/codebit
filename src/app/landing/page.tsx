@@ -12,11 +12,11 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 h-14 border-b bg-slate-950 bg-opacity-50 backdrop-blur-sm z-10">
         <UserMenu user={null} planId={null} />
       </header>
-      <main className="w-full flex-1 max-w-screen-lg flex flex-col mx-auto">
+      <main className="w-full flex-1 max-w-screen-xl flex flex-col mx-auto">
         {/* HERO SECTION */}
         <section className="min-h-[100dvh] w-full py-32 flex flex-col md:grid md:grid-cols-2 gap-8 p-4 justify-center md:items-center">
           <div className="flex flex-col gap-6 justify-center items-start">
-            <div className="text-[2.5rem] lg:text-[3.5rem] text-balance leading-none font-bold bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
+            <div className="text-[2.5rem] lg:text-[3.5rem] xl:text-[4rem] text-balance leading-none font-bold bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
               Tell a story with your code
             </div>
             <Button size="lg">Start for free</Button>
@@ -132,7 +132,7 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-slate-950 bg-opacity-50 p-4 text-slate-400 text-sm text-center [&_a]:text-white text-center p-2">
+      <footer className="border-t bg-slate-950 bg-opacity-50 p-4 text-slate-400 text-sm text-center [&_a]:text-white">
         Made with ♥ in Montreal by{' '}
         <a
           target="_blank"
