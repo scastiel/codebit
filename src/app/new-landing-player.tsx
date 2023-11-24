@@ -3,7 +3,7 @@ import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { SnippetSettingsToolbar } from '@/components/snippet-settings-toolbar'
 import { useIsBrowser } from '@/lib/hooks'
-import { landingPageSnippet } from '@/lib/landing-page-snippet'
+import { newLandingPageSnippet } from '@/lib/landing-page-snippet'
 import { metadataSchema } from '@/lib/types'
 import useSize from '@react-hook/size'
 import fm from 'front-matter'
@@ -17,7 +17,7 @@ export function NewLandingPlayer() {
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * width, 16)))
 
-  const { attributes, body } = fm(landingPageSnippet)
+  const { attributes, body } = fm(newLandingPageSnippet)
   const [metadata, setMetadata] = useState(metadataSchema.parse(attributes))
 
   const options: CodeVideoOptions = {

@@ -15,7 +15,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plan, plans } from '@/lib/plans'
-import { delay } from '@/lib/utils'
+import { cn, delay } from '@/lib/utils'
 import { Check, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { ImprovedButton } from './improved-button'
@@ -79,12 +79,20 @@ function Table({
   initialInterval: 'month' | 'year' | null
 }) {
   return (
-    <div className="mt-4 w-full grid gap-3 lg:gap-6 md:grid-cols-3">
+    <div className="mt-12 w-full grid gap-6 md:gap-3 lg:gap-6 md:grid-cols-3">
       {plans.map((plan) => (
         <div
           key={plan.id}
-          className="flex flex-col space-y-4 items-center border bg-black bg-opacity-50 rounded-lg p-4"
+          className={cn(
+            'relative flex flex-col space-y-4 items-center border bg-black bg-opacity-50 rounded-lg p-4',
+            plan.mostPopular && 'ring-1 ring-primary md:-mt-3 md:-mb-3',
+          )}
         >
+          {plan.mostPopular && (
+            <div className="absolute -top-[13px] px-8 text-xs h-6 bg-primary rounded-full flex items-center uppercase">
+              Most popular
+            </div>
+          )}
           <h3 className="text-2xl font-bold">{plan.name}</h3>
           <div className="flex flex-col gap-2 items-center">
             <div className="font-bold text-4xl">

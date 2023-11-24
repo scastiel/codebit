@@ -1,9 +1,16 @@
 'use client'
 import PlansTable from '@/app/my/plan/plans-table'
 import { NewLandingPlayer } from '@/app/new-landing-player'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { UserMenu } from '@/components/user-menu'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ReactNode } from 'react'
 
 export default function LandingPage() {
@@ -19,7 +26,12 @@ export default function LandingPage() {
             <div className="text-[2.5rem] lg:text-[3.5rem] xl:text-[4rem] text-balance leading-none font-bold bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
               Tell a story with your code
             </div>
-            <Button size="lg">Start for free</Button>
+            <div className="text-[1.5rem] text-slate-500 text-balance mb-4">
+              And boost engagement with your community
+            </div>
+            <Button size="lg" asChild>
+              <Link href="/my">Create my code video</Link>
+            </Button>
           </div>
           <div>
             <NewLandingPlayer />
@@ -39,7 +51,7 @@ export default function LandingPage() {
               >
                 <NumberedListItem
                   index={1}
-                  title={<>Type your code in our editor</>}
+                  title={<>Type your code sequences in the editor</>}
                   description={<>No new syntax to learn, it’s Markdown!</>}
                 />
                 <NumberedListItem
@@ -50,7 +62,7 @@ export default function LandingPage() {
                 <NumberedListItem
                   index={3}
                   title={<>Export your creation as a video</>}
-                  description={<>Get an MP4 video in high-definition!</>}
+                  description={<>Get your video as an MP4 file.</>}
                 />
                 <NumberedListItem
                   index={4}
@@ -65,22 +77,30 @@ export default function LandingPage() {
                 alt="Editor screenshot"
               />
               <div className="flex justify-center">
-                <Button size="lg">Start for free</Button>
+                <Button size="lg" asChild>
+                  <Link href="/my">Start for free</Link>
+                </Button>
               </div>
             </div>
           </div>
         </section>
 
         {/* PRICING SECTION */}
-        <section className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch gap-8">
+        <section className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch">
           <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md self-center leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
             A fair pricing for everyone
           </h2>
-          <div className="px-4 max-w-screen-lg w-full mx-auto">
+          <div className="text-center text-slate-400 text-[1.1rem] text-balance">
+            Whether you create content for fun or profit, we have the right
+            offer for you!
+          </div>
+          <div className="mt-16 mb-16 px-4 max-w-screen-lg w-full mx-auto">
             <PlansTable />
           </div>
           <div className="flex justify-center">
-            <Button size="lg">Start for free</Button>
+            <Button size="lg" asChild>
+              <Link href="/my">Start for free</Link>
+            </Button>
           </div>
         </section>
 
@@ -90,45 +110,73 @@ export default function LandingPage() {
             Frequently asked questions
           </h2>
           <div className="px-4 flex flex-col gap-4 max-w-screen-md mx-auto w-full">
-            <details>
-              <summary>Question #1</summary>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et
-                aspernatur excepturi, reiciendis exercitationem beatae
-                dignissimos, vero error corporis ex, cumque cum aut id expedita
-                illo dolorum quos architecto tenetur eum?
-              </p>
-            </details>
-            <details>
-              <summary>Question #2</summary>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et
-                aspernatur excepturi, reiciendis exercitationem beatae
-                dignissimos, vero error corporis ex, cumque cum aut id expedita
-                illo dolorum quos architecto tenetur eum?
-              </p>
-            </details>
-            <details>
-              <summary>Question #3</summary>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et
-                aspernatur excepturi, reiciendis exercitationem beatae
-                dignissimos, vero error corporis ex, cumque cum aut id expedita
-                illo dolorum quos architecto tenetur eum?
-              </p>
-            </details>
-            <details>
-              <summary>Question #4</summary>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et
-                aspernatur excepturi, reiciendis exercitationem beatae
-                dignissimos, vero error corporis ex, cumque cum aut id expedita
-                illo dolorum quos architecto tenetur eum?
-              </p>
-            </details>
+            <Accordion type="multiple">
+              <AccordionItem value="free-to-use">
+                <AccordionTrigger className="text-left text-lg">
+                  <span>
+                    Is <strong>CodeBit</strong> free to use?
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-base">
+                  You can start using CodeBit to generate your first videos for
+                  free. Then, if you like the service, you can purchase a
+                  subscription to unlock all features and generate more and
+                  longer videos.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="differences">
+                <AccordionTrigger className="text-left text-lg">
+                  <span>
+                    What differentiates <strong>CodeBit</strong> from other
+                    similar services?
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-base">
+                  There aren’t many services that help developers create
+                  animated code videos. We created CodeBit because we were
+                  looking for features that we haven’t been able to find, such
+                  as animating the code with a typing animation.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="export">
+                <AccordionTrigger className="text-left text-lg">
+                  <span>
+                    How can I share the videos created with{' '}
+                    <strong>CodeBit</strong>?
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-base">
+                  You can export your animations as video files (MP4 for now,
+                  more to come) and share them on social media. You can also
+                  share a webpage displaying the animation, where visitors can
+                  copy the code and paste it anywhere.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="other-questions">
+                <AccordionTrigger className="text-left text-lg">
+                  <span>
+                    I have another question, or want to suggest a feature…
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-base">
+                  Feel free to contact us, either by email at{' '}
+                  <a href="mailto:hello@codebit.xyz">hello@codebit.xyz</a> or{' '}
+                  <a
+                    href="https://twitter.com/scastiel"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    on Twitter
+                  </a>
+                  .
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
           <div className="flex justify-center">
-            <Button size="lg">Start for free</Button>
+            <Button size="lg" asChild>
+              <Link href="/my">Start for free</Link>
+            </Button>
           </div>
         </section>
       </main>

@@ -8,6 +8,7 @@ export type Plan = {
   yearlyPriceCents: number
   prioritySupport: boolean
   multiFile: boolean
+  mostPopular?: boolean
 }
 
 export const plans: Plan[] = [
@@ -32,6 +33,7 @@ export const plans: Plan[] = [
     monthlyPriceCents: 999,
     yearlyPriceCents: 9999,
     multiFile: false,
+    mostPopular: true,
   },
   {
     id: 'pro',
