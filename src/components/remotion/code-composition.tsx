@@ -203,6 +203,42 @@ function CodeSequence({
 export function CodeComposition() {
   const options: CodeVideoOptions = {
     fontSize: 24,
+    //     markdown: `
+    // \`\`\`ts
+    // console.log("First line")
+    // console.log("Second line")
+    // //aaa
+    // console.log("Hello?")
+    // //bbb
+    // console.log("Ante-last line")
+    // console.log("Last line")
+
+    // \`\`\`
+
+    // ---
+
+    // \`\`\`ts
+    // console.log("First line")
+    // console.log("Line between")
+    // console.log("Second line")
+    // //aaa
+    // console.log("Good bye!")
+    // //bbb
+    // console.log("Ante-last line")
+
+    // \`\`\`
+    //     `,
+    //     markdown: `
+    // \`\`\`ts filename="hello.ts"
+    // console.log("Hello World!")
+    // \`\`\`
+
+    // ---
+
+    // \`\`\`ts filename="hello.ts"
+    // console.log("")
+    // \`\`\`
+    //     `,
     markdown: landingPageSnippet,
     watermark: { type: 'get-your-own' },
     multiFile: true,

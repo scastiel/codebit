@@ -1,5 +1,5 @@
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
-import { Change, diffChars } from 'diff'
+import { Change, diffLines, diffWordsWithSpace } from 'diff'
 import GraphemeSplitter from 'grapheme-splitter'
 import randomSeed from 'random-seed'
 import { parseSnippetMardown } from '../../lib/code-steps-utils'
@@ -188,7 +188,10 @@ function codeFromFrame(diff: Change[], frame: number) {
 function diffCode(from: string, to: string) {
   const reverseString = (str: string) =>
     splitter.splitGraphemes(str).reverse().join('')
-  return diffChars(`\n${reverseString(from)}\n`, `\n${reverseString(to)}\n`)
+  const diff = diffLines(
+    `\n${reverseString(from)}\n`,
+    `\n${reverseString(to)}\n`,
+  )
     .reverse()
     .map((change, index, arr) => {
       let value = reverseString(change.value)
@@ -196,6 +199,30 @@ function diffCode(from: string, to: string) {
       if (index === arr.length - 1) value = value.replace(/\n$/, '')
       return { ...change, value }
     })
+  for (let i = 0; i < diff.length; i++) {
+    if (
+      diff[i].added &&
+      diff[i + 1]?.removed &&
+      (i == 0 || diff[i].value.startsWith('\n')) &&
+      diff[i + 1].value.startsWith('\n')
+    ) {
+      if (i === 0) {
+        diff.splice(
+          0,
+          2,
+          ...diffWordsWithSpace(diff[i + 1].value, diff[i].value).slice(1),
+        )
+      } else {
+        diff.splice(
+          i,
+          2,
+          ...diffWordsWithSpace(diff[i + 1].value, diff[i].value),
+        )
+      }
+    }
+  }
+  // if (from !== to) console.log('diff', diff)
+  return diff
 }
 
 function durationInFramesForDiff(diff: Change[]) {

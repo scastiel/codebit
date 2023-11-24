@@ -32,14 +32,6 @@ fn main() {
 
 \`\`\`rust filename="hello.rs"
 fn main() {
-    println!("Even with several ");
-}
-\`\`\`
-
----
-
-\`\`\`rust filename="hello.rs"
-fn main() {
     println!("Even with several languages?");
 }
 \`\`\`
@@ -50,27 +42,6 @@ fn main() {
 class HelloWorldApp {
     public static void main(String[] args) {
         System.out.println("And more languages!");
-    }
-}
-\`\`\`
-
----
-
-\`\`\`java filename="Hello.java"
-class HelloWorldApp {
-    public static void main(String[] args) {
-        System.out.println("And more languages!");
-    }
-}
-\`\`\`
-
----
-
-\`\`\`java filename="Hello.java"
-class HelloWorldApp {
-    public static void main(String[] args) {
-        System.out.println("And more languages!");
-        
     }
 }
 \`\`\`
@@ -125,8 +96,6 @@ fn main() {
 
 \`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-
 \`\`\`
 
 ---
