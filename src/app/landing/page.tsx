@@ -15,7 +15,7 @@ export default function LandingPage() {
       <main className="w-full flex-1 max-w-screen-xl flex flex-col mx-auto">
         {/* HERO SECTION */}
         <section className="min-h-[100dvh] w-full py-32 flex flex-col md:grid md:grid-cols-2 gap-8 p-4 justify-center md:items-center">
-          <div className="flex flex-col gap-6 justify-center items-start">
+          <div className="flex flex-col md:gap-6 justify-center items-start">
             <div className="text-[2.5rem] lg:text-[3.5rem] xl:text-[4rem] text-balance leading-none font-bold bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
               Tell a story with your code
             </div>
