@@ -34,7 +34,7 @@ export function MyPlanPageClient({ userId }: Props) {
   const currentPlan = getPlan(currentPlanId)
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 mt-12">
       <PlansTable
         currentPlan={currentPlan}
         subscriptionId={subscriptionId}

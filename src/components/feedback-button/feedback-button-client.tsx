@@ -54,7 +54,7 @@ export function FeedbackButtonClient({ sendFeedback }: Props) {
     <div className="fixed right-4 bottom-4">
       <Dialog key={dialogKey}>
         <DialogTrigger asChild>
-          <Button>
+          <Button variant="outline">
             <MessageCircle className="w-4 h-4 mr-2" /> Feedback
           </Button>
         </DialogTrigger>

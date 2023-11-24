@@ -1,7 +1,7 @@
 export const landingPageSnippet = `
 ---
-theme: dark
-background: 86602
+background: 90740
+watermark: false
 ---
 
 \`\`\`ts filename="hello.ts"

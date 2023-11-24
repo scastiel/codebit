@@ -45,8 +45,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 335 78% 42%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -73,19 +73,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.bg-gradient-1 {
-  background-color: #99f1ff;
-  background-image: radial-gradient(
-      at 76% 57%,
-      hsla(113, 89%, 61%, 1) 0px,
-      transparent 50%
-    ),
-    radial-gradient(at 58% 43%, hsla(232, 97%, 70%, 1) 0px, transparent 50%),
-    radial-gradient(at 86% 87%, hsla(353, 86%, 60%, 1) 0px, transparent 50%),
-    radial-gradient(at 6% 21%, hsla(192, 81%, 65%, 1) 0px, transparent 50%),
-    radial-gradient(at 36% 99%, hsla(203, 62%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 37% 3%, hsla(39, 76%, 74%, 1) 0px, transparent 50%),
-    radial-gradient(at 10% 16%, hsla(244, 64%, 73%, 1) 0px, transparent 50%);
 }

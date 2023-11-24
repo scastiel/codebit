@@ -32,7 +32,7 @@ const backgroundSeedsCount = 17
 type Props = {
   metadata: Metadata
   setMetadata: (metadata: Metadata) => void
-  exportButton: ReactNode
+  exportButton?: ReactNode
 }
 
 export function SnippetSettingsToolbar({
@@ -41,73 +41,73 @@ export function SnippetSettingsToolbar({
   exportButton,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-1">
-        <ThemeSelector
-          value={metadata.highlightTheme}
-          setValue={(highlightTheme) =>
-            setMetadata({ ...metadata, highlightTheme })
-          }
-        />
+    <div className="flex items-center gap-1 @container">
+      <ThemeSelector
+        value={metadata.highlightTheme}
+        setValue={(highlightTheme) =>
+          setMetadata({ ...metadata, highlightTheme })
+        }
+      />
 
-        <FontSelector
-          value={metadata.font}
-          setValue={(font) => {
-            const f = Object.keys(fonts).find((f) => f.toLowerCase() === font)
-            if (f) setMetadata({ ...metadata, font: f })
-          }}
-        />
+      <FontSelector
+        value={metadata.font}
+        setValue={(font) => {
+          const f = Object.keys(fonts).find((f) => f.toLowerCase() === font)
+          if (f) setMetadata({ ...metadata, font: f })
+        }}
+      />
 
-        <BackgroundSelector
-          background={metadata.background}
-          setBackground={(background) =>
-            setMetadata({ ...metadata, background })
-          }
-          animatedBackground={metadata.animatedBackground}
-          setAnimatedBackground={(animatedBackground) =>
-            setMetadata({ ...metadata, animatedBackground })
-          }
-        />
+      <BackgroundSelector
+        background={metadata.background}
+        setBackground={(background) => setMetadata({ ...metadata, background })}
+        animatedBackground={metadata.animatedBackground}
+        setAnimatedBackground={(animatedBackground) =>
+          setMetadata({ ...metadata, animatedBackground })
+        }
+      />
 
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              <Settings className="w-4 h-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="flex flex-col gap-2">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="zooming"
-                  checked={metadata.zooming}
-                  onCheckedChange={(checked) =>
-                    setMetadata({ ...metadata, zooming: checked })
-                  }
-                />
-                <Label htmlFor="zooming" className="leading-4">
-                  Zooming effect
-                </Label>
-              </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">
+            <Settings className="w-4 h-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="zooming"
+                checked={metadata.zooming}
+                onCheckedChange={(checked) =>
+                  setMetadata({ ...metadata, zooming: checked })
+                }
+              />
+              <Label htmlFor="zooming" className="leading-4">
+                Zooming effect
+              </Label>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="watermark"
-                  checked={metadata.watermark}
-                  onCheckedChange={(checked) =>
-                    setMetadata({ ...metadata, watermark: checked })
-                  }
-                />
-                <Label htmlFor="watermark">Display watermark</Label>
-              </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="watermark"
+                checked={metadata.watermark}
+                onCheckedChange={(checked) =>
+                  setMetadata({ ...metadata, watermark: checked })
+                }
+              />
+              <Label htmlFor="watermark">Display watermark</Label>
             </div>
-          </PopoverContent>
-        </Popover>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-        <div className="flex-1" />
-        {exportButton}
-      </div>
+      {exportButton && (
+        <>
+          <div className="flex-1" />
+          {exportButton}
+        </>
+      )}
     </div>
   )
 }
@@ -131,7 +131,11 @@ function BackgroundSelector({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button role="combobox" className="w-12 flex p-2" variant="outline">
+        <Button
+          role="combobox"
+          className="w-12 flex p-2 flex-shrink-0"
+          variant="outline"
+        >
           <div
             className="w-full h-full rounded-[3px]"
             style={gradientStyleFromSeed(background)}
@@ -192,10 +196,10 @@ function FontSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="flex text-left w-[150px]"
+          className="flex text-left @md:flex-1"
         >
           <Type className="w-4 h-4 mr-2" />
-          <span className="flex-1 overflow-hidden text-ellipsis">
+          <span className="@md:flex-1 hidden @md:inline overflow-hidden text-ellipsis">
             {value ?? 'Select font...'}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -204,7 +208,7 @@ function FontSelector({
       <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput placeholder="Search font..." />
-          <CommandEmpty>No theme found.</CommandEmpty>
+          <CommandEmpty>No font found.</CommandEmpty>
           <CommandGroup className="max-h-[50vh] overflow-y-auto">
             {Object.keys(fonts).map((font) => (
               <CommandItem
@@ -247,10 +251,10 @@ function ThemeSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[150px]"
+          className="flex-1 flex-shrink"
         >
           <Paintbrush className="w-4 h-4 mr-2" />
-          <span className="flex-1 text-left overflow-hidden text-ellipsis">
+          <span className="flex-1 flex-shrink text-left overflow-hidden text-ellipsis">
             {value ? getThemeLabel(value) : 'Select theme...'}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

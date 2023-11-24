@@ -1,3 +1,4 @@
+'use client'
 import { cancel, changePlan, subscribe, uncancel } from '@/app/my/plan/actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,31 +21,28 @@ import { useRouter } from 'next/navigation'
 import { ImprovedButton } from './improved-button'
 
 type Props = {
-  currentPlan: Plan
-  subscriptionId: string | null
-  subscriptionEndDate: Date | null
-  refresh: () => void
-  initialInterval: 'month' | 'year' | null
+  currentPlan?: Plan | null
+  subscriptionId?: string | null
+  subscriptionEndDate?: Date | null
+  refresh?: () => void
+  initialInterval?: 'month' | 'year' | null
 }
 
 export default function PlansTable({
-  currentPlan,
-  subscriptionId,
-  subscriptionEndDate,
-  refresh,
-  initialInterval,
+  currentPlan = null,
+  subscriptionId = null,
+  subscriptionEndDate = null,
+  refresh = () => {},
+  initialInterval = 'year',
 }: Props) {
   return (
     <>
-      <Tabs defaultValue={initialInterval ?? 'year'} className="mt-12">
+      <Tabs defaultValue={initialInterval ?? 'year'}>
         <div className="flex justify-center">
           <TabsList>
             <TabsTrigger value="month">Monthly</TabsTrigger>
             <TabsTrigger value="year">
-              Yearly{' '}
-              <Badge variant="outline" className="ml-2 bg-pink-700 text-white">
-                2 months free
-              </Badge>
+              Yearly <Badge className="ml-2">2 months free</Badge>
             </TabsTrigger>
           </TabsList>
         </div>
@@ -74,7 +72,7 @@ function Table({
   initialInterval,
 }: {
   interval: 'month' | 'year'
-  currentPlan: Plan
+  currentPlan: Plan | null
   subscriptionId: string | null
   subscriptionEndDate: Date | null
   refresh: () => void
@@ -172,19 +170,23 @@ function Table({
               )}
             </li>
           </ul>
-          <Separator />
-          <div className="flex flex-col items-center text-center flex-1 justify-center gap-2">
-            <PlanButtons
-              plan={plan}
-              isCurrentPlan={
-                plan.id === currentPlan.id && initialInterval === interval
-              }
-              subscriptionId={subscriptionId}
-              subscriptionEndDate={subscriptionEndDate}
-              refresh={refresh}
-              interval={interval}
-            />
-          </div>
+          {currentPlan && (
+            <>
+              <Separator />
+              <div className="flex flex-col items-center text-center flex-1 justify-center gap-2">
+                <PlanButtons
+                  plan={plan}
+                  isCurrentPlan={
+                    plan.id === currentPlan.id && initialInterval === interval
+                  }
+                  subscriptionId={subscriptionId}
+                  subscriptionEndDate={subscriptionEndDate}
+                  refresh={refresh}
+                  interval={interval}
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
     </div>
@@ -212,7 +214,7 @@ function PlanButtons({
     <>
       {isCurrentPlan ? (
         <>
-          <Badge variant="outline" className="bg-pink-700 text-white mt-2">
+          <Badge variant="secondary" className="mt-2">
             Current plan
           </Badge>
           {subscriptionId && subscriptionEndDate ? (
