@@ -1,6 +1,7 @@
 'use client'
 import PlansTable from '@/app/my/plan/plans-table'
 import { NewLandingPlayer } from '@/app/new-landing-player'
+import { LandingPageMenu } from '@/components/landing-page-menu'
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +9,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { UserMenu } from '@/components/user-menu'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ReactNode } from 'react'
@@ -17,11 +17,11 @@ export default function LandingPage() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 h-14 border-b bg-slate-950 bg-opacity-50 backdrop-blur-sm z-10">
-        <UserMenu user={null} planId={null} />
+        <LandingPageMenu user={null} planId={null} />
       </header>
       <main className="w-full flex-1 max-w-screen-xl flex flex-col mx-auto">
         {/* HERO SECTION */}
-        <section className="min-h-[100dvh] w-full py-32 flex flex-col md:grid md:grid-cols-2 gap-8 p-4 justify-center md:items-center">
+        <section className="min-h-[100dvh] w-full py-32 flex flex-col md:grid md:grid-cols-2 gap-8 px-4 md:px-8 justify-center md:items-center">
           <div className="flex flex-col md:gap-6 justify-center items-start">
             <div className="text-[2.5rem] lg:text-[3.5rem] xl:text-[4rem] text-balance leading-none font-bold bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
               Tell a story with your code
@@ -39,11 +39,14 @@ export default function LandingPage() {
         </section>
 
         {/* HOW IT WORKS SECTION */}
-        <section className="min-h-[100dvh] py-16 flex flex-col items-stretch gap-6">
+        <section
+          id="how-it-works"
+          className="min-h-[100dvh] py-16 flex flex-col items-stretch justify-center gap-6"
+        >
           <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md self-center leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
             Just a few steps to create your animated code video
           </h2>
-          <div className="flex flex-col justify-center md:grid md:grid-cols-2 gap-8 md:gap-4 p-4 items-center">
+          <div className="flex flex-col justify-center md:grid md:grid-cols-2 gap-8 md:gap-4 p-4 md:p-8 items-center">
             <div className="flex items-center justify-center md:justify-start">
               <ul
                 role="list"
@@ -86,7 +89,10 @@ export default function LandingPage() {
         </section>
 
         {/* PRICING SECTION */}
-        <section className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch">
+        <section
+          id="pricing"
+          className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch"
+        >
           <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md self-center leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
             A fair pricing for everyone
           </h2>
@@ -105,7 +111,10 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ SECTION */}
-        <section className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch gap-8">
+        <section
+          id="faq"
+          className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch gap-8"
+        >
           <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md self-center leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
             Frequently asked questions
           </h2>
