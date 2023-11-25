@@ -7,7 +7,25 @@ import yaml from 'yaml'
 
 export async function createSnippet(user: User): Promise<Snippet> {
   const background = Math.round(Math.random() * 100000)
-  const content = `---\ntheme: dark\nbackground: ${background}\n---\n\n\`\`\`ts\nconsole.log("Hello World!")\n\`\`\`\n\n---\n\n\`\`\`ts\nconsole.log("Hello Amazing World!")\n\`\`\`\n`
+  const content = `---
+background: ${background}
+animatedBackground: true
+watermark: true
+zooming: true
+highlightTheme: github-dark
+font: GeistMono
+---
+
+\`\`\`ts
+console.log("Hello World!")
+\`\`\`
+
+---
+
+\`\`\`ts
+console.log("Hello Amazing World!")
+\`\`\`
+`
   const { steps } = parseSnippetMardown(content)
   const lastStep = steps[steps.length - 1]
   return getPrisma().snippet.create({

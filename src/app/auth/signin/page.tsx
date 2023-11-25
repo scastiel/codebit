@@ -1,8 +1,7 @@
 'use client'
 import { EmailSigninForm } from '@/app/auth/signin/email-signin-form'
-import { SocialSigninButton } from '@/app/auth/signin/social-signin-button'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, Github } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -39,7 +38,7 @@ export default function SigninPage() {
 
           <EmailSigninForm callbackUrl={callbackUrl} />
 
-          <div className="relative my-2">
+          {/* <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t dark:border-slate-500"></span>
             </div>
@@ -56,7 +55,7 @@ export default function SigninPage() {
             icon={<Github className="mr-2 h-4 w-4" />}
             callbackUrl={callbackUrl}
             disabled
-          />
+          /> */}
         </div>
       </div>
     </div>

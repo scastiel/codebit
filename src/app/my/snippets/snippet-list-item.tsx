@@ -1,5 +1,6 @@
 'use client'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 import { Snippet } from '@prisma/client'
 import Link from 'next/link'
 import Highlight from 'react-highlight'
@@ -14,14 +15,15 @@ export function SnippetListItem({
   return (
     <Link
       href={`/my/snippets/${snippet.slug}`}
-      className="flex flex-col justify-end gap-1 border rounded-lg overflow-hidden group dark:bg-black"
+      className="flex flex-col justify-end border rounded-md overflow-hidden group dark:bg-black"
     >
       <div className="h-32 overflow-hidden relative">
         {snippet.preview && (
           <Highlight
-            className={`absolute inset-0 p-3 text-xs !overflow-hidden ${
-              snippet.previewLang ? `language-${snippet.previewLang}` : ''
-            } opacity-60 group-hover:opacity-100`}
+            className={cn(
+              'absolute inset-0 !p-3 text-xs !overflow-hidden opacity-60 group-hover:opacity-100',
+              snippet.previewLang && `language-${snippet.previewLang}`,
+            )}
           >
             {snippet.preview}
           </Highlight>
