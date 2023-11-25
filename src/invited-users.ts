@@ -98,6 +98,13 @@ export const invitedUsers = [
   'mmrishoally@gmail.com',
   'sara@dahlstom.se',
   'pythonspaces+codebit@gmail.com',
+  'pythonspaces@gmail.com',
   'gongbingyuan@outlook.com',
   'joaommpalmeiro@gmail.com',
+  'fguespe@gmail.com',
+  'ricardo@delima.org',
+  'agandhi62@gmail.com',
+  'joseph.bona07@gmail.com',
+  'rcmtcristian@gmail.com',
+  'info@kanertuncel.com',
 ]
