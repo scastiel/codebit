@@ -298,8 +298,6 @@ fn main() {
 
 \`\`\`ts filename="hello.ts"
 console.log("Ready to tell a story with your code? 🎞️")
-
-
 \`\`\`
 
 ---
@@ -326,7 +324,7 @@ if (interested) {
 console.log("Ready to tell a story with your code? 🎞️")
 
 if (interested) {
-  console.log("Sign up and create your code video for free! ")
+  console.log("Sign up and animate your code for free! ")
 }
 \`\`\`
 
@@ -336,7 +334,7 @@ if (interested) {
 console.log("Ready to tell a story with your code? 🎞️")
 
 if (interested) {
-  console.log("Sign up and create your code video for free! 🚀")
+  console.log("Sign up and animate your code for free! 🚀")
 }
 \`\`\`
 
@@ -346,7 +344,7 @@ if (interested) {
 console.log("Ready to tell a story with your code? 🎞️")
 
 if (interested) {
-  console.log("Sign up and create your code video for free! 🚀🚀")
+  console.log("Sign up and animate your code for free! 🚀🚀")
 }
 \`\`\`
 
@@ -356,7 +354,7 @@ if (interested) {
 console.log("Ready to tell a story with your code? 🎞️")
 
 if (interested) {
-  console.log("Sign up and create your code video for free! 🚀🚀🚀")
+  console.log("Sign up and animate your code for free! 🚀🚀🚀")
 }
 \`\`\`
 `.trim()
