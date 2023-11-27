@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Mail } from 'lucide-react'
@@ -53,9 +54,16 @@ export function EmailSigninForm({ callbackUrl }: { callbackUrl: string }) {
           Sign in with email
         </Button>
         {sent && (
-          <div className="text-sm text-slate-500 dark:text-slate-400">
-            We just sent you an email with a sign in link!
-          </div>
+          <Alert className="text-left">
+            <Mail className="w-4 h-4" />
+            <AlertTitle>Check your mailbox</AlertTitle>
+            <AlertDescription>
+              We just sent you an email with a sign in link.
+            </AlertDescription>
+          </Alert>
+          // <div className="text-sm text-slate-500 dark:text-slate-400">
+
+          // </div>
         )}
         {notInvited && (
           <div className="text-sm text-slate-500 dark:text-slate-400 text-center">
