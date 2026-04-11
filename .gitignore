@@ -38,3 +38,6 @@ next-env.d.ts
 
 # local postgres data
 postgres-data
+
+# Claude Code
+.claude/
