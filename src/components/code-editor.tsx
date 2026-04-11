@@ -1,4 +1,3 @@
-'use client'
 import { GenerateButton } from '@/components/generate-button'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
@@ -10,10 +9,10 @@ import { parseSnippetMardown } from '@/lib/code-steps-utils'
 import { githubDark } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
+import { Link } from '@tanstack/react-router'
 import debouncePromise from 'debounce-promise'
 import fm from 'front-matter'
 import { Dot, HelpCircle } from 'lucide-react'
-import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import yaml from 'yaml'
 import { MarkdownEditor } from './markdown-editor'
@@ -122,7 +121,7 @@ export function CodeEditor({
         )}
         <div className="flex justify-center">
           <Button asChild variant="ghost">
-            <Link href="/help" target="_blank" rel="noopener noreferrer">
+            <Link to="/help" target="_blank" rel="noopener noreferrer">
               <HelpCircle className="w-4 h-4 mr-2" />
               Help
             </Link>

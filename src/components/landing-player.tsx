@@ -1,4 +1,3 @@
-'use client'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
 import { SnippetSettingsToolbar } from '@/components/snippet-settings-toolbar'

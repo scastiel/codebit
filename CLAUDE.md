@@ -4,17 +4,18 @@ Guidance for Claude Code when working in this repo.
 
 ## Commands
 
-- `npm run dev` — Next.js dev server on port 3000
-- `npm run build` / `npm start` — production build/serve
-- `npm run lint` — `next lint`
-- `npm test` — Jest (jsdom). Run one test with `npx jest path/to/file.test.ts` or `-t 'name'`
+- `npm run dev` — Vite dev server on port 3000
+- `npm run build` — `tsc --noEmit && vite build` → `dist/`
+- `npm start` — `vite preview` on port 3000 (serves the built `dist/`)
+- `npm run lint` — ESLint over `src/**/*.{ts,tsx}`
+- `npm test` — Jest (ts-jest, jsdom). Run one test with `npx jest path/to/file.test.ts` or `-t 'name'`
 - `npm run remotion-studio` — Remotion Studio pointed at `src/remotion/index.ts` for previewing the composition in isolation
 
 TypeScript path alias: `@/*` → `src/*`.
 
 ## Architecture
 
-**CodeBit** is a Next.js 14 (App Router) web app that turns markdown-defined code snippets into animated videos. It is **fully client-side**: no backend, no database, no accounts, no billing. Snippets live in `localStorage`; videos are rendered in the browser via `@remotion/web-renderer` (WebCodecs) and downloaded as MP4.
+**CodeBit** is a Vite + React SPA that turns markdown-defined code snippets into animated videos. It is **fully client-side**: no backend, no database, no accounts, no billing, no SSR. Snippets live in `localStorage`; videos are rendered in the browser via `@remotion/web-renderer` (WebCodecs) and downloaded as MP4. Routing is handled by `@tanstack/react-router` (code-based tree in `src/routes.tsx`).
 
 ### The snippet → video pipeline
 
@@ -36,7 +37,7 @@ The markdown snippet format is the central data model. Everything else is a tran
 - `clip-path`, `backdrop-filter`, `mix-blend-mode`
 - Safari `filter` is broken (pre-accepted)
 
-Canvas2D `fontStretch` setter rejects the `"100%"` value modern browsers return for `font-stretch: normal`. The shim in `src/lib/canvas-shim.ts` (and an inline `<script>` in `src/app/layout.tsx` that runs at page parse time) monkey-patches both `CanvasRenderingContext2D.prototype` and `OffscreenCanvasRenderingContext2D.prototype` to silently map any percentage to `'normal'`.
+Canvas2D `fontStretch` setter rejects the `"100%"` value modern browsers return for `font-stretch: normal`. The shim in `src/lib/canvas-shim.ts` (and an inline `<script>` in `index.html` that runs at page parse time) monkey-patches both `CanvasRenderingContext2D.prototype` and `OffscreenCanvasRenderingContext2D.prototype` to silently map any percentage to `'normal'`.
 
 ### Persistence
 
@@ -55,16 +56,19 @@ Preview thumbnails in the snippet list are derived on the fly from the last fenc
 
 ### App routes
 
-- `src/app/page.tsx` — landing page (plays `landing-page-snippet.ts` via `landing-player.tsx`)
-- `src/app/my/snippets` — snippet list (client-only, reads from localStorage)
-- `src/app/my/snippets/[snippetSlug]` — snippet editor (client-only)
-- `src/app/help` — plain TSX page with Tailwind `prose` styling (no MDX)
+Routes are declared in `src/routes.tsx` and mounted from `src/main.tsx`:
 
-`TopBar` (`src/components/top-bar.tsx`) is shared between `/my/` and `/help` layouts. The landing page uses its own `LandingPageMenu`.
+- `/` — `src/pages/landing-page.tsx` (plays `landing-page-snippet.ts` via `src/components/landing-player.tsx`)
+- `/my` — redirects to `/my/snippets` via `beforeLoad`
+- `/my/snippets` — `src/pages/snippets-page.tsx` (reads from localStorage)
+- `/my/snippets/$snippetSlug` — `src/pages/snippet-editor-page.tsx` (param via `useParams({ from: '/my/snippets/$snippetSlug' })`)
+- `/help` — `src/pages/help-page.tsx` (plain TSX with Tailwind `prose`)
+
+`TopBar` (`src/components/top-bar.tsx`) is rendered inside `MyShell` (`src/components/my-shell.tsx`) by the `/my/*` pages. The help page renders TopBar itself. The landing page uses its own `LandingPageMenu`.
 
 ### Theme
 
-The app is **dark-only**. `ThemeProvider` in `src/app/layout.tsx` uses `forcedTheme="dark"`. **Do not call `useTheme().theme`** — it returns `'system'` (the internal default) under `forcedTheme`, not `'dark'`. Use `resolvedTheme`, or just hardcode dark values. Examples: `code-editor.tsx` hardcodes Monaco's `github-dark`; `snippet-list.tsx` hardcodes the `github-dark.css` highlight stylesheet. The body has an unconditional `bg-gradient-to-br from-slate-950 to-slate-800`.
+The app is **dark-only**. `index.html` sets `<html class="dark">` directly — there is no theme provider. The body has an unconditional `bg-gradient-to-br from-slate-950 to-slate-800` (also applied in `index.html`). Hardcode dark values where needed: `code-editor.tsx` pins Monaco's `github-dark`; `snippet-list.tsx` loads the `github-dark.css` highlight stylesheet.
 
 ### UI conventions
 
@@ -72,4 +76,11 @@ shadcn/ui primitives in `src/components/ui/` (config in `components.json`). Tail
 
 ### Third-party services
 
-Only **Plausible Analytics** — opt-in via `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` env var. If unset, no provider renders and no analytics script loads. Everything else is bundled client code.
+Only **Plausible Analytics** — opt-in via `VITE_PLAUSIBLE_DOMAIN` env var. If unset, `src/main.tsx` skips injecting the `<script>` entirely. Events are tracked via `trackEvent()` in `src/lib/plausible.ts` (thin wrapper around `window.plausible`). Everything else is bundled client code.
+
+### Env vars
+
+Parsed by Zod in `src/lib/env.ts` from `import.meta.env`:
+
+- `VITE_BASE_URL` — absolute URL used by the watermark link (default `http://localhost:3000`)
+- `VITE_PLAUSIBLE_DOMAIN` — optional; enables Plausible injection if set

@@ -1,13 +1,16 @@
-import type { Metadata } from 'next'
+import { TopBar } from '@/components/top-bar'
+import { useEffect } from 'react'
 
-export const metadata: Metadata = {
-  title: 'Help',
-}
+export function HelpPage() {
+  useEffect(() => {
+    document.title = 'Help – CodeBit'
+  }, [])
 
-export default function HelpPage() {
   return (
-    <>
-      <h1>How to use CodeBit</h1>
+    <div className="flex-1 flex flex-col">
+      <TopBar />
+      <main className="w-full my-10 px-4 max-w-screen-lg mx-auto prose dark:prose-invert lg:prose-xl">
+        <h1>How to use CodeBit</h1>
 
       <p>
         In CodeBit, a code animation is called a <strong>snippet</strong>, which
@@ -156,6 +159,7 @@ third()
         an email at{' '}
         <a href="mailto:hello@codebit.xyz">hello@codebit.xyz</a>.
       </p>
-    </>
+      </main>
+    </div>
   )
 }

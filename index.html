@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <title>Tell a story with your code – CodeBit</title>
+    <meta
+      name="description"
+      content="Create animations from code snippets, and export them as videos to share with your community."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tell a story with your code – CodeBit" />
+    <meta
+      property="og:description"
+      content="Create animations from code snippets, and export them as videos to share with your community."
+    />
+    <meta property="og:image" content="/banner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@codebitxyz" />
+    <meta name="twitter:site" content="@codebitxyz" />
+    <meta name="twitter:title" content="Tell a story with your code – CodeBit" />
+    <meta
+      name="twitter:description"
+      content="Create animations from code snippets, and export them as videos to share with your community."
+    />
+    <meta name="twitter:image" content="/banner.png" />
+    <script>
+      (function () {
+        function patch(proto) {
+          if (!proto) return
+          var d = Object.getOwnPropertyDescriptor(proto, 'fontStretch')
+          if (!d || !d.set) return
+          var orig = d.set
+          Object.defineProperty(
+            proto,
+            'fontStretch',
+            Object.assign({}, d, {
+              set: function (v) {
+                if (typeof v === 'string' && v.charAt(v.length - 1) === '%') {
+                  orig.call(this, 'normal')
+                  return
+                }
+                try {
+                  orig.call(this, v)
+                } catch (e) {
+                  orig.call(this, 'normal')
+                }
+              },
+            }),
+          )
+        }
+        if (typeof CanvasRenderingContext2D !== 'undefined')
+          patch(CanvasRenderingContext2D.prototype)
+        if (typeof OffscreenCanvasRenderingContext2D !== 'undefined')
+          patch(OffscreenCanvasRenderingContext2D.prototype)
+      })()
+    </script>
+  </head>
+  <body class="bg-gradient-to-br from-slate-950 to-slate-800">
+    <div id="root" class="min-h-[100dvh] flex flex-col"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

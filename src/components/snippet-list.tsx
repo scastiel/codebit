@@ -1,6 +1,4 @@
-/* eslint-disable @next/next/no-css-tags */
-'use client'
-import { SnippetListItem } from '@/app/my/snippets/snippet-list-item'
+import { SnippetListItem } from '@/components/snippet-list-item'
 import { StoredSnippet } from '@/lib/snippet-storage'
 import { ReactNode } from 'react'
 

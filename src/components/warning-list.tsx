@@ -1,4 +1,3 @@
-'use client'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Warning } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'

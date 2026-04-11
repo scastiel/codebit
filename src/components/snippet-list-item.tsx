@@ -1,10 +1,9 @@
-'use client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { StoredSnippet } from '@/lib/snippet-storage'
 import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 import { Trash2 } from 'lucide-react'
-import Link from 'next/link'
 import { MouseEvent } from 'react'
 import Highlight from 'react-highlight'
 
@@ -39,7 +38,8 @@ export function SnippetListItem({
 
   return (
     <Link
-      href={`/my/snippets/${snippet.slug}`}
+      to="/my/snippets/$snippetSlug"
+      params={{ snippetSlug: snippet.slug }}
       className="flex flex-col justify-end border rounded-md overflow-hidden group bg-black"
     >
       <div className="h-32 overflow-hidden relative">

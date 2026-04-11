@@ -1,4 +1,3 @@
-'use client'
 import {
   CodeVideo,
   CodeVideoOptions,
@@ -10,9 +9,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { applyCanvasFontStretchShim } from '@/lib/canvas-shim'
+import { trackEvent } from '@/lib/plausible'
 import { renderMediaOnWeb } from '@remotion/web-renderer'
 import { Download, FileVideo, Loader2 } from 'lucide-react'
-import { usePlausible } from 'next-plausible'
 import { useState } from 'react'
 
 type Props = {
@@ -31,13 +30,12 @@ export function GenerateButton({
   const [status, setStatus] = useState<Status>('idle')
   const [progress, setProgress] = useState(0)
   const { toast } = useToast()
-  const plausible = usePlausible()
 
   const generate = async () => {
     try {
       setStatus('rendering')
       setProgress(0)
-      plausible('Snippet: Generate video')
+      trackEvent('Snippet: Generate video')
       applyCanvasFontStretchShim()
       await save()
       const renderOptions = { ...options, fontSize: 0.02 * 1920 }

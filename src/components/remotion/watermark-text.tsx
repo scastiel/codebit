@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import { Code2 } from 'lucide-react'
 import { match } from 'ts-pattern'
 import { Watermark } from '../../components/remotion/code-composition'
@@ -9,7 +10,7 @@ export function WatermarkText({ watermark }: Props) {
 
   const link = (
     <a
-      href={process.env.NEXT_PUBLIC_BASE_URL}
+      href={env.VITE_BASE_URL}
       target="_blank"
       rel="noopener noreferrer"
     >

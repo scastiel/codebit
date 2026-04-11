@@ -1,4 +1,3 @@
-'use client'
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,9 +6,8 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 import { Code2 } from 'lucide-react'
-import Link from 'next/link'
-import React from 'react'
 
 export function LandingPageMenu() {
   const itemClassName = cn(
@@ -40,11 +38,9 @@ export function LandingPageMenu() {
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/my/snippets" legacyBehavior passHref>
-              <NavigationMenuLink className={itemClassName}>
-                My snippets
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink asChild className={itemClassName}>
+              <Link to="/my/snippets">My snippets</Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

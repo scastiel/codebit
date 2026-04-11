@@ -1,6 +1,5 @@
-'use client'
-import { LandingPlayer } from '@/app/landing-player'
 import { LandingPageMenu } from '@/components/landing-page-menu'
+import { LandingPlayer } from '@/components/landing-player'
 import {
   Accordion,
   AccordionContent,
@@ -8,11 +7,14 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ReactNode } from 'react'
+import { Link } from '@tanstack/react-router'
+import { ReactNode, useEffect } from 'react'
 
-export default function LandingPage() {
+export function LandingPage() {
+  useEffect(() => {
+    document.title = 'Tell a story with your code – CodeBit'
+  }, [])
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 h-14 border-b bg-slate-950 bg-opacity-50 backdrop-blur-sm z-10">
@@ -29,8 +31,14 @@ export default function LandingPage() {
               And boost engagement with your community
             </div>
             <Button size="lg" asChild>
-              <Link href="/my/snippets">Create my code video</Link>
+              <Link to="/my/snippets">Create my code video</Link>
             </Button>
+            <a
+              href="#free-and-open-source"
+              className="mt-3 text-sm text-green-400 hover:underline underline-offset-4"
+            >
+              Now 100% free — No account
+            </a>
           </div>
           <div>
             <LandingPlayer />
@@ -74,16 +82,72 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <Image
-                src={require('../../public/editor-screenshot.png')}
-                alt="Editor screenshot"
-              />
+              <img src="/editor-screenshot.png" alt="Editor screenshot" />
               <div className="flex justify-center">
                 <Button size="lg" asChild>
-                  <Link href="/my/snippets">Start for free</Link>
+                  <Link to="/my/snippets">Start for free</Link>
                 </Button>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* FREE & OPEN SOURCE SECTION */}
+        <section
+          id="free-and-open-source"
+          className="min-h-[100dvh] py-16 flex flex-col items-center justify-center gap-6 px-4"
+        >
+          <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
+            100% free, runs in your browser
+          </h2>
+          <div className="max-w-screen-md flex flex-col gap-4 text-center text-slate-300 text-[1.1rem] text-balance">
+            <p>
+              CodeBit is now completely free — including video generation.
+              Everything runs locally in your browser: your snippets are stored
+              in your browser, and videos are rendered client-side. No account,
+              no sign-up, no server.
+            </p>
+            <p>
+              The project is also{' '}
+              <a
+                href="https://github.com/scastiel/codebit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white underline underline-offset-4"
+              >
+                open source on GitHub
+              </a>
+              . If you enjoy using CodeBit, you can{' '}
+              <a
+                href="https://github.com/sponsors/scastiel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white underline underline-offset-4"
+              >
+                sponsor me on GitHub
+              </a>{' '}
+              to support its development.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button variant="outline" size="lg" asChild>
+              <a
+                href="https://github.com/scastiel/codebit"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on GitHub
+              </a>
+            </Button>
+            <Button size="lg" asChild>
+              <a
+                href="https://github.com/sponsors/scastiel"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Sponsor on GitHub
+              </a>
+            </Button>
           </div>
         </section>
 
@@ -158,7 +222,7 @@ export default function LandingPage() {
           </div>
           <div className="flex justify-center">
             <Button size="lg" asChild>
-              <Link href="/my/snippets">Start for free</Link>
+              <Link to="/my/snippets">Start for free</Link>
             </Button>
           </div>
         </section>

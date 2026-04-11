@@ -1,7 +1,7 @@
 import { TopBar } from '@/components/top-bar'
 import { ReactNode } from 'react'
 
-export default function Layout({ children }: { children: ReactNode }) {
+export function MyShell({ children }: { children: ReactNode }) {
   return (
     <>
       <TopBar />
