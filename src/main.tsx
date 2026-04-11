@@ -1,6 +1,6 @@
 import { Toaster } from '@/components/ui/toaster'
-import { env } from '@/lib/env'
 import '@/lib/canvas-shim'
+import { env } from '@/lib/env'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import React from 'react'
 import ReactDOM from 'react-dom/client'

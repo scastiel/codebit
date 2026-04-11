@@ -9,11 +9,7 @@ export function WatermarkText({ watermark }: Props) {
   if (watermark.type === 'none') return null
 
   const link = (
-    <a
-      href={env.VITE_BASE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <a href={env.VITE_BASE_URL} target="_blank" rel="noopener noreferrer">
       <Code2 /> <strong>CodeBit.xyz</strong>
     </a>
   )

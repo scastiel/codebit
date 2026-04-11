@@ -25,7 +25,9 @@ export function applyCanvasFontStretchShim() {
   if (typeof CanvasRenderingContext2D !== 'undefined') {
     patchProto(CanvasRenderingContext2D.prototype)
   }
-  if (typeof (globalThis as any).OffscreenCanvasRenderingContext2D !== 'undefined') {
+  if (
+    typeof (globalThis as any).OffscreenCanvasRenderingContext2D !== 'undefined'
+  ) {
     patchProto((globalThis as any).OffscreenCanvasRenderingContext2D.prototype)
   }
   applied = true

@@ -56,9 +56,7 @@ export function GenerateButton({
         muted: true,
         licenseKey: 'free-license',
         onProgress: (arg: any) =>
-          setProgress(
-            typeof arg === 'number' ? arg : (arg?.progress ?? 0),
-          ),
+          setProgress(typeof arg === 'number' ? arg : (arg?.progress ?? 0)),
       })
       const blob = await getBlob()
       const url = URL.createObjectURL(blob)

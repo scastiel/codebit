@@ -1,4 +1,7 @@
-type PlausibleFn = (event: string, options?: { props?: Record<string, unknown> }) => void
+type PlausibleFn = (
+  event: string,
+  options?: { props?: Record<string, unknown> },
+) => void
 
 declare global {
   interface Window {

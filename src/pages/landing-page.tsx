@@ -169,8 +169,8 @@ export function LandingPage() {
                 </AccordionTrigger>
                 <AccordionContent className="text-base">
                   Yes, CodeBit is completely free. Everything runs in your
-                  browser — snippets are stored locally and videos are
-                  rendered client-side.
+                  browser — snippets are stored locally and videos are rendered
+                  client-side.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="differences">

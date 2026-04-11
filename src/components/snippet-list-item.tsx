@@ -55,9 +55,7 @@ export function SnippetListItem({
         )}
       </div>
       <div className="flex gap-2 text-sm border-t p-2 items-center">
-        {preview?.lang && (
-          <Badge className="uppercase">{preview.lang}</Badge>
-        )}
+        {preview?.lang && <Badge className="uppercase">{preview.lang}</Badge>}
         <span className="opacity-50">
           Created on{' '}
           {createdAt.toLocaleDateString('en-US', {

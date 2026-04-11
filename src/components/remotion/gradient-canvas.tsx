@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useCurrentFrame, useVideoConfig } from 'remotion'
-import {
-  drawGradientOnCanvas,
-  gradientParamsFromSeed,
-} from './gradients'
+import { drawGradientOnCanvas, gradientParamsFromSeed } from './gradients'
 
 export function GradientCanvas({
   seed,
@@ -23,7 +20,11 @@ export function GradientCanvas({
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const params = gradientParamsFromSeed(seed, effectiveFrame, durationInFrames)
+    const params = gradientParamsFromSeed(
+      seed,
+      effectiveFrame,
+      durationInFrames,
+    )
     drawGradientOnCanvas(ctx, width, height, params)
   }, [seed, effectiveFrame, durationInFrames, width, height])
 
