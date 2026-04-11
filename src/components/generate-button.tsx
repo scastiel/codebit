@@ -1,236 +1,104 @@
-'use client'
-import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+  CodeVideo,
+  CodeVideoOptions,
+} from '@/components/remotion/code-composition'
+import {
+  compositionDurationInFrames,
+  getCompositionData,
+} from '@/components/remotion/composition-data'
+import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import { applyCanvasFontStretchShim } from '@/lib/canvas-shim'
+import { trackEvent } from '@/lib/plausible'
+import { renderMediaOnWeb } from '@remotion/web-renderer'
 import { Download, FileVideo, Loader2 } from 'lucide-react'
-import { usePlausible } from 'next-plausible'
-import Link from 'next/link'
-import { ReactNode, useEffect, useState } from 'react'
-import useSWR from 'swr'
-import { z } from 'zod'
+import { useState } from 'react'
 
 type Props = {
-  initialRenderId: string | null
+  options: CodeVideoOptions
   snippetSlug: string
-  userId: string
   save: () => Promise<void>
 }
 
-type Status =
-  | 'no-render'
-  | 'starting'
-  | 'getting-status'
-  | 'error-getting-status'
-  | 'generation-done'
-  | 'generation-error'
-  | 'in-progress'
-
-function getStatus(isLoading: boolean, error: boolean, data: any): Status {
-  if (isLoading) return 'getting-status'
-  if (error) return 'error-getting-status'
-  if (!data) return 'no-render'
-  if (data.done) return 'generation-done'
-  if (data.error) return 'generation-error'
-  return 'in-progress'
-}
+type Status = 'idle' | 'rendering' | 'done' | 'error'
 
 export function GenerateButton({
-  initialRenderId,
+  options,
   snippetSlug,
-  userId,
   save,
 }: Props): JSX.Element {
-  const [renderId, setRenderId] = useState(initialRenderId)
-  const [refreshTokenCredits, setRefreshTokenCredits] = useState(0)
-  const {
-    data: creditsData,
-    error: creditsError,
-    isLoading: creditsLoading,
-  } = useSWR(
-    [`/api/renders/credits`, [`credits-${userId}`], [refreshTokenCredits]],
-    fetcher,
-  )
-  const remainingCredits: number | undefined =
-    creditsData && (creditsData as any).credits
-
-  const { data, error, isLoading } = useSWR(
-    [renderId ? `/my/renders/${renderId}/status` : '', [], []],
-    fetcher,
-    { refreshInterval: 5000, refreshWhenHidden: true },
-  )
-
-  if (error) console.log(error)
-
-  const [status, setStatus] = useState<Status>(
-    getStatus(isLoading, error, data),
-  )
-
-  useEffect(() => {
-    setStatus(getStatus(isLoading, error, data))
-  }, [isLoading, error, data])
-
+  const [status, setStatus] = useState<Status>('idle')
+  const [progress, setProgress] = useState(0)
   const { toast } = useToast()
-  const plausible = usePlausible()
 
-  const GenerateButton = ({ children }: { children: ReactNode }) => {
-    if (remainingCredits === 0) {
-      return (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="secondary">
-              <FileVideo className="mr-2 h-4 w-4" />
-              {children}
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>No credits left</DialogTitle>
-              <DialogDescription>
-                You can’t generate new videos.
-              </DialogDescription>
-            </DialogHeader>
-            <div>
-              <p>
-                You used all your render credits for this month. Maybe another
-                plan would be a better fit for your needs?
-              </p>
-            </div>
-            <DialogFooter>
-              <Button asChild>
-                <Link href="/my/plan">See plans</Link>
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )
+  const generate = async () => {
+    try {
+      setStatus('rendering')
+      setProgress(0)
+      trackEvent('Snippet: Generate video')
+      applyCanvasFontStretchShim()
+      await save()
+      const renderOptions = { ...options, fontSize: 0.02 * 1920 }
+      const compositionData = getCompositionData(renderOptions)
+      const durationInFrames = compositionDurationInFrames(compositionData)
+      const { getBlob } = await renderMediaOnWeb({
+        composition: {
+          id: 'Code',
+          component: CodeVideo,
+          durationInFrames,
+          fps: 30,
+          width: 1920,
+          height: 1080,
+          defaultProps: { options: renderOptions },
+        },
+        inputProps: { options: renderOptions },
+        videoCodec: 'h264',
+        muted: true,
+        licenseKey: 'free-license',
+        onProgress: (arg: any) =>
+          setProgress(typeof arg === 'number' ? arg : (arg?.progress ?? 0)),
+      })
+      const blob = await getBlob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${snippetSlug}.mp4`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      setStatus('done')
+      toast({
+        title: 'Video downloaded',
+        description: `${snippetSlug}.mp4`,
+      })
+    } catch (err) {
+      console.error(err)
+      setStatus('error')
+      toast({
+        title: 'Video generation failed',
+        description: err instanceof Error ? err.message : String(err),
+      })
     }
+  }
 
+  if (status === 'rendering') {
     return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="secondary">
-            <FileVideo className="mr-2 h-4 w-4" />
-            {children}
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Generate video</DialogTitle>
-            <DialogDescription>
-              You currently have {remainingCredits} credit(s) available.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="prose prose-invert">
-            <p>
-              Generating the video will consume <strong>1 credit</strong> from
-              your balance. You will be able to download your video as MP4 in ~1
-              minute.
-            </p>
-            <p>
-              <em>
-                Note that <strong>you don’t need</strong> to generate the video
-                to update the preview on the right.
-              </em>
-            </p>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="ghost">Cancel</Button>
-            </DialogClose>
-            <Button
-              onClick={() => {
-                setStatus('starting')
-                plausible('Snippet: Generate video', { props: { userId } })
-                save()
-                  .then(() =>
-                    fetch(`/api/renders?snippetSlug=${snippetSlug}`, {
-                      method: 'POST',
-                    }),
-                  )
-                  .then((res) => res.json())
-                  .then((res) => {
-                    const { renderId } = z
-                      .object({ renderId: z.string() })
-                      .parse(res)
-                    setRenderId(renderId)
-                    setRefreshTokenCredits((t) => t + 1)
-
-                    toast({
-                      title: 'Your video generation has started',
-                      description:
-                        'It can take a minute, but you can safely leave the page and come back to get the video when ready.',
-                    })
-                  })
-              }}
-            >
-              Generate the video
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Button disabled variant="secondary" className="flex gap-2">
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        {Math.round(progress * 100)}%
+      </Button>
     )
   }
 
-  switch (status) {
-    case 'getting-status':
-      return <LoadingButton>Getting generation status…</LoadingButton>
-    case 'no-render':
-      return <GenerateButton>Generate MP4 video</GenerateButton>
-    case 'starting':
-      return <LoadingButton>Starting generation…</LoadingButton>
-    case 'error-getting-status':
-      return (
-        <>
-          <GenerateButton>Generate MP4 video</GenerateButton>
-          <p>Error getting generation status.</p>
-        </>
-      )
-    case 'generation-error':
-      return (
-        <>
-          <GenerateButton>Generate MP4 video</GenerateButton>
-          <p>Error generating video.</p>
-        </>
-      )
-    case 'generation-done':
-      return (
-        <>
-          <GenerateButton>Regenerate MP4 video</GenerateButton>
-          <Button asChild variant="secondary">
-            <Link
-              href={`/my/renders/${renderId}/download`}
-              className="flex gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download video</span>
-            </Link>
-          </Button>
-        </>
-      )
-    case 'starting':
-      return <LoadingButton>Starting generation…</LoadingButton>
-    case 'in-progress':
-      return <LoadingButton>Generation in progress…</LoadingButton>
-  }
-}
-
-const fetcher = ([url, tags, refresh]: [string, string[], any]) =>
-  url ? fetch(url, { next: { tags } }).then((res) => res.json()) : null
-
-function LoadingButton({ children }: { children: ReactNode }) {
   return (
-    <Button disabled variant="secondary" className="flex gap-2">
-      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-      {children}
+    <Button variant="secondary" onClick={generate}>
+      {status === 'done' ? (
+        <Download className="mr-2 h-4 w-4" />
+      ) : (
+        <FileVideo className="mr-2 h-4 w-4" />
+      )}
+      MP4
     </Button>
   )
 }

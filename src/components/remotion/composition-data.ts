@@ -13,7 +13,6 @@ export function getCompositionData({
   framesAtEnd = 30,
   framesBetweenSteps = 10,
   markdown,
-  multiFile,
 }: CodeVideoOptions) {
   const { steps, metadata } = parseSnippetMardown(markdown)
   const rand = randomSeed.create(String(seed))
@@ -44,12 +43,8 @@ export function getCompositionData({
 
   let from = framesAtStart
   for (let i = 0; i < steps.length - 1; i++) {
-    const prevFilename = multiFile
-      ? steps[i].filename
-      : filenames[0] ?? steps[i].filename
-    const filename = multiFile
-      ? steps[i + 1].filename
-      : filenames[0] ?? steps[i].filename ?? steps[i + 1].filename
+    const prevFilename = steps[i].filename
+    const filename = steps[i + 1].filename
     if (filename && !filenames.includes(filename)) filenames.push(filename)
     if (prevFilename && filename && prevFilename !== filename) {
       sequences.push({

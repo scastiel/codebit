@@ -1,4 +1,3 @@
-'use client'
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,17 +6,10 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils'
-import { User } from '@prisma/client'
+import { Link } from '@tanstack/react-router'
 import { Code2 } from 'lucide-react'
-import Link from 'next/link'
-import React from 'react'
 
-type Props = {
-  user: User | null
-  planId: string | null
-}
-
-export function LandingPageMenu({ user, planId }: Props) {
+export function LandingPageMenu() {
   const itemClassName = cn(
     navigationMenuTriggerStyle(),
     'bg-transparent px-2 sm:px-4',
@@ -41,50 +33,17 @@ export function LandingPageMenu({ user, planId }: Props) {
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink href="#pricing" className={itemClassName}>
-              Pricing
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
             <NavigationMenuLink href="#faq" className={itemClassName}>
               FAQ
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/my" legacyBehavior passHref>
-              <NavigationMenuLink className={itemClassName}>
-                Sign in
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink asChild className={itemClassName}>
+              <Link to="/my/snippets">My snippets</Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </div>
   )
 }
-
-const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className,
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  )
-})
-ListItem.displayName = 'ListItem'

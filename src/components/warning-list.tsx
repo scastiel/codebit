@@ -1,4 +1,3 @@
-'use client'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Warning } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
@@ -37,13 +36,6 @@ export function WarningList({
                     <>Invalid metadata</>
                   ))
                   .with({ type: 'frontmatter-error' }, () => <>Syntax error</>)
-                  .with({ type: 'too-long-video' }, () => <>Too long video</>)
-                  .with({ type: 'required-watermark' }, () => (
-                    <>Required watermark</>
-                  ))
-                  .with({ type: 'forbidden-multifile' }, () => (
-                    <>Several files detected</>
-                  ))
                   .with({ type: 'invalid-theme' }, () => <>Invalid theme</>)
                   .with({ type: 'invalid-font' }, () => <>Invalid font</>)
                   .exhaustive()}
@@ -74,27 +66,6 @@ export function WarningList({
                 ))
                 .with({ type: 'frontmatter-error' }, () => (
                   <>Check the syntax of the content.</>
-                ))
-                .with(
-                  { type: 'too-long-video' },
-                  ({ durationInSeconds, maxDurationInSeconds }) => (
-                    <>
-                      Video is <strong>{durationInSeconds.toFixed(1)}</strong>{' '}
-                      seconds-long, but your plan allows for{' '}
-                      <strong>{maxDurationInSeconds.toFixed(0)}</strong> seconds
-                      max. The video will be truncated.
-                    </>
-                  ),
-                )
-                .with({ type: 'required-watermark' }, () => (
-                  <>Your plan doesn’t allow you to remove the watermark.</>
-                ))
-                .with({ type: 'forbidden-multifile' }, ({ filenames }) => (
-                  <>
-                    Your plan doesn’t allow you to have several files in your
-                    snippet. Only the first one <em>({filenames[0]})</em> will
-                    be used.
-                  </>
                 ))
                 .with({ type: 'invalid-theme' }, ({ theme }) => (
                   <>

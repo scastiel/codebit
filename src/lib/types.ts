@@ -25,13 +25,6 @@ export type Warning =
     }
   | { line: 1; type: 'invalid-metadata'; message: string; property: string }
   | { line: 1; type: 'frontmatter-error' }
-  | {
-      type: 'too-long-video'
-      durationInSeconds: number
-      maxDurationInSeconds: number
-    }
-  | { type: 'required-watermark' }
-  | { type: 'forbidden-multifile'; filenames: string[] }
   | { type: 'invalid-theme'; theme: string }
   | { type: 'invalid-font'; font: string }
 

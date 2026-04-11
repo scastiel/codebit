@@ -1,12 +1,6 @@
 import fm from 'front-matter'
 import { lexer } from 'marked'
-import { CodeVideoOptions } from '../components/remotion/code-composition'
-import {
-  compositionDurationInFrames,
-  getCompositionData,
-} from '../components/remotion/composition-data'
 import { fonts, themes } from '../components/remotion/themes'
-import { Plan } from '../lib/plans'
 import {
   Metadata,
   SnippetParsingResult,
@@ -55,41 +49,6 @@ export function parseSnippetMardown(markdown: string): SnippetParsingResult {
     const steps: Steps = []
     return { warnings, steps, metadata }
   }
-}
-
-export function getPlanWarnings(
-  options: CodeVideoOptions,
-  plan: Plan,
-): Warning[] {
-  const warnings: Warning[] = []
-  const compositionData = getCompositionData({ ...options, multiFile: true })
-
-  if (!plan.multiFile) {
-    const filenames = new Set(
-      compositionData.sequences.map((seq) => seq.filename).filter(Boolean),
-    )
-    if (filenames.size > 1)
-      warnings.push({
-        type: 'forbidden-multifile',
-        filenames: Array.from(filenames),
-      })
-  }
-
-  const durationInFrames = compositionDurationInFrames(compositionData)
-  if (options.watermark.type === 'none' && plan.watermark === true) {
-    warnings.push({ type: 'required-watermark' })
-  }
-  if (
-    options.maxDurationInSeconds &&
-    durationInFrames > 30 * options.maxDurationInSeconds
-  ) {
-    warnings.push({
-      type: 'too-long-video',
-      durationInSeconds: durationInFrames / 30,
-      maxDurationInSeconds: options.maxDurationInSeconds,
-    })
-  }
-  return warnings
 }
 
 function parseMarkdown(markdown: string, firstLineIndex: number) {
