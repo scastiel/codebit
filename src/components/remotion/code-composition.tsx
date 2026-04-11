@@ -10,7 +10,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion'
-import { gradientCssFromSeed } from '../../components/remotion/gradients'
+import { GradientCanvas } from '../../components/remotion/gradient-canvas'
 import { fonts } from '../../components/remotion/themes'
 import { WatermarkText } from '../../components/remotion/watermark-text'
 import { landingPageSnippet } from '../../lib/landing-page-snippet'
@@ -36,8 +36,6 @@ export type CodeVideoOptions = {
   markdown: string
   fontSize: number
   watermark: Watermark
-  maxDurationInSeconds?: number
-  multiFile: boolean
 }
 
 export type CodeVideoProps = { options: CodeVideoOptions }
@@ -62,15 +60,14 @@ export function CodeVideo({ options }: CodeVideoProps) {
     : 100
   return (
     <AbsoluteFill className="root" style={{ fontSize }}>
+      <GradientCanvas
+        seed={metadata.background}
+        animated={metadata.animatedBackground}
+      />
       <link
         href={staticFile(`themes/${metadata.highlightTheme}.min.css`)}
         rel="stylesheet"
       />
-      <style>{`.root { ${gradientCssFromSeed(
-        metadata.background,
-        metadata.animatedBackground ? currentFrame : 1,
-        durationInFrames,
-      )} }`}</style>
 
       <style>{`
         ${Object.keys(fonts)
@@ -241,7 +238,6 @@ export function CodeComposition() {
     //     `,
     markdown: landingPageSnippet,
     watermark: { type: 'get-your-own' },
-    multiFile: true,
   }
   return (
     <Composition

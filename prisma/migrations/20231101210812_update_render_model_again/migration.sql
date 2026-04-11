@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Render" ALTER COLUMN "done" SET DEFAULT false,
-ALTER COLUMN "endedAt" DROP NOT NULL,
-ALTER COLUMN "endedAt" DROP DEFAULT,
-ALTER COLUMN "error" SET DEFAULT false;

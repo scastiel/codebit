@@ -27,10 +27,7 @@ export function SnippetPlayer({
 }) {
   const compositionData = getCompositionData(options)
   const fps = 30
-  const durationInFrames = Math.min(
-    (options.maxDurationInSeconds ?? Infinity) * fps,
-    compositionDurationInFrames(compositionData),
-  )
+  const durationInFrames = compositionDurationInFrames(compositionData)
   const playerRef = useRef<PlayerRef>(null)
 
   // useEffect(() => {
@@ -54,6 +51,7 @@ export function SnippetPlayer({
       allowFullscreen={false}
       moveToBeginningWhenEnded={false}
       showVolumeControls={false}
+      acknowledgeRemotionLicense
     />
   )
 }

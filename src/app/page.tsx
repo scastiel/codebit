@@ -1,6 +1,5 @@
 'use client'
-import PlansTable from '@/app/my/plan/plans-table'
-import { NewLandingPlayer } from '@/app/new-landing-player'
+import { LandingPlayer } from '@/app/landing-player'
 import { LandingPageMenu } from '@/components/landing-page-menu'
 import {
   Accordion,
@@ -17,7 +16,7 @@ export default function LandingPage() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 h-14 border-b bg-slate-950 bg-opacity-50 backdrop-blur-sm z-10">
-        <LandingPageMenu user={null} planId={null} />
+        <LandingPageMenu />
       </header>
       <main className="w-full flex-1 max-w-screen-xl flex flex-col mx-auto">
         {/* HERO SECTION */}
@@ -30,11 +29,11 @@ export default function LandingPage() {
               And boost engagement with your community
             </div>
             <Button size="lg" asChild>
-              <Link href="/my">Create my code video</Link>
+              <Link href="/my/snippets">Create my code video</Link>
             </Button>
           </div>
           <div>
-            <NewLandingPlayer />
+            <LandingPlayer />
           </div>
         </section>
 
@@ -81,32 +80,10 @@ export default function LandingPage() {
               />
               <div className="flex justify-center">
                 <Button size="lg" asChild>
-                  <Link href="/my">Start for free</Link>
+                  <Link href="/my/snippets">Start for free</Link>
                 </Button>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* PRICING SECTION */}
-        <section
-          id="pricing"
-          className="min-h-[100dvh] py-16 flex flex-col justify-center items-stretch"
-        >
-          <h2 className="text-center text-balance text-[1.5rem] md:text-[2.5rem] font-bold max-w-screen-md self-center leading-none bg-gradient-to-b drop-shadow from-slate-100 to-slate-400 bg-clip-text text-transparent py-4">
-            A fair pricing for everyone
-          </h2>
-          <div className="text-center text-slate-400 text-[1.1rem] text-balance">
-            Whether you create content for fun or profit, we have the right
-            offer for you!
-          </div>
-          <div className="mt-16 mb-16 px-4 max-w-screen-lg w-full mx-auto">
-            <PlansTable />
-          </div>
-          <div className="flex justify-center">
-            <Button size="lg" asChild>
-              <Link href="/my">Start for free</Link>
-            </Button>
           </div>
         </section>
 
@@ -127,10 +104,9 @@ export default function LandingPage() {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="text-base">
-                  You can start using CodeBit to generate your first videos for
-                  free. Then, if you like the service, you can purchase a
-                  subscription to unlock all features and generate more and
-                  longer videos.
+                  Yes, CodeBit is completely free. Everything runs in your
+                  browser — snippets are stored locally and videos are
+                  rendered client-side.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="differences">
@@ -155,10 +131,8 @@ export default function LandingPage() {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="text-base">
-                  You can export your animations as video files (MP4 for now,
-                  more to come) and share them on social media. You can also
-                  share a webpage displaying the animation, where visitors can
-                  copy the code and paste it anywhere.
+                  You can export your animations as MP4 video files and share
+                  them on social media.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="other-questions">
@@ -184,7 +158,7 @@ export default function LandingPage() {
           </div>
           <div className="flex justify-center">
             <Button size="lg" asChild>
-              <Link href="/my">Start for free</Link>
+              <Link href="/my/snippets">Start for free</Link>
             </Button>
           </div>
         </section>

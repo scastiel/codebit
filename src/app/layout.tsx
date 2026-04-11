@@ -3,7 +3,6 @@ import { Toaster } from '@/components/ui/toaster'
 import { env } from '@/lib/env'
 import type { Metadata } from 'next'
 import PlausibleProvider from 'next-plausible'
-import Script from 'next/script'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -40,37 +39,40 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <Script id="datadog-rum">
-        {`
-             (function(h,o,u,n,d) {
-               h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
-               d=o.createElement(u);d.async=1;d.src=n
-               n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
-             })(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v5/datadog-rum.js','DD_RUM')
-             window.DD_RUM.onReady(function() {
-               window.DD_RUM.init({
-                 clientToken: '${process.env.NEXT_PUBLIC_DD_RUM_CLIENT_TOKEN}',
-                 applicationId: '${process.env.NEXT_PUBLIC_DD_RUM_APPLICATION_ID}',
-                 site: 'datadoghq.com',
-                 service: 'next-app-router-rum',
-                 env: '${process.env.NEXT_PUBLIC_DD_RUM_ENV}',
-                 // Specify a version number to identify the deployed version of your application in Datadog
-                 // version: '1.0.0',
-                 sessionSampleRate: 100,
-                 sessionReplaySampleRate: 100,
-                 trackUserInteractions: true,
-                 trackResources: true,
-                 trackLongTasks: true,
-               });
-             })
-           `}
-      </Script>
-      <PlausibleProvider domain="codebit.xyz" trackOutboundLinks />
-      <body className="min-h-[100dvh] flex flex-col dark:bg-gradient-to-br dark:from-slate-950 dark:to-slate-800">
+      {env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+        <PlausibleProvider
+          domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+          trackOutboundLinks
+        />
+      )}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              function patch(proto){
+                if(!proto) return;
+                var d = Object.getOwnPropertyDescriptor(proto, 'fontStretch');
+                if(!d || !d.set) return;
+                var orig = d.set;
+                Object.defineProperty(proto, 'fontStretch', Object.assign({}, d, {
+                  set: function(v){
+                    if(typeof v === 'string' && v.charAt(v.length-1) === '%'){
+                      orig.call(this, 'normal'); return;
+                    }
+                    try { orig.call(this, v); } catch(e){ orig.call(this, 'normal'); }
+                  }
+                }));
+              }
+              if(typeof CanvasRenderingContext2D !== 'undefined') patch(CanvasRenderingContext2D.prototype);
+              if(typeof OffscreenCanvasRenderingContext2D !== 'undefined') patch(OffscreenCanvasRenderingContext2D.prototype);
+            })();`,
+          }}
+        />
+      </head>
+      <body className="min-h-[100dvh] flex flex-col bg-gradient-to-br from-slate-950 to-slate-800">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          enableSystem
+          forcedTheme="dark"
           disableTransitionOnChange
         >
           {children}

@@ -1,5 +1,4 @@
 'use client'
-import { ExportMenu } from '@/components/export-menu'
 import { GenerateButton } from '@/components/generate-button'
 import { CodeVideoOptions } from '@/components/remotion/code-composition'
 import { SnippetPlayer } from '@/components/snippet-player'
@@ -7,15 +6,13 @@ import { SnippetSettingsEditor } from '@/components/snippet-settings-editor'
 import { SnippetSettingsToolbar } from '@/components/snippet-settings-toolbar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { getPlanWarnings, parseSnippetMardown } from '@/lib/code-steps-utils'
-import { githubDark, githubLight } from '@/lib/monaco-themes'
-import { Plan } from '@/lib/plans'
+import { parseSnippetMardown } from '@/lib/code-steps-utils'
+import { githubDark } from '@/lib/monaco-themes'
 import { Editor } from '@monaco-editor/react'
 import useSize from '@react-hook/size'
 import debouncePromise from 'debounce-promise'
 import fm from 'front-matter'
-import { Dot, ExternalLink, HelpCircle } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { Dot, HelpCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import yaml from 'yaml'
@@ -26,24 +23,17 @@ type Props = {
   snippetSlug: string
   initialContent: string
   saveSnippetAction?: (code: string) => Promise<void>
-  lastRenderId?: string | null
-  plan: Plan
-  userId: string
 }
 
 export function CodeEditor({
   snippetSlug,
   initialContent,
   saveSnippetAction,
-  lastRenderId,
-  plan,
-  userId,
 }: Props) {
   const editorRef = useRef<any>(null)
   const [markdown, setMarkdown] = useState(initialContent)
   const editorWrapperRef = useRef(null)
   const [editorWidth, editorHeight] = useSize(editorWrapperRef)
-  const toolbarRef = useRef<HTMLDivElement | null>(null)
 
   const preview = () => {
     const markdown = editorRef.current.getValue()
@@ -52,7 +42,7 @@ export function CodeEditor({
 
   const fontSize = Math.min(Math.max(8, Math.min(0.02 * editorWidth, 16)))
 
-  const { steps, metadata, warnings } = useMemo(
+  const { metadata, warnings } = useMemo(
     () => parseSnippetMardown(markdown),
     [markdown],
   )
@@ -65,30 +55,14 @@ export function CodeEditor({
       watermark: metadata.watermark
         ? { type: 'url', slug: snippetSlug }
         : { type: 'none' },
-      maxDurationInSeconds: plan.maxVideoDurationInSeconds,
-      multiFile: plan.multiFile,
     }),
-    [
-      fontSize,
-      markdown,
-      metadata.watermark,
-      plan.maxVideoDurationInSeconds,
-      plan.multiFile,
-      snippetSlug,
-    ],
-  )
-
-  const planWarnings = useMemo(
-    () => getPlanWarnings(options, plan),
-    [options, plan],
+    [fontSize, markdown, metadata.watermark, snippetSlug],
   )
 
   useEffect(() => {
     editorRef.current?.layout({ width: 0, height: 0 })
     window.requestAnimationFrame(() => editorRef.current?.layout())
   }, [editorHeight])
-
-  const { theme: appTheme } = useTheme()
 
   const [saved, setSaved] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -125,9 +99,8 @@ export function CodeEditor({
             editorRef.current?.setValue(code)
           }}
           exportButton={
-            <ExportMenu
-              userId={userId}
-              initialRenderId={lastRenderId ?? null}
+            <GenerateButton
+              options={options}
               snippetSlug={snippetSlug}
               save={async () => {
                 await debouncedSave(editorRef.current.getValue() || markdown)
@@ -140,12 +113,7 @@ export function CodeEditor({
           <div className="rounded-[10px] p-[2px] bg-gradient-to-b from-slate-100 to-slate-800 self-start mx-[2px]">
             <div className="overflow-hidden rounded-[8px]">
               <SnippetPlayer
-                options={{
-                  ...options,
-                  watermark: plan.watermark
-                    ? { type: 'url', slug: snippetSlug }
-                    : options.watermark,
-                }}
+                options={options}
                 width={editorWidth - 4}
                 height={Math.round((editorWidth * 9) / 16)}
               />
@@ -161,7 +129,7 @@ export function CodeEditor({
           </Button>
         </div>
         <WarningList
-          warnings={[...planWarnings, ...warnings]}
+          warnings={warnings}
           goToLine={(line) => {
             const editor = editorRef.current
             if (!editor) return
@@ -180,11 +148,8 @@ export function CodeEditor({
                 defaultValue={markdown ?? ''}
                 onMount={(editor, monaco) => {
                   editor.getModel()?.updateOptions({ indentSize: 2 })
-                  monaco.editor.defineTheme('github', githubLight as any)
                   monaco.editor.defineTheme('github-dark', githubDark as any)
-                  monaco.editor.setTheme(
-                    appTheme === 'dark' ? 'github-dark' : 'github',
-                  )
+                  monaco.editor.setTheme('github-dark')
                   editorRef.current = editor
                   preview()
                 }}
@@ -233,29 +198,16 @@ export function CodeEditor({
                 )}
               </span>
               {snippetSlug && (
-                <>
-                  <Button variant="secondary" asChild>
-                    <Link
-                      href={`/${snippetSlug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Share
-                    </Link>
-                  </Button>
-                  <GenerateButton
-                    userId={userId}
-                    initialRenderId={lastRenderId ?? null}
-                    snippetSlug={snippetSlug}
-                    save={async () => {
-                      await debouncedSave(
-                        editorRef.current.getValue() || markdown,
-                      )
-                      preview()
-                    }}
-                  />
-                </>
+                <GenerateButton
+                  options={options}
+                  snippetSlug={snippetSlug}
+                  save={async () => {
+                    await debouncedSave(
+                      editorRef.current.getValue() || markdown,
+                    )
+                    preview()
+                  }}
+                />
               )}
             </>
           }

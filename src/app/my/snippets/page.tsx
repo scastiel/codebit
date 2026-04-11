@@ -1,26 +1,36 @@
+'use client'
 import { CreateSnippetButton } from '@/app/my/snippets/create-snippet-button'
 import { SnippetList } from '@/app/my/snippets/snippet-list'
-import { env } from '@/lib/env'
-import { createTutorialSnippet, getSnippets } from '@/lib/snippet'
-import { getCurrentUserOrRedirect } from '@/lib/user'
-import { Metadata } from 'next'
+import {
+  StoredSnippet,
+  createTutorialSnippet,
+  deleteSnippet,
+  listSnippets,
+} from '@/lib/snippet-storage'
+import { useEffect, useState } from 'react'
 
-export const metadata: Metadata = {
-  title: 'My snippets',
-}
+export default function SnippetsPage() {
+  const [snippets, setSnippets] = useState<StoredSnippet[] | null>(null)
 
-export default async function SnippetsPage() {
-  const user = await getCurrentUserOrRedirect(
-    `${env.NEXT_PUBLIC_BASE_URL}/my/snippets`,
-  )
-  let snippets = await getSnippets(user)
-  if (snippets.length === 0) {
-    snippets = [await createTutorialSnippet(user)]
+  useEffect(() => {
+    let all = listSnippets()
+    if (all.length === 0) {
+      createTutorialSnippet()
+      all = listSnippets()
+    }
+    setSnippets(all)
+  }, [])
+
+  const handleDelete = (slug: string) => {
+    deleteSnippet(slug)
+    setSnippets(listSnippets())
   }
+
+  if (snippets === null) return null
 
   return (
     <div className="p-4 flex flex-col gap-4 max-w-screen-lg mx-auto">
-      <SnippetList snippets={snippets}>
+      <SnippetList snippets={snippets} onDelete={handleDelete}>
         <CreateSnippetButton />
       </SnippetList>
     </div>

@@ -1,12 +1,16 @@
+* {
+  font-stretch: normal;
+}
+
 pre {
   overflow: auto;
-  margin-top: -2em;
+  margin-top: 0;
   margin-bottom: 0;
 }
 
 pre > code {
   font-weight: 400;
-  padding-top: 3em !important;
+  padding-top: 1em !important;
   opacity: 80%;
 }
 
@@ -75,17 +79,11 @@ pre > code {
 }
 
 .window-buttons {
-  background-color: rgba(128, 128, 128, 15%);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.window-buttons {
   padding: 0 1em;
   display: flex;
   align-items: center;
-  height: 2em;
-  z-index: 10;
-  background-color: rgba(128, 128, 128, 15%);
+  height: 2.5em;
+  background-color: rgba(0, 0, 0, 0.35);
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -117,6 +115,6 @@ pre > code {
 }
 
 .window-buttons svg {
-  width: 3em;
-  height: 0.75em;
+  width: 4.5em;
+  height: 1em;
 }
