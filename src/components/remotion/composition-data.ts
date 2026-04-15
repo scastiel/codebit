@@ -127,7 +127,23 @@ export function getCompositionData({
     filename: steps[steps.length - 1]?.filename,
   })
 
-  return { sequences, metadata }
+  const { speed } = metadata
+  const scaledSequences =
+    speed === 1
+      ? sequences
+      : sequences.map((seq) =>
+          seq.isTransition
+            ? seq
+            : {
+                ...seq,
+                durationInFrames: Math.max(
+                  1,
+                  Math.ceil(seq.durationInFrames / speed),
+                ),
+              },
+        )
+
+  return { sequences: scaledSequences, metadata }
 }
 
 export type CompositionData = ReturnType<typeof getCompositionData>
