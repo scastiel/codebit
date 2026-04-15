@@ -152,7 +152,14 @@ function CodeSequences({
             lang={seq.lang}
             filename={seq.filename}
             filenames={filenames}
-            codeForFrame={(frame) => seq.frames[Math.floor(frame * speed)]}
+            codeForFrame={(frame) => {
+              const effectiveSpeed = seq.isTransition ? 1 : speed
+              const index = Math.min(
+                Math.floor(frame * effectiveSpeed),
+                seq.frames.length - 1,
+              )
+              return seq.frames[index]
+            }}
             watermark={watermark}
             scale={scale}
             font={font}
